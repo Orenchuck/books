@@ -6,8 +6,8 @@ import { LoggerMiddleware } from 'src/common/middleware.request';
 // import { ConfigModule } from 'nestjs-config';
 // import * as path from 'path';
 import { EasyconfigModule } from 'nestjs-easyconfig';
-import { ConfigService } from './enviroment/config.service';
-import { ConfigModel } from './enviroment/config.model';
+import { ConfigService } from 'src/enviroment/config.service';
+import { ConfigModel } from 'src/enviroment/config.model';
 
 @Module({
   imports: [ConfigModel],
