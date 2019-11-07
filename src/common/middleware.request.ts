@@ -1,4 +1,6 @@
-export function LoggerMiddleware(req, res, next) {
-    console.log(`It's my request...`);
-    next();
-  };
+export function LoggerMiddleware({ path, baseUrl, originalUrl, headers }, res, next) {
+  const logContent: string = JSON.stringify({ path, baseUrl, originalUrl, headers });
+
+  console.log(logContent);
+  next();
+}
