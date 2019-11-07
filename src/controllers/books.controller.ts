@@ -11,7 +11,7 @@ export class BooksController {
     @Get()
     async getBooks() {
         const books = await this.booksService.getBooks();
-        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+        // throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
         return books;
     }
 

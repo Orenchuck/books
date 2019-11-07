@@ -6,10 +6,9 @@ import { ConfigService } from 'src/enviroment/config.service';
 export class BooksService {
     books = BOOKS;
     private isAuthEnabled: boolean;
-  constructor(config: ConfigService) {
-    // Please take note that this check is case sensitive!
-    this.isAuthEnabled = config.get('IS_AUTH_ENABLED') === 'true';
-  }
+    constructor(config: ConfigService) {
+        this.isAuthEnabled = config.get('IS_AUTH_ENABLED') === 'true';
+    }
 
     getBooks(): Promise<any> {
         return new Promise(resolve => {
