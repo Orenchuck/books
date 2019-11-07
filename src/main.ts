@@ -3,6 +3,7 @@ import { AppModule } from 'src/app.module';
 import { HttpExceptionFilter } from 'src/common/exception.filter';
 import { LoggerMiddleware } from 'src/common/middleware.request';
 import * as fs from 'fs';
+import * as dotenv from 'dotenv';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import * as express from 'express';
 

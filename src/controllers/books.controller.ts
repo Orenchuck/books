@@ -1,10 +1,12 @@
 import { Controller, Get, Param, Post, Body, Query, Delete, UseFilters, HttpException, HttpStatus } from '@nestjs/common';
 import { BooksService } from 'src/services/books.service';
 import { CreateBookDTO } from 'src/books/dto/create-book.dto';
+import { ConfigService } from 'src/enviroment/config.service';
 
 @Controller('books')
 export class BooksController {
-    constructor(private booksService: BooksService) { }
+    constructor(private booksService: BooksService,
+        private configService: ConfigService) { }
 
     @Get()
     async getBooks() {

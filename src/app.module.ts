@@ -6,12 +6,18 @@ import { LoggerMiddleware } from 'src/common/middleware.request';
 // import { ConfigModule } from 'nestjs-config';
 // import * as path from 'path';
 import { EasyconfigModule } from 'nestjs-easyconfig';
+import { ConfigService } from './enviroment/config.service';
+import { ConfigModel } from './enviroment/config.model';
 
 @Module({
-  imports: [EasyconfigModule.register({ path: 'src/enviroment/.env' })],
+  imports: [ConfigModel],
   controllers: [BooksController],
-  providers: [BooksService, HttpExceptionFilter
+  providers: [BooksService, HttpExceptionFilter,  {
+    provide: ConfigService,
+    useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
+  },
 ],
+exports: [ConfigService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

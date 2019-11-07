@@ -1,9 +1,15 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { BOOKS } from '../mocks/books.mock';
+import { ConfigService } from 'src/enviroment/config.service';
 
 @Injectable()
 export class BooksService {
     books = BOOKS;
+    private isAuthEnabled: boolean;
+  constructor(config: ConfigService) {
+    // Please take note that this check is case sensitive!
+    this.isAuthEnabled = config.get('IS_AUTH_ENABLED') === 'true';
+  }
 
     getBooks(): Promise<any> {
         return new Promise(resolve => {
