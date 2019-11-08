@@ -5,7 +5,7 @@ import { ConfigService } from 'src/enviroment/config.service';
 @Controller('books')
 export class BooksController {
     constructor(
-        private booksService: BooksService,
+        private readonly booksService: BooksService,
         private configService: ConfigService
     ) { }
 
@@ -19,6 +19,20 @@ export class BooksController {
     async getBook(@Param('bookID') bookID) {
         const book = await this.booksService.getBook(bookID);
         return book;
+    }
+
+    @Post()
+    addBook(
+        @Body('title') bookTitle: string,
+        @Body('author') bookAuthor: string,
+        @Body('price') bookPrice: number
+    ): any {
+        const generatedId = this.booksService.insertBook(
+            bookTitle,
+            bookAuthor,
+            bookPrice
+        );
+        return { id: generatedId };
     }
 
     @Delete()

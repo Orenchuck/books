@@ -1,14 +1,36 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { BOOKS } from '../mocks/books.mock';
 import { ConfigService } from 'src/enviroment/config.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Book } from 'src/models/book.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class BooksService {
-    books = BOOKS;
+    // books = BOOKS;
     private isAuthEnabled: boolean;
-    constructor(config: ConfigService) {
+    private books: Book[] = [];
+    constructor(
+        config: ConfigService,
+        @InjectModel('Book') private readonly bookModel: Model<Book>
+        ) {
         this.isAuthEnabled = config.get('IS_AUTH_ENABLED') === 'true';
     }
+
+    async insertBook (
+        title: string,
+        author?: string,
+        price?: number,
+        ) {
+            const newBook = new this.bookModel ({
+                title,
+                author,
+                price,
+            });
+            const result = await newBook.save();
+            console.log(result);
+            return 'id';
+        }
 
     getBooks(): Promise<any> {
         return new Promise(resolve => {

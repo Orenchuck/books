@@ -3,14 +3,17 @@ import { AppModule } from 'src/app.module';
 import { HttpExceptionFilter } from 'src/common/exception.filter';
 import { LoggerMiddleware } from 'src/common/middleware.request';
 import * as fs from 'fs';
-import * as dotenv from 'dotenv';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import * as express from 'express';
 
 async function bootstrap() {
   const http = require('http');
   const https = require('https');
-  dotenv.config();
+  // const dotenv = require('dotenv');
+
+  // if (process.env.NODE_ENV !== 'production') {
+  //   dotenv.load();
+  // }
 
   const httpsOptions = {
     key: fs.readFileSync('src/secrets/key.pem'),
@@ -28,12 +31,11 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(LoggerMiddleware);
 
-  http.createServer((req, res) => {
+  await http.createServer((req, res) => {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.redirect('https://' + req.headers.host + req.url);
     res.end();
   }).listen(80);
-  https.createServer(httpsOptions, server).listen(443);
+  await https.createServer(httpsOptions, server).listen(443);
   
 }
 bootstrap();
