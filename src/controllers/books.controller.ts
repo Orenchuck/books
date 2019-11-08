@@ -16,18 +16,18 @@ export class BooksController {
     }
 
     @Get(':bookID')
-    async getBook(@Param('bookID') bookID) {
+    async getBook(@Param('bookID') bookID: string) {
         const book = await this.booksService.getBook(bookID);
         return book;
     }
 
     @Post()
-    addBook(
+    async addBook(
         @Body('title') bookTitle: string,
         @Body('author') bookAuthor: string,
         @Body('price') bookPrice: number
-    ): any {
-        const generatedId = this.booksService.insertBook(
+    ) {
+        const generatedId = await this.booksService.insertBook(
             bookTitle,
             bookAuthor,
             bookPrice
@@ -35,9 +35,9 @@ export class BooksController {
         return { id: generatedId };
     }
 
-    @Delete()
-    async deleteBook(@Query() query) {
-        const books = await this.booksService.deleteBook(query.bookID);
+    @Delete(':bookID')
+    async deleteBook(@Param('bookID') bookID: string) {
+        const books = await this.booksService.deleteBook(bookID);
         return books;
     }
 }

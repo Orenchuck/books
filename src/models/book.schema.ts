@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
 
 export const BookSchema = new mongoose.Schema({
   id: Number,
@@ -7,9 +8,9 @@ export const BookSchema = new mongoose.Schema({
   price: Number,
 });
 
-export interface Book {
+export interface Book extends mongoose.Document {
 
-    id: number;
+    id: string;
     title: string;
     author?: string;
     price?: number;

@@ -1,5 +1,4 @@
 import { Injectable, HttpException } from '@nestjs/common';
-import { BOOKS } from '../mocks/books.mock';
 import { ConfigService } from 'src/enviroment/config.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Book } from 'src/models/book.schema';
@@ -7,7 +6,6 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class BooksService {
-    // books = BOOKS;
     private isAuthEnabled: boolean;
     private books: Book[] = [];
     constructor(
@@ -28,40 +26,58 @@ export class BooksService {
                 price,
             });
             const result = await newBook.save();
-            console.log(result);
-            return 'id';
+            return result.id as string;
         }
 
-    getBooks(): Promise<any> {
-        return new Promise(resolve => {
-            resolve(this.books);
-        });
+    // getBooks(): Promise<any> {
+    //     return new Promise(resolve => {
+    //         resolve(this.books);
+    //     });
+    // }
+
+    async getBooks() {
+        const books = await this.bookModel.find().exec();
+        return books.map(book => ({
+          id: book.id,
+          title: book.title,
+          author: book.author,
+          price: book.price,
+        }));
+      }
+
+    async getBook(bookID: string) {
+        const book = await this.findBook(bookID);
+        return {
+            bookID: book.id,
+            title: book.title,
+            author: book.author,
+            price: book.price,
+        };
     }
-    getBook(bookID): Promise<any> {
-        let id = Number(bookID);
-        return new Promise(resolve => {
-            const book = this.books.find(book => book.id === id);
-            if (!book) {
-                throw new HttpException('Book does not exist!', 404);
-            }
-            resolve(book);
-        });
+
+    private async findBook(id: string): Promise<Book> {
+        let book;
+        try {
+          book = await this.bookModel.findById(id).exec();
+        } catch (error) {
+            throw new HttpException('Book does not exist!', 404);
+        }
+        if (!book) {
+            throw new HttpException('Book does not exist!', 404);
+        }
+        return book;
+      }
+    
+    // addBook(book): Promise<any> {
+    //     return new Promise(resolve => {
+    //         this.books.push(book);
+    //         resolve(this.books);
+    //     });
+    // }
+    async deleteBook(bookID: string) {
+        const result = await this.bookModel.deleteOne({_id: bookID}).exec();
+    if (result.n === 0) {
+        throw new HttpException('Book does not exist!', 404);
     }
-    addBook(book): Promise<any> {
-        return new Promise(resolve => {
-            this.books.push(book);
-            resolve(this.books);
-        });
-    }
-    deleteBook(bookID): Promise<any> {
-        let id = Number(bookID);
-        return new Promise(resolve => {
-            let index = this.books.findIndex(book => book.id === id);
-            if (index === -1) {
-                throw new HttpException('Book does not exist!', 404);
-            }
-            this.books.splice(1, index);
-            resolve(this.books);
-        });
-    }
+}
 }
