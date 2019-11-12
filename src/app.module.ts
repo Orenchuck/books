@@ -1,6 +1,7 @@
 import { Module,  NestModule, MiddlewareConsumer } from '@nestjs/common';
 import * as fs from 'fs';
 import { BooksController } from 'src/controllers/books.controller';
+import { AppController } from 'src/controllers/app.controller';
 import { BooksService } from 'src/services/books.service';
 import { HttpExceptionFilter } from 'src/common/exception.filter';
 import { LoggerMiddleware } from 'src/common/middleware.request';
@@ -33,7 +34,7 @@ import { UserSchema } from 'src/models/user.schema';
       }
     }),
   ],
-  controllers: [BooksController, AuthController, UsersController],
+  controllers: [BooksController, AuthController, UsersController, AppController],
   providers: [
     BooksService, 
     HttpExceptionFilter,  

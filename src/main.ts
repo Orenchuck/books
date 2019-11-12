@@ -2,8 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'src/app.module';
 import { HttpExceptionFilter } from 'src/common/exception.filter';
 import { LoggerMiddleware } from 'src/common/middleware.request';
+import { join } from 'path';
 import * as fs from 'fs';
-import { ExpressAdapter } from '@nestjs/platform-express';
+import { ExpressAdapter, NestExpressApplication  } from '@nestjs/platform-express';
 import * as express from 'express';
 
 async function bootstrap() {
@@ -22,7 +23,7 @@ async function bootstrap() {
 
   const server = express();
 
-  const app = await NestFactory.create(
+  const app = await NestFactory.create<NestExpressApplication>(
     AppModule, 
     new ExpressAdapter(server)
   );
@@ -30,6 +31,9 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(LoggerMiddleware);
+  app.useStaticAssets(join(__dirname, '.', 'public'));
+  app.setBaseViewsDir(join(__dirname, '.', 'views'));
+  app.setViewEngine('hbs');
 
   await http.createServer((req, res) => {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
