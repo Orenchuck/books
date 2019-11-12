@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/services/user.services';
 import { AuthGuard } from '@nestjs/passport';
+import * as bodyParser from 'body-parser';
 
 @Controller('users')
 export class UsersController {
@@ -16,7 +17,7 @@ export class UsersController {
        const newUser = await this.usersService.create(
             userEmail,
             userPassword
-        );
+        );        
         return newUser;
     }
 

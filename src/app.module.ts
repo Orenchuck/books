@@ -18,6 +18,7 @@ import { PassportModule } from '@nestjs/passport';
 import { UsersController } from 'src/controllers/user.controllers';
 import { UsersService } from 'src/services/user.services';
 import { UserSchema } from 'src/models/user.schema';
+import { AppService } from 'src/services/app.service';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { UserSchema } from 'src/models/user.schema';
     AuthService, 
     JwtStrategy,
     UsersService,
+    AppService,
   ],
 exports: [ConfigService, UsersService],
 })
