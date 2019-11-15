@@ -1,31 +1,20 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from 'src/services/user.services';
 import { AuthGuard } from '@nestjs/passport';
-import * as bodyParser from 'body-parser';
+import { UserDocument } from 'src/documents/user.document';
 
 @Controller('users')
 export class UsersController {
-
     constructor(private usersService: UsersService) {
     }
 
-    @Post() 
+    @Post()
     async create(
-        @Body('email') userEmail: string,
-        @Body('password') userPassword: string
+        @Body() user: UserDocument,
     ) {
-       const newUser = await this.usersService.create(
-            userEmail,
-            userPassword
-        );        
-        return newUser;
+      const newUser = await this.usersService.create(
+       user,
+      );
+      return newUser;
     }
-
-    @Get('test')
-    @UseGuards(AuthGuard())
-    testAuthRoute(){
-        return {
-            message: 'You did it!'
-        }
-    }
-}
+  }

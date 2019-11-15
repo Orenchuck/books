@@ -1,5 +1,5 @@
-import { ConfigModel } from "./config.model";
-import{ Injectable } from '@nestjs/common';
+import { ConfigModel } from 'src/enviroment/config.model';
+import { Injectable } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 

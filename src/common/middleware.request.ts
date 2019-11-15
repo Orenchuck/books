@@ -1,28 +1,21 @@
-// import { Injectable, NestMiddleware } from '@nestjs/common';
-// import * as middleware from 'middleware';
+// import { Middleware, NestMiddleware, ExpressMiddleware } from '@nestjs/common';
 
-// @Injectable()
-// export class MiddlewareMiddleware implements NestMiddleware {
-
-//   // DELETE THESE LINES IF MIDDLEWARE DOES NOT TAKE OPTIONS
-//   public static configure(opts: middleware.Options) {
-//       this.options = opts;
-//   }
-
-//   private static options: middleware.Options;
-
-//   public use(req: any, res: any, next: any) {
-//       if (MiddlewareMiddleware.options) {
-//           middleware(MiddlewareMiddleware.options)(req, res, next);
-//       } else {
-//           middleware()(req, res, next);
-//       }
-//   }
+// @Middleware()
+// export class CorsMiddleware implements NestMiddleware {
+//     resolve(): ExpressMiddleware {
+//         return (req, res, next) => {
+//             // list os domains
+//             res.header('Access-Control-Allow-Origin', '*');
+//             // list of methods (e.g GET,HEAD,PUT,PATCH,POST,DELETE)
+//             res.header('Access-Control-Allow-Methods', '*');
+//             next();
+//         };
+//     }
 // }
 
 export function LoggerMiddleware({ path, baseUrl, originalUrl, headers }, res, next) {
   const logContent: string = JSON.stringify({ path, baseUrl, originalUrl, headers });
 
-  console.log(logContent);
+console.log(logContent);
   next();
 }

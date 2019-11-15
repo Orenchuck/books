@@ -6,7 +6,7 @@ import { ConfigService } from 'src/enviroment/config.service';
 export class BooksController {
     constructor(
         private readonly booksService: BooksService,
-        private configService: ConfigService
+        private configService: ConfigService,
     ) { }
 
     @Get()
@@ -25,12 +25,12 @@ export class BooksController {
     async addBook(
         @Body('title') bookTitle: string,
         @Body('author') bookAuthor: string,
-        @Body('price') bookPrice: number
+        @Body('price') bookPrice: number,
     ) {
         const generatedId = await this.booksService.insertBook(
             bookTitle,
             bookAuthor,
-            bookPrice
+            bookPrice,
         );
         return { id: generatedId };
     }

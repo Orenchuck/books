@@ -1,25 +1,25 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
+import { UserDocument } from 'src/documents/user.document';
 
 export interface User {
-    email: string
+  email: string;
+  password: string;
 }
 
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
+  private saltRounds = 10;
 
-  async create(
-    email: string,
-    password: string
-    ) {
+  constructor(@InjectModel('User') private userModel: Model<User>) { }
 
-    let createdUser = new this.userModel(
-      email,
-      password
-      );
+  async create(user: UserDocument) {
+    const createdUser = new this.userModel(user);
+
+    createdUser.password = await this.getHash(createdUser.password);
     return await createdUser.save();
 
   }
@@ -28,8 +28,19 @@ export class UsersService {
     email: string,
   ): Model<User> {
 
-    return await this.userModel.findOne({email: email});
+    return await this.userModel.findOne({ email });
 
+  }
+
+async getHash(password: string): Promise<string> {
+  return bcrypt.hash(password, this.saltRounds);
+}
+
+  async compareHash(
+    password: string | undefined,
+    hash: string | undefined,
+  ): Promise<boolean> {
+    return bcrypt.compare(password, hash);
   }
 
 }
