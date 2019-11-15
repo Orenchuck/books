@@ -1,4 +1,4 @@
-import { Module,  NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import * as fs from 'fs';
 import { BooksController } from 'src/controllers/books.controller';
 import { BooksService } from 'src/services/books.service';
@@ -17,18 +17,22 @@ import { PassportModule } from '@nestjs/passport';
 import { UsersController } from 'src/controllers/user.controllers';
 import { UsersService } from 'src/services/user.services';
 import { UserSchema } from 'src/models/schemas/user.schema';
+import { ConfigModule } from 'nestjs-dotenv';
 // import { LocalStrategy } from 'src/common/local.strategy';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Module({
   imports: [
-    ConfigModel,
+    ConfigModule.forRoot(),
     PassportModule,
     MongooseModule.forFeature([
-      {name: 'Book', schema: BookSchema},
-      {name: 'User', schema: UserSchema},
+      { name: 'Book', schema: BookSchema },
+      { name: 'User', schema: UserSchema },
     ]),
-    MongooseModule.forRoot('mongodb+srv://root:root@cluster0-a47lw.mongodb.net/test?retryWrites=true&w=majority'),
-    PassportModule.register({session: false }),
+    MongooseModule.forRoot(process.env.MONGO_URI),
+    PassportModule.register({ session: false }),
     JwtModule.register({
       secretOrPrivateKey: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
       signOptions: {
@@ -49,7 +53,9 @@ import { UserSchema } from 'src/models/schemas/user.schema';
     // LocalStrategy,
     UsersService,
   ],
-exports: [ConfigService, UsersService],
+  exports: [
+    ConfigService,
+    UsersService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

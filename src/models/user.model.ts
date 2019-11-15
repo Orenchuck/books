@@ -1,4 +1,9 @@
 import * as mongoose from 'mongoose';
 import { UserSchema } from 'src/models/schemas/user.schema';
 
-export const user = mongoose.model('Author', UserSchema);
+export interface User {
+  email: string;
+  password: string;
+}
+
+const user = mongoose.model('User', UserSchema);

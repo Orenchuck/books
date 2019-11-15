@@ -32,6 +32,7 @@
     "dotenv-parse-variables": "^0.2.3",
     "hbs": "^4.0.6",
     "mongoose": "^5.7.7",
+    "nestjs-dotenv": "^1.0.1",
     "nestjs-easyconfig": "^1.5.1",
     "nodemon": "^1.19.4",
     "passport": "^0.4.0",

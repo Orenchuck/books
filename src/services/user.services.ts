@@ -3,11 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { UserDocument } from 'src/documents/user.document';
-
-export interface User {
-  email: string;
-  password: string;
-}
+import { User } from 'src/models/user.model';
 
 @Injectable()
 export class UsersService {
