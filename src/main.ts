@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express';
 import * as express from 'express';
 import * as dotenv from 'dotenv';
+// import * as mongoose from 'mongoose';
 
 async function bootstrap() {
   const http = require('http');
@@ -30,6 +31,8 @@ async function bootstrap() {
   // var db = mongoose.connection;
 
   // db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+  // mongoose.Promise = global.Promise;
+  // mongoose.connect(process.env.MONGO_URI);
 
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
@@ -38,11 +41,12 @@ async function bootstrap() {
   await app.init();
   dotenv.config();
 
-  // console.log(process.env);
-  
-
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(LoggerMiddleware);
+
+  // if (process.env.NODE_ENV === 'production') {
+
+  // }
 
   await https.createServer(httpsOptions, server).listen(process.env.PORT);
   await http.createServer((req, res) => {

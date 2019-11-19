@@ -21,13 +21,18 @@ import { ConfigModule } from 'nestjs-dotenv';
 // import { LocalStrategy } from 'src/common/local.strategy';
 import * as dotenv from 'dotenv';
 
+// import { book } from 'src/models/book.model';
+// import { author } from 'src/models/author.model';
+// import { user } from 'src/models/user.model';
+
 dotenv.config();
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    // ConfigModule.forRoot(),
     PassportModule,
     MongooseModule.forFeature([
+      // book, author, user,
       { name: 'Book', schema: BookSchema },
       { name: 'User', schema: UserSchema },
     ]),
@@ -44,17 +49,17 @@ dotenv.config();
   providers: [
     BooksService,
     HttpExceptionFilter,
-    {
-      provide: ConfigService,
-      useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
-    },
+    // {
+    //   provide: ConfigService,
+    //   useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
+    // },
     AuthService,
     JwtStrategy,
     // LocalStrategy,
     UsersService,
   ],
   exports: [
-    ConfigService,
+    // ConfigService,
     UsersService],
 })
 export class AppModule implements NestModule {

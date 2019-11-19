@@ -8,9 +8,9 @@ export interface UserDocument extends Document {
 
 }
 
-export const AuthorSchema = new Schema({
-    _id: ObjectId,
-    firstName: String,
-    lastName: String,
-    biography: String,
-});
+// export const AuthorSchema = new Schema({
+//     _id: ObjectId,
+//     firstName: String,
+//     lastName: String,
+//     biography: String,
+// });

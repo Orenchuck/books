@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Response, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Response, HttpStatus, UseGuards, UsePipes } from '@nestjs/common';
 import { AuthService } from 'src/services/auth.service';
 import { UserDocument } from 'src/documents/user.document';
 import { UsersService } from 'src/services/user.services';
+import { AdminGuard } from 'src/common/guards/admin.guards';
 
 @Controller('auth')
 export class AuthController {
@@ -14,12 +15,12 @@ export class AuthController {
     }
 
     @Post()
+    // @UseGuards(new AdminGuard())
+    // @UsePipes(new ValidationPipe())
     async login(
         @Response() res: any,
         @Body() user: UserDocument,
     ) {
-        console.log('auth controller ok');
-
         if (!(user && user.email && user.password)) {
             return res.status(HttpStatus.FORBIDDEN).json({
                 message: 'Email and password are required!',

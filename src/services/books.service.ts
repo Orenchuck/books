@@ -6,13 +6,13 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class BooksService {
-    private isAuthEnabled: boolean;
+    // private isAuthEnabled: boolean;
     private books: Book[] = [];
     constructor(
-        config: ConfigService,
+        // config: ConfigService,
         @InjectModel('Book') private readonly bookModel: Model<Book>,
     ) {
-        this.isAuthEnabled = config.get('IS_AUTH_ENABLED') === 'true';
+        // this.isAuthEnabled = config.get('IS_AUTH_ENABLED') === 'true';
     }
 
     async insertBook(

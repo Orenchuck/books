@@ -1,12 +1,12 @@
 import { Controller, Get, Param, Post, Body, Query, Delete, UseFilters, HttpException, HttpStatus } from '@nestjs/common';
 import { BooksService } from 'src/services/books.service';
-import { ConfigService } from 'src/enviroment/config.service';
+// import { ConfigService } from 'src/enviroment/config.service';
 
 @Controller('books')
 export class BooksController {
     constructor(
         private readonly booksService: BooksService,
-        private configService: ConfigService,
+        // private configService: ConfigService,
     ) { }
 
     @Get()
