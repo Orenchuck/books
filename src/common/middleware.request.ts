@@ -25,7 +25,10 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
   use(req: any, res: Response, next: Function) {
+    // console.log('req: '+JSON.parse(req) + 'res: ' + JSON.stringify(res) );
     try {
+      // const logContent: string = JSON.stringify({ path: String, baseUrl: String, originalUrl: String, Headers });
+      // console.log(logContent);
       const offuscateRequest = JSON.parse(JSON.stringify(req.body));
       if (offuscateRequest && offuscateRequest.password) {
         offuscateRequest.password = '*******';
@@ -38,6 +41,8 @@ export class LoggerMiddleware implements NestMiddleware {
       }
       if (offuscateRequest !== {}) {
         console.log(`${new Date().toString()} - [Request] ${req.baseUrl} - ${JSON.stringify(offuscateRequest)}`);
+
+
       }
     } catch (error) { }
     next();

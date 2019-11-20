@@ -9,9 +9,10 @@ export class BooksService {
     // private isAuthEnabled: boolean;
     private books: Book[] = [];
     constructor(
-        // config: ConfigService,
+        config: ConfigService,
         @InjectModel('Book') private readonly bookModel: Model<Book>,
     ) {
+        if (config.isApiAuthEnabled) {}
         // this.isAuthEnabled = config.get('IS_AUTH_ENABLED') === 'true';
     }
 

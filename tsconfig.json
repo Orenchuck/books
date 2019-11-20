@@ -9,7 +9,10 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": ".",
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "@environment": ["./src/environment/environment.ts"]
+  },
   },
   "exclude": ["node_modules", "dist"]
 }

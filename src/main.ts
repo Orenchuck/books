@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express';
 import * as express from 'express';
 import * as dotenv from 'dotenv';
-// import * as mongoose from 'mongoose';
+import * as mongoose from 'mongoose';
 
 async function bootstrap() {
   const http = require('http');
@@ -47,7 +47,7 @@ async function bootstrap() {
   // if (process.env.NODE_ENV === 'production') {
 
   // }
-
+  mongoose.set('useFindAndModify', false);
   await https.createServer(httpsOptions, server).listen(process.env.PORT);
   await http.createServer((req, res) => {
     // tslint:disable-next-line: no-console

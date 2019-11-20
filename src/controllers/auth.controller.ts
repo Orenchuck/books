@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Response, HttpStatus, UseGuards, UsePipes } from '@nestjs/common';
+import { Controller, Post, Body, Response, HttpStatus, UseGuards, UsePipes, HttpCode } from '@nestjs/common';
 import { AuthService } from 'src/services/auth.service';
-import { UserDocument } from 'src/documents/user.document';
 import { UsersService } from 'src/services/user.services';
 import { AdminGuard } from 'src/common/guards/admin.guards';
+import { User } from 'src/models/user.model';
 
 @Controller('auth')
 export class AuthController {
@@ -15,11 +15,12 @@ export class AuthController {
     }
 
     @Post()
+    @HttpCode(HttpStatus.OK)
     // @UseGuards(new AdminGuard())
     // @UsePipes(new ValidationPipe())
     async login(
         @Response() res: any,
-        @Body() user: UserDocument,
+        @Body() user: User,
     ) {
         if (!(user && user.email && user.password)) {
             return res.status(HttpStatus.FORBIDDEN).json({
@@ -29,11 +30,10 @@ export class AuthController {
 
         const userOne = await this.userService.findOneByEmail(user.email);
 
-        // const logUser = await this.authService.validateUserByPassword(user);
         if (userOne) {
             if (await this.userService.compareHash(user.password, userOne.password)) {
                 return res.status(HttpStatus.OK).json(
-                    await this.authService.createJwtPayload(user.email));
+                    await this.authService.createJwtPayload(user));
             }
         }
 
@@ -44,24 +44,32 @@ export class AuthController {
     @Post('register')
     async registerUser(
         @Response() res: any,
-        @Body() body: UserDocument,
-        ) {
-        if (!(body && body.email && body.password)) {
+        @Body() newUser: User,
+    ) {
+        if (!(newUser && newUser.email && newUser.password)) {
             return res.status(HttpStatus.FORBIDDEN).json({
                 message: 'Username and password are required!',
-             });
+            });
         }
 
-        const user = await this.userService.findOneByEmail(body.email);
+        const user = await this.userService.findOneByEmail(newUser.email);
 
         if (user) {
-            return res.status(HttpStatus.FORBIDDEN).json({ message: 'Email exists' });
+           return res.status(HttpStatus.FORBIDDEN).json({ message: 'Email exists' });
         } else {
-            const userSave = await this.userService.create(body);
+            const userSave = await this.userService.create(newUser);
             if (userSave) {
-                body.password = undefined;
+                newUser.password = undefined;
             }
-            return res.status(HttpStatus.OK).json(userSave);
+            // await this.authService.createEmailToken(newUser.email);
+            // await this.authService.saveUserConsent(newUser.email);
+            const sent = await this.authService.sendEmail(newUser.email);
+            if (sent) {
+                return console.log("REGISTRATION.USER_REGISTERED_SUCCESSFULLY");
+            } else {
+                return console.log("REGISTRATION.ERROR.MAIL_NOT_SENT");
+            }
+        //    return res.status(HttpStatus.OK).json(userSave);
         }
     }
 }

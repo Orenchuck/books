@@ -18,23 +18,24 @@ import { UsersController } from 'src/controllers/user.controllers';
 import { UsersService } from 'src/services/user.services';
 import { UserSchema } from 'src/models/schemas/user.schema';
 import { ConfigModule } from 'nestjs-dotenv';
-// import { LocalStrategy } from 'src/common/local.strategy';
 import * as dotenv from 'dotenv';
-
-// import { book } from 'src/models/book.model';
-// import { author } from 'src/models/author.model';
-// import { user } from 'src/models/user.model';
+import { EmailVerificationSchema } from 'src/models/schemas/emailVerification.schema';
+import { ConsentRegistrySchema } from 'src/models/schemas/consent-registry.schema';
+import { DevelopmentConfigService } from 'src/enviroment/env.dev';
+import { ProductionConfigService } from 'src/enviroment/env.prod';
 
 dotenv.config();
 
 @Module({
   imports: [
-    // ConfigModule.forRoot(),
+    ConfigModule.forRoot(),
     PassportModule,
     MongooseModule.forFeature([
       // book, author, user,
       { name: 'Book', schema: BookSchema },
       { name: 'User', schema: UserSchema },
+      { name: 'EmailVerification', schema: EmailVerificationSchema },
+      { name: 'ConsentRegistry', schema: ConsentRegistrySchema },
     ]),
     MongooseModule.forRoot(process.env.MONGO_URI),
     PassportModule.register({ session: false }),
@@ -49,17 +50,18 @@ dotenv.config();
   providers: [
     BooksService,
     HttpExceptionFilter,
-    // {
-    //   provide: ConfigService,
-    //   useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
-    // },
+    {
+      provide: ConfigService,
+      // useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
+      useClass: process.env.NODE_ENV === 'development' ? DevelopmentConfigService  : ProductionConfigService,
+    },
     AuthService,
     JwtStrategy,
     // LocalStrategy,
     UsersService,
   ],
   exports: [
-    // ConfigService,
+    ConfigService,
     UsersService],
 })
 export class AppModule implements NestModule {
