@@ -72,15 +72,26 @@ export class AuthService {
   async sendEmail(email: string): Promise<boolean> {
     // const model = await this.emailVerificationModel.findOne({ email });
     let testAccount = await nodemailer.createTestAccount();
+    console.log(testAccount);
     // if (model && model.emailToken) {
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   // host: 'smtp.ethereal.email',
+    //   // port: 587,
+    //   // secure: false,
+    //   auth: {
+    //     // user: testAccount.user,
+    //     // pass: testAccount.pass,
+    //     user: 'golub.ptica@gmail.com',
+    //     pass: 'Helleno4ka2',
+    //   },
+    // });
+
     const transporter = nodemailer.createTransport({
-      // host: 'smtp.gmail.com',
-      host: 'smtp.ethereal.email',
-      port: 587,
-      secure: false,
+      service: 'gmail',
       auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
+        user: 'asptestapplication@gmail.com',
+        pass: 'Ghjcnj gfhjkm1',
       },
     });
 
@@ -97,12 +108,16 @@ export class AuthService {
 
     await transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        return console.log(error);
+        console.log('error ' + error);
+
+        return false;
       }
       console.log('Message sent: %s', info.messageId);
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+      return true;
     });
 
-    return;
+    return true;
   }
 }

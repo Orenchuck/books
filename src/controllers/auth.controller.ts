@@ -55,7 +55,7 @@ export class AuthController {
         const user = await this.userService.findOneByEmail(newUser.email);
 
         if (user) {
-           return res.status(HttpStatus.FORBIDDEN).json({ message: 'Email exists' });
+            return res.status(HttpStatus.FORBIDDEN).json({ message: 'Email exists' });
         } else {
             const userSave = await this.userService.create(newUser);
             if (userSave) {
@@ -65,11 +65,13 @@ export class AuthController {
             // await this.authService.saveUserConsent(newUser.email);
             const sent = await this.authService.sendEmail(newUser.email);
             if (sent) {
-                return console.log("REGISTRATION.USER_REGISTERED_SUCCESSFULLY");
+                console.log("REGISTRATION.USER_REGISTERED_SUCCESSFULLY");
             } else {
-                return console.log("REGISTRATION.ERROR.MAIL_NOT_SENT");
+                console.log("REGISTRATION.ERROR.MAIL_NOT_SENT");
             }
-        //    return res.status(HttpStatus.OK).json(userSave);
+
+            // return sent;
+            return res.status(HttpStatus.OK).json(userSave);
         }
     }
 }
