@@ -24,7 +24,10 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Model<User> {
-    return await this.userModel.findOne({ email });
+    const res = await this.userModel.findOne({ email });
+    console.log(res);
+    
+    return res;
   }
 
   async compareHash(password: string | undefined, hash: string | undefined): Promise<boolean> {
@@ -47,12 +50,19 @@ export class UsersService {
   try {
       user = await this.userModel.findById(id).exec();
   } catch (error) {
-      throw new HttpException('Book does not exist!', 404);
+      throw new HttpException('User does not exist!', 404);
   }
   if (!user) {
-      throw new HttpException('Book does not exist!', 404);
+      throw new HttpException('User does not exist!', 404);
   }
   return user;
 }
 
+async deleteUser(id: string) {
+  const result = await this.userModel.deleteOne({ _id: id }).exec();
+  if (result.n === 0) {
+      throw new HttpException('User does not exist!', 404);
+  }
+  return 'Successfull del';
+}
 }

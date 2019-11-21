@@ -2,12 +2,8 @@ import { Injectable, UnauthorizedException, HttpException, HttpStatus, HttpServi
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/services/user.services';
 import { JwtPayload } from 'src/models/jwt-payload.model';
-// import { UserDocument } from 'src/documents/user.document';
 import { InjectModel } from '@nestjs/mongoose';
-// import { EmailVerification } from 'src/documents/email-verification.interface';
 import { Model } from 'mongoose';
-// import { ConsentRegistry } from 'src/documents/consent-registry.interface';
-// import { default as config } from 'src/enviroment/config';
 import { User } from 'src/models/user.model';
 
 import nodemailer = require('nodemailer');
@@ -18,8 +14,6 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    // @InjectModel('EmailVerification') private readonly emailVerificationModel: Model<EmailVerification>,
-    // @InjectModel('ConsentRegistry') private readonly consentRegistryModel: Model<ConsentRegistry>,
     @InjectModel('User') private userModel: Model<User>,
   ) {
   }
@@ -41,9 +35,6 @@ export class AuthService {
       role: user.role,
     };
     const accessJwt = this.jwtService.sign(data);
-    // const refreshJwt = this.jwtService.sign(data);
-    // tslint:disable-next-line: no-console
-    console.log(accessJwt);
     return {
       expiresIn: 3600,
       token: accessJwt,
@@ -84,16 +75,13 @@ export class AuthService {
 
   async verifyEmail(cypher: string): Promise<boolean> {
     const emailVerif = await this.userModel.findOne({ cypher });
-    
+
     if (emailVerif && emailVerif.email) {
       const userFromDb = await this.userModel.findOne({ email: emailVerif.email });
       if (userFromDb) {
         userFromDb.active = true;
         userFromDb.cypher = undefined;
         const savedUser = await userFromDb.save();
-        console.log('savedUser ' + savedUser);
-        
-        // await emailVerif.remove();
         return savedUser;
       }
     } else {
