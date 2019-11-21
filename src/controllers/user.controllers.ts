@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Param } from '@nestjs/common';
 import { UsersService } from 'src/services/user.services';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDocument } from 'src/documents/user.document';
@@ -20,10 +20,22 @@ export class UsersController {
     }
 
     @Get()
-    @UseGuards(RolesGuard)
-    testAuthRoute() {
-      return {
-          message: 'You did it!',
-      };
-  }
+    async getAllUsers() {
+        const users = await this.usersService.getAllUsers();
+        return users;
+    }
+
+    @Get(':bookID')
+    async getUserbyID(@Param('bookID') id: string) {
+        const book = await this.usersService.getUserbyID(id);
+        return book;
+    }
+
+  //   @Get()
+  //   @UseGuards(RolesGuard)
+  //   testAuthRoute() {
+  //     return {
+  //         message: 'You did it!',
+  //     };
+  // }
   }

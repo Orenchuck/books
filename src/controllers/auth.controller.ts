@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Response, HttpStatus, UseGuards, HttpException, HttpCode, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Response, HttpStatus, HttpException, HttpCode, Param } from '@nestjs/common';
 import { AuthService } from 'src/services/auth.service';
 import { UsersService } from 'src/services/user.services';
-import { AdminGuard } from 'src/common/guards/admin.guards';
 import { User } from 'src/models/user.model';
 
 @Controller('auth')
@@ -16,8 +15,6 @@ export class AuthController {
 
     @Post()
     @HttpCode(HttpStatus.OK)
-    // @UseGuards(new AdminGuard())
-    // @UsePipes(new ValidationPipe())
     async login(
         @Response() res: any,
         @Body() user: User,
@@ -63,9 +60,6 @@ export class AuthController {
             if (userSave) {
                 newUser.password = undefined;
             }
-            // await this.authService.createEmailToken(newUser.email);
-            // await this.authService.saveUserConsent(newUser.email);
-
             const sent = await this.authService.sendEmail(userSave);
             if (sent) {
                 console.log('REGISTRATION.USER_REGISTERED_SUCCESSFULLY');

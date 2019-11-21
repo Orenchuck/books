@@ -6,14 +6,12 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class BooksService {
-    // private isAuthEnabled: boolean;
     private books: Book[] = [];
     constructor(
         config: ConfigService,
         @InjectModel('Book') private readonly bookModel: Model<Book>,
     ) {
         if (config.isApiAuthEnabled) {}
-        // this.isAuthEnabled = config.get('IS_AUTH_ENABLED') === 'true';
     }
 
     async insertBook(
@@ -47,7 +45,7 @@ export class BooksService {
         return test;
     }
 
-    private async findBook(id: string): Promise<Book> {
+    async findBook(id: string): Promise<Book> {
         let book;
         try {
             book = await this.bookModel.findById(id).exec();
