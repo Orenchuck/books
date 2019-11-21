@@ -84,12 +84,16 @@ export class AuthService {
 
   async verifyEmail(cypher: string): Promise<boolean> {
     const emailVerif = await this.userModel.findOne({ cypher });
+    
     if (emailVerif && emailVerif.email) {
       const userFromDb = await this.userModel.findOne({ email: emailVerif.email });
       if (userFromDb) {
-        userFromDb.activate = true;
+        userFromDb.active = true;
+        userFromDb.cypher = undefined;
         const savedUser = await userFromDb.save();
-        await emailVerif.remove();
+        console.log('savedUser ' + savedUser);
+        
+        // await emailVerif.remove();
         return savedUser;
       }
     } else {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Response, HttpStatus, UseGuards, HttpException, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Response, HttpStatus, UseGuards, HttpException, HttpCode, Param } from '@nestjs/common';
 import { AuthService } from 'src/services/auth.service';
 import { UsersService } from 'src/services/user.services';
 import { AdminGuard } from 'src/common/guards/admin.guards';
@@ -36,12 +36,10 @@ export class AuthController {
                     await this.authService.createJwtPayload(user));
             }
         }
-
-        return res.status(HttpStatus.FORBIDDEN).json({ message: 'Email or password wrong!' });
         if (!userOne.active) {
             return res.status(HttpStatus.FORBIDDEN).json({ message: 'Sorry, you have to verify your email' });
         }
-
+        return res.status(HttpStatus.FORBIDDEN).json({ message: 'Email or password wrong!' });
     }
 
     @Post('register')
@@ -79,9 +77,9 @@ export class AuthController {
     }
 
     @Get('verify/:cypher')
-    public async verifyEmail(cypher): Promise<boolean> {
+    public async verifyEmail(@Param() params): Promise<boolean> {
         try {
-            const isEmailVerified = await this.authService.verifyEmail(cypher);
+            const isEmailVerified = await this.authService.verifyEmail(params.cypher);
             console.log('LOGIN.EMAIL_VERIFIED', isEmailVerified);
             return isEmailVerified;
         } catch (error) {
