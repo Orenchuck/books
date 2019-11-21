@@ -13,9 +13,13 @@ export class UsersService {
 
   async create(user: User) {
       const createdUser = new this.userModel(user);
+      const rand = Math.floor(Math.random() * (9000000)) + 1000000;
+      const cypher = 'n' + rand;
 
       createdUser.password = await bcrypt.hash(createdUser.password, this.saltRounds);
       createdUser.role = 'User';
+      createdUser.active = false;
+      createdUser.cypher = cypher;
       return await createdUser.save();
   }
 

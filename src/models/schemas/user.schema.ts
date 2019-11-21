@@ -15,6 +15,13 @@ export const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    active: {
+        type: Boolean,
+        required: true,
+    },
+    cypher: {
+        type: String,
+    },
 });
 
 // UserSchema.pre('save', function(next) {

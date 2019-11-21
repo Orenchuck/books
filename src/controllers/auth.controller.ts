@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Response, HttpStatus, UseGuards, UsePipes, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Response, HttpStatus, UseGuards, HttpException, HttpCode } from '@nestjs/common';
 import { AuthService } from 'src/services/auth.service';
 import { UsersService } from 'src/services/user.services';
 import { AdminGuard } from 'src/common/guards/admin.guards';
@@ -28,7 +28,7 @@ export class AuthController {
             });
         }
 
-        const userOne = await this.userService.findOneByEmail(user.email);
+        const userOne: User = await this.userService.findOneByEmail(user.email);
 
         if (userOne) {
             if (await this.userService.compareHash(user.password, userOne.password)) {
@@ -38,6 +38,9 @@ export class AuthController {
         }
 
         return res.status(HttpStatus.FORBIDDEN).json({ message: 'Email or password wrong!' });
+        if (!userOne.active) {
+            return res.status(HttpStatus.FORBIDDEN).json({ message: 'Sorry, you have to verify your email' });
+        }
 
     }
 
@@ -58,20 +61,31 @@ export class AuthController {
             return res.status(HttpStatus.FORBIDDEN).json({ message: 'Email exists' });
         } else {
             const userSave = await this.userService.create(newUser);
+
             if (userSave) {
                 newUser.password = undefined;
             }
             // await this.authService.createEmailToken(newUser.email);
             // await this.authService.saveUserConsent(newUser.email);
-            const sent = await this.authService.sendEmail(newUser.email);
-            if (sent) {
-                console.log("REGISTRATION.USER_REGISTERED_SUCCESSFULLY");
-            } else {
-                console.log("REGISTRATION.ERROR.MAIL_NOT_SENT");
-            }
 
-            // return sent;
+            const sent = await this.authService.sendEmail(userSave);
+            if (sent) {
+                console.log('REGISTRATION.USER_REGISTERED_SUCCESSFULLY');
+            } else {
+                console.log('REGISTRATION.ERROR.MAIL_NOT_SENT');
+            }
             return res.status(HttpStatus.OK).json(userSave);
+        }
+    }
+
+    @Get('verify/:cypher')
+    public async verifyEmail(cypher): Promise<boolean> {
+        try {
+            const isEmailVerified = await this.authService.verifyEmail(cypher);
+            console.log('LOGIN.EMAIL_VERIFIED', isEmailVerified);
+            return isEmailVerified;
+        } catch (error) {
+            throw new HttpException('LOGIN.ERROR', HttpStatus.FORBIDDEN);
         }
     }
 }

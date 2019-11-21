@@ -5,4 +5,6 @@ export interface UserDocument extends mongoose.Document {
     email?: string;
     password?: string;
     role?: string;
+    active?: boolean;
+    cyper?: string;
 }
