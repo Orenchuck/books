@@ -4,7 +4,8 @@ import { UsersService } from 'src/services/user.services';
 import { JwtPayload } from 'src/models/jwt-payload.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from 'src/models/user.model';
+import { UserModel } from 'src/models/user.model';
+import * as bcrypt from 'bcrypt';
 
 import nodemailer = require('nodemailer');
 
@@ -14,7 +15,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    @InjectModel('User') private userModel: Model<User>,
+    @InjectModel('User') private userModel: Model<UserModel>,
   ) {
   }
 
@@ -41,7 +42,7 @@ export class AuthService {
     };
   }
 
-  async sendEmail(user: User): Promise<boolean> {
+  async sendEmail(user: UserModel): Promise<boolean> {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -88,4 +89,16 @@ export class AuthService {
       throw new HttpException('LOGIN.EMAIL_CODE_NOT_VALID', HttpStatus.FORBIDDEN);
     }
   }
+
+//   async setPassword(user: User): Promise<boolean> {
+//     const pass = Math.random().toString(36).slice(2);
+//     user.password = await bcrypt.hash(pass, 10);
+//     return await user.save();
+//   }
+
+//   async sendForgotPassword(user: User): Promise<boolean> {
+   
+
+//     return
+//   }
 }

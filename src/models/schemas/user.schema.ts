@@ -1,28 +1,31 @@
-import * as mongoose from 'mongoose';
-// import * as bcrypt from 'bcrypt';
+// import * as mongoose from 'mongoose';
+// // import * as bcrypt from 'bcrypt';
 
-export const UserSchema = new mongoose.Schema({
-    email: {
-        type: String,
-        unique: true,
-        required: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    role: {
-        type: String,
-        required: true,
-    },
-    active: {
-        type: Boolean,
-        required: true,
-    },
-    cypher: {
-        type: String,
-    },
-});
+// export const UserSchema = new mongoose.Schema({
+//     id: {
+//         type: String,
+//     },
+//     email: {
+//         type: String,
+//         unique: true,
+//         required: true,
+//     },
+//     password: {
+//         type: String,
+//         required: true,
+//     },
+//     role: {
+//         type: String,
+//         required: true,
+//     },
+//     active: {
+//         type: Boolean,
+//         required: true,
+//     },
+//     cypher: {
+//         type: String,
+//     },
+// });
 
 // UserSchema.pre('save', function(next) {
 

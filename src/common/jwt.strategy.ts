@@ -15,12 +15,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
             secretOrKey: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
-        },
-        );
+        });
     }
 
     async validate(payload: JwtPayload) {
-
         const user = await this.authService.validateUserByJwt(payload);
 
         if (!user) {
@@ -28,7 +26,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         }
 
         return user;
-
     }
 
 }

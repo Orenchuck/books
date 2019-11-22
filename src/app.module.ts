@@ -16,13 +16,12 @@ import { JwtStrategy } from 'src/common/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { UsersController } from 'src/controllers/user.controllers';
 import { UsersService } from 'src/services/user.services';
-import { UserSchema } from 'src/models/schemas/user.schema';
+import { UserSchema } from 'src/documents/user.document';
 import { ConfigModule } from 'nestjs-dotenv';
 import * as dotenv from 'dotenv';
-import { EmailVerificationSchema } from 'src/models/schemas/emailVerification.schema';
-import { ConsentRegistrySchema } from 'src/models/schemas/consent-registry.schema';
 import { DevelopmentConfigService } from 'src/enviroment/env.dev';
 import { ProductionConfigService } from 'src/enviroment/env.prod';
+import { UserRepository } from './repositories/user.repository';
 
 dotenv.config();
 
@@ -33,9 +32,7 @@ dotenv.config();
     MongooseModule.forFeature([
       // book, author, user,
       { name: 'Book', schema: BookSchema },
-      { name: 'User', schema: UserSchema },
-      { name: 'EmailVerification', schema: EmailVerificationSchema },
-      { name: 'ConsentRegistry', schema: ConsentRegistrySchema },
+      // { name: 'User', schema: UserSchema },
     ]),
     MongooseModule.forRoot(process.env.MONGO_URI),
     PassportModule.register({ session: false }),
@@ -59,6 +56,7 @@ dotenv.config();
     JwtStrategy,
     // LocalStrategy,
     UsersService,
+    UserRepository,
   ],
   exports: [
     ConfigService,

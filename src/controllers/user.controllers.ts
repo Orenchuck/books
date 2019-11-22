@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, UseGuards, Param, Delete } from '@nestjs/c
 import { UsersService } from 'src/services/user.services';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDocument } from 'src/documents/user.document';
+import { UserModel } from 'src/models/user.model';
 import { RolesGuard } from 'src/common/guards/roles.guards';
 
 @Controller('users')
@@ -9,18 +10,18 @@ export class UsersController {
     constructor(private usersService: UsersService) {
     }
 
-    @Post()
-    async create(
-        @Body() user: UserDocument,
-    ) {
-      const newUser = await this.usersService.create(
-       user,
-      );
-      return newUser;
-    }
+    // @Post()
+    // async create(
+    //     @Body() user: UserModel,
+    // ) {
+    //   const newUser = await this.usersService.create(
+    //    user,
+    //   );
+    //   return newUser;
+    // }
 
     @Get()
-    async getAllUsers() {
+    async getAllUsers(): Promise<UserModel[]> {
         const users = await this.usersService.getAllUsers();
         return users;
     }
@@ -31,8 +32,8 @@ export class UsersController {
         return user;
     }
 
-    @Get('/email/:email')
-    async getUserbyEmail(@Param('email') email: string) {
+    @Get('email/:email')
+    async getUserbyEmail(@Param('email') email: string): Promise<UserModel> {
         const user = await this.usersService.findOneByEmail(email);
         return user;
     }

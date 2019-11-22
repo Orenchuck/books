@@ -18,6 +18,7 @@ export class BooksController {
     @Get(':bookID')
     async getBook(@Param('bookID') bookID: string) {
         const book = await this.booksService.findBook(bookID);
+
         return book;
     }
 
@@ -32,12 +33,14 @@ export class BooksController {
             bookAuthor,
             bookPrice,
         );
+
         return { id: generatedId };
     }
 
     @Delete(':bookID')
     async deleteBook(@Param('bookID') bookID: string) {
         const books = await this.booksService.deleteBook(bookID);
+
         return books;
     }
 }
