@@ -20,19 +20,7 @@ async function bootstrap() {
 
   const server = express();
 
-  // const client = await MongoClient.connect(
-  //   'mongodb+srv://root:root@cluster0-a47lw.mongodb.net/test?retryWrites=true&w=majority',
-  // );
-  // const db = client.db('root');
-  // var mongoose = require('mongoose');
-  // var mongoDB = 'mongodb+srv://root:root@cluster0-a47lw.mongodb.net/test?retryWrites=true&w=majority';
-  // mongoose.connect(mongoDB);
-  // mongoose.Promise = global.Promise;
-  // var db = mongoose.connection;
-
-  // db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-  // mongoose.Promise = global.Promise;
-  // mongoose.connect(process.env.MONGO_URI);
+  mongoose.connect('mongodb://127.0.0.1:27017/root', { useNewUrlParser: true, useFindAndModify: false });
 
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
@@ -44,10 +32,6 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(LoggerMiddleware);
 
-  // if (process.env.NODE_ENV === 'production') {
-
-  // }
-  mongoose.set('useFindAndModify', false);
   await https.createServer(httpsOptions, server).listen(process.env.PORT);
   await http.createServer((req, res) => {
     // tslint:disable-next-line: no-console

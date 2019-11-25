@@ -5,4 +5,5 @@ export class UserModel {
   role?: string;
   active?: boolean;
   cypher?: string;
+  isDel?: boolean;
 }

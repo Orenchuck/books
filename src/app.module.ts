@@ -21,7 +21,8 @@ import { ConfigModule } from 'nestjs-dotenv';
 import * as dotenv from 'dotenv';
 import { DevelopmentConfigService } from 'src/enviroment/env.dev';
 import { ProductionConfigService } from 'src/enviroment/env.prod';
-import { UserRepository } from './repositories/user.repository';
+import { UserRepository } from 'src/repositories/user.repository';
+import { AuthRepository } from './repositories/auth.repository';
 
 dotenv.config();
 
@@ -29,13 +30,6 @@ dotenv.config();
   imports: [
     ConfigModule.forRoot(),
     PassportModule,
-    MongooseModule.forFeature([
-      // book, author, user,
-      { name: 'Book', schema: BookSchema },
-      // { name: 'User', schema: UserSchema },
-    ]),
-    MongooseModule.forRoot('mongodb://localhost:27017/root', { useNewUrlParser: true }),
-    // MongooseModule.forRoot(process.env.MONGO_URI),
     PassportModule.register({ session: false }),
     JwtModule.register({
       secretOrPrivateKey: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
@@ -45,26 +39,25 @@ dotenv.config();
     }),
   ],
   controllers: [
-    // BooksController, AuthController, 
+    // BooksController,
+    AuthController,
     UsersController],
   providers: [
-    BooksService,
+    // BooksService,
     HttpExceptionFilter,
     {
       provide: ConfigService,
       // useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
       useClass: process.env.NODE_ENV === 'development' ? DevelopmentConfigService  : ProductionConfigService,
     },
-    // AuthService,
+    AuthService,
     // JwtStrategy,
     // // LocalStrategy,
     UsersService,
     UserRepository,
+    AuthRepository,
   ],
-  exports: [
-    ConfigService,
-    UsersService
-  ],
+  exports: [ConfigService, UsersService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

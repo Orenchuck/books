@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { Model, objectid } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
-
 @Injectable()
 export class UserRepository {
 
@@ -21,7 +20,10 @@ export class UserRepository {
         createdUser.role = 'User';
         createdUser.active = false;
         createdUser.cypher = cypher;
-        return await createdUser.save();
+        createdUser.isDel = false;
+        const newUser = await createdUser.save();
+
+        return newUser;
     }
 
     async findOneByEmail(email: string): Promise<UserDocument> {
@@ -39,9 +41,13 @@ export class UserRepository {
        return user;
     }
 
+    async updateUser(updateUser: UserDocument): Promise<UserDocument> {
+        const updatedUser: UserDocument = await this.userModel.findByIdAndUpdate(updateUser._id, updateUser);
+        return updatedUser;
+    }
+
     async deleteUser(id: objectid) {
         const result = await this.userModel.deleteOne({ _id: id }).exec();
         return result;
     }
-
 }

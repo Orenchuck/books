@@ -14,41 +14,16 @@ export class AuthController {
 
     @Post()
     @HttpCode(HttpStatus.OK)
-    async login(@Response() res: any, @Body() user: UserModel) {
+    async login(@Body() user: UserModel) {
         const loginUser = await this.authService.loginUser(user);
         return loginUser;
     }
 
-    // @Post('register')
-    // async registerUser(
-    //     @Response() res: any,
-    //     @Body() newUser: UserModel,
-    // ) {
-    //     if (!(newUser && newUser.email && newUser.password)) {
-    //         return res.status(HttpStatus.FORBIDDEN).json({
-    //             message: 'Username and password are required!',
-    //         });
-    //     }
-
-    //     const user = await this.userService.findOneByEmail(newUser.email);
-
-    //     if (user) {
-    //         return res.status(HttpStatus.FORBIDDEN).json({ message: 'Email exists' });
-    //     } else {
-    //         const userSave = await this.userService.create(newUser);
-
-    //         if (userSave) {
-    //             newUser.password = undefined;
-    //         }
-    //         const sent = await this.authService.sendEmail(userSave);
-    //         if (sent) {
-    //             console.log('REGISTRATION.USER_REGISTERED_SUCCESSFULLY');
-    //         } else {
-    //             console.log('REGISTRATION.ERROR.MAIL_NOT_SENT');
-    //         }
-    //         return res.status(HttpStatus.OK).json(userSave);
-    //     }
-    // }
+    @Post('register')
+    async registerUser(@Body() newUser: UserModel) {
+        const registerUser = await this.authService.registerUser(newUser);
+        return registerUser;
+    }
 
     @Get('verify/:cypher')
     public async verifyEmail(@Param() params): Promise<boolean> {

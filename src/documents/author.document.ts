@@ -4,13 +4,17 @@ export interface UserDocument extends Document {
     _id?: ObjectId;
     firstName?: string;
     lastName?: string;
-    biography?: string;
+    birth?: Date;
+    death?: Date;
+    isDel?: boolean;
 
 }
 
-// export const AuthorSchema = new Schema({
-//     _id: ObjectId,
-//     firstName: String,
-//     lastName: String,
-//     biography: String,
-// });
+export const AuthorSchema = new Schema({
+    _id: ObjectId,
+    firstName: String,
+    lastName: String,
+    birth: Date,
+    death: Date,
+    isDel: Boolean,
+});

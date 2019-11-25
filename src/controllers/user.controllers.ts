@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Param, Delete, Put } from '@nestjs/common';
 import { UsersService } from 'src/services/user.services';
 import { AuthGuard } from '@nestjs/passport';
 import { UserDocument } from 'src/documents/user.document';
@@ -11,9 +11,7 @@ export class UsersController {
     }
 
     @Post()
-    async create(
-        @Body() user: UserModel,
-    ) {
+    async create(@Body() user: UserModel) {
       const newUser = await this.usersService.create(user);
       return newUser;
     }
@@ -33,6 +31,12 @@ export class UsersController {
     @Get('email/:email')
     async getUserbyEmail(@Param('email') email: string): Promise<UserModel> {
         const user = await this.usersService.findOneByEmail(email);
+        return user;
+    }
+
+    @Put()
+    async updateUser(@Body() userToUpdate: UserModel) {
+        const user = await this.usersService.updateUser(userToUpdate);
         return user;
     }
 

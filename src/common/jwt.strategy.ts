@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as passport from 'passport';
 import { JwtPayload } from 'src/models/jwt-payload.model';
 
-@Injectable()
+// @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
 
     constructor(private authService: AuthService) {

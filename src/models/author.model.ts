@@ -1,4 +1,10 @@
-import * as mongoose from 'mongoose';
-import { AuthorSchema } from 'src/models/schemas/author.schema';
+import { ObjectId } from 'mongoose';
 
-export const author = mongoose.model('Author', AuthorSchema);
+export class AuthorModel {
+    _id?: ObjectId;
+    firstName?: string;
+    lastName?: string;
+    birth?: Date;
+    death?: Date;
+    isDel?: boolean;
+  }

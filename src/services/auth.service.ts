@@ -6,8 +6,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserModel } from 'src/models/user.model';
 import * as bcrypt from 'bcrypt';
+import { AuthRepository } from 'src/repositories/auth.repository';
 
 import nodemailer = require('nodemailer');
+import { UserRepository } from 'src/repositories/user.repository';
+import { UserDocument } from 'src/documents/user.document';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +18,8 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    @InjectModel('User') private userModel: Model<UserModel>,
+    private authRepository: AuthRepository,
+    private userRepository: UserRepository,
   ) {
   }
 
@@ -23,17 +27,20 @@ export class AuthService {
     if (!(user && user.email && user.password)) {
       throw new HttpException('Email and password are required!', HttpStatus.FORBIDDEN);
     }
+
     const userOne: UserModel = await this.usersService.findOneByEmail(user.email);
 
     if (userOne) {
       if (await this.usersService.compareHash(user.password, userOne.password)) {
-         const jwtPayload =  await this.createJwtPayload(user);
-         return jwtPayload;
+        const jwtPayload = await this.createJwtPayload(user);
+        return jwtPayload;
       }
     }
+
     if (!userOne.active) {
       throw new HttpException('Sorry, you have to verify your email', HttpStatus.FORBIDDEN);
     }
+
     throw new HttpException('Email or password wrong!', HttpStatus.FORBIDDEN);
   }
 
@@ -42,13 +49,11 @@ export class AuthService {
 
     if (user) {
       return this.createJwtPayload(user);
-    } else {
-      throw new UnauthorizedException();
     }
-
+    throw new UnauthorizedException();
   }
 
-  createJwtPayload(user) {
+  async createJwtPayload(user) {
     const data: JwtPayload = {
       email: user.email,
       role: user.role,
@@ -58,6 +63,31 @@ export class AuthService {
       expiresIn: 3600,
       token: accessJwt,
     };
+  }
+
+  async registerUser(newUser) {
+    if (!(newUser && newUser.email && newUser.password)) {
+      throw new HttpException('Username and password are required!', HttpStatus.FORBIDDEN);
+    }
+
+    const user = await this.usersService.findOneByEmail(newUser.email);
+
+    if (!user) {
+      const userSave = await this.usersService.create(newUser);
+
+      if (userSave) {
+        newUser.password = undefined;
+      }
+      const sent = await this.sendEmail(userSave);
+      if (!sent) {
+        // tslint:disable-next-line: no-console
+        console.log('REGISTRATION.ERROR.MAIL_NOT_SENT');
+      }
+      // tslint:disable-next-line: no-console
+      console.log('REGISTRATION.USER_REGISTERED_SUCCESSFULLY');
+      return userSave;
+    }
+    throw new HttpException('Email exists', HttpStatus.FORBIDDEN);
   }
 
   async sendEmail(user: UserModel): Promise<boolean> {
@@ -81,11 +111,11 @@ export class AuthService {
 
     await transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.log('error ' + error);
+        // console.log('error ' + error);
         return false;
       }
+      // tslint:disable-next-line: no-console
       console.log('Message sent: %s', info.messageId);
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       return true;
     });
 
@@ -93,19 +123,21 @@ export class AuthService {
   }
 
   async verifyEmail(cypher: string): Promise<boolean> {
-    const emailVerif = await this.userModel.findOne({ cypher });
+    const resRepo = await this.authRepository.verifyEmail(cypher);
+    if (resRepo) {
+      const userFromDb: UserDocument = await this.userRepository.findOneByEmail(resRepo.email);
 
-    if (emailVerif && emailVerif.email) {
-      const userFromDb = await this.userModel.findOne({ email: emailVerif.email });
       if (userFromDb) {
         userFromDb.active = true;
         userFromDb.cypher = undefined;
-        const savedUser = await userFromDb.save();
-        return savedUser;
+        const savedUser = await this.authRepository.saveUser(userFromDb);
+
+        if (savedUser) {
+          return true;
+        }
       }
-    } else {
-      throw new HttpException('LOGIN.EMAIL_CODE_NOT_VALID', HttpStatus.FORBIDDEN);
     }
+    throw new HttpException('LOGIN.EMAIL_CODE_NOT_VALID', HttpStatus.FORBIDDEN);
   }
 
   //   async setPassword(user: User): Promise<boolean> {
@@ -115,7 +147,6 @@ export class AuthService {
   //   }
 
   //   async sendForgotPassword(user: User): Promise<boolean> {
-
 
   //     return
   //   }

@@ -1,4 +1,7 @@
-import * as mongoose from 'mongoose';
-import { BookSchema } from 'src/models/schemas/book.schema';
-
-export const book = mongoose.model('Book', BookSchema);
+export class BookModel {
+    id?: string;
+    title?: string;
+    author?: string;
+    price?: number;
+    isDel?: string;
+}

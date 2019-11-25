@@ -7,6 +7,7 @@ export interface UserDocument extends mongoose.Document {
     role?: string;
     active?: boolean;
     cypher?: string;
+    isDel?: boolean;
 }
 
 export const UserSchema = new mongoose.Schema({
@@ -32,5 +33,9 @@ export const UserSchema = new mongoose.Schema({
     },
     cypher: {
         type: String,
+    },
+    isDel: {
+        type: Boolean,
+        required: true,
     },
 });

@@ -4,10 +4,7 @@ import { BooksService } from 'src/services/books.service';
 
 @Controller('books')
 export class BooksController {
-    constructor(
-        private readonly booksService: BooksService,
-        // private configService: ConfigService,
-    ) { }
+    constructor(private readonly booksService: BooksService) { }
 
     @Get()
     async getBooks() {
