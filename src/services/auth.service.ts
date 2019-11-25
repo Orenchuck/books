@@ -19,6 +19,24 @@ export class AuthService {
   ) {
   }
 
+  async loginUser(user: UserModel) {
+    if (!(user && user.email && user.password)) {
+      throw new HttpException('Email and password are required!', HttpStatus.FORBIDDEN);
+    }
+    const userOne: UserModel = await this.usersService.findOneByEmail(user.email);
+
+    if (userOne) {
+      if (await this.usersService.compareHash(user.password, userOne.password)) {
+         const jwtPayload =  await this.createJwtPayload(user);
+         return jwtPayload;
+      }
+    }
+    if (!userOne.active) {
+      throw new HttpException('Sorry, you have to verify your email', HttpStatus.FORBIDDEN);
+    }
+    throw new HttpException('Email or password wrong!', HttpStatus.FORBIDDEN);
+  }
+
   async validateUserByJwt(payload: JwtPayload) {
     const user = await this.usersService.findOneByEmail(payload.email);
 
@@ -90,15 +108,15 @@ export class AuthService {
     }
   }
 
-//   async setPassword(user: User): Promise<boolean> {
-//     const pass = Math.random().toString(36).slice(2);
-//     user.password = await bcrypt.hash(pass, 10);
-//     return await user.save();
-//   }
+  //   async setPassword(user: User): Promise<boolean> {
+  //     const pass = Math.random().toString(36).slice(2);
+  //     user.password = await bcrypt.hash(pass, 10);
+  //     return await user.save();
+  //   }
 
-//   async sendForgotPassword(user: User): Promise<boolean> {
-   
+  //   async sendForgotPassword(user: User): Promise<boolean> {
 
-//     return
-//   }
+
+  //     return
+  //   }
 }

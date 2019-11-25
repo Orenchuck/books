@@ -6,7 +6,7 @@ export interface UserDocument extends mongoose.Document {
     password?: string;
     role?: string;
     active?: boolean;
-    cyper?: string;
+    cypher?: string;
 }
 
 export const UserSchema = new mongoose.Schema({

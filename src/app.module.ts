@@ -34,7 +34,8 @@ dotenv.config();
       { name: 'Book', schema: BookSchema },
       // { name: 'User', schema: UserSchema },
     ]),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot('mongodb://localhost:27017/root', { useNewUrlParser: true }),
+    // MongooseModule.forRoot(process.env.MONGO_URI),
     PassportModule.register({ session: false }),
     JwtModule.register({
       secretOrPrivateKey: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
@@ -43,7 +44,9 @@ dotenv.config();
       },
     }),
   ],
-  controllers: [BooksController, AuthController, UsersController],
+  controllers: [
+    // BooksController, AuthController, 
+    UsersController],
   providers: [
     BooksService,
     HttpExceptionFilter,
@@ -52,15 +55,16 @@ dotenv.config();
       // useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
       useClass: process.env.NODE_ENV === 'development' ? DevelopmentConfigService  : ProductionConfigService,
     },
-    AuthService,
-    JwtStrategy,
-    // LocalStrategy,
+    // AuthService,
+    // JwtStrategy,
+    // // LocalStrategy,
     UsersService,
     UserRepository,
   ],
   exports: [
     ConfigService,
-    UsersService],
+    UsersService
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

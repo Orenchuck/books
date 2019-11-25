@@ -9,25 +9,26 @@ import { UserRepository } from 'src/repositories/user.repository';
 @Injectable()
 export class UsersService {
 
-  private saltRounds = 10;
-
   constructor(
     private userRepository: UserRepository,
   ) { }
-  //   @InjectModel('User') private userModel: Model<User>) { }
-  // private userDoc: UserDocument;
+    // @InjectModel('User') private UserModel: Model<UserModel>) { }
+  private userDoc: UserDocument;
 
-  // async create(user: UserModel) {
-  //   const createdUser = new this.userModel(user);
-  //   const rand = Math.floor(Math.random() * (9000000)) + 1000000;
-  //   const cypher = 'n' + rand;
+  async create(user: UserModel) {
+    const cypher = await this.getRandomString();
+    const resRepo = await this.userRepository.createUser(user, cypher);
+    const newUser: UserModel = {};
 
-  //   createdUser.password = await bcrypt.hash(createdUser.password, this.saltRounds);
-  //   createdUser.role = 'User';
-  //   createdUser.active = false;
-  //   createdUser.cypher = cypher;
-  //   return await createdUser.save();
-  // }
+    if (resRepo) {
+      newUser.id = resRepo._id;
+      newUser.email = resRepo.email;
+      newUser.password = resRepo.password;
+      newUser.role = resRepo.role;
+      newUser.active = resRepo.active;
+      newUser.cypher = resRepo.cyper;
+    }
+  }
 
   async findOneByEmail(email: string): Promise<UserModel> {
     const resRepo = await this.userRepository.findOneByEmail(email);
@@ -39,13 +40,19 @@ export class UsersService {
       user.password = resRepo.password;
       user.role = resRepo.role;
       user.active = resRepo.active;
-      user.cypher = resRepo.cyper;
+      user.cypher = resRepo.cypher;
     }
     return user;
   }
 
+  async getRandomString() {
+    const random = bcrypt.genSalt(10);
+    return random;
+  }
+
   async compareHash(password: string | undefined, hash: string | undefined): Promise<boolean> {
-    return bcrypt.compare(password, hash);
+    const res = bcrypt.compare(password, hash);
+    return res;
   }
 
   async getAllUsers(): Promise<UserModel[]> {
@@ -77,7 +84,7 @@ export class UsersService {
         user.password = resRepo.password;
         user.role = resRepo.role;
         user.active = resRepo.active;
-        user.cypher = resRepo.cyper;
+        user.cypher = resRepo.cypher;
       }
       return user;
     } catch (error) {

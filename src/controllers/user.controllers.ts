@@ -10,15 +10,13 @@ export class UsersController {
     constructor(private usersService: UsersService) {
     }
 
-    // @Post()
-    // async create(
-    //     @Body() user: UserModel,
-    // ) {
-    //   const newUser = await this.usersService.create(
-    //    user,
-    //   );
-    //   return newUser;
-    // }
+    @Post()
+    async create(
+        @Body() user: UserModel,
+    ) {
+      const newUser = await this.usersService.create(user);
+      return newUser;
+    }
 
     @Get()
     async getAllUsers(): Promise<UserModel[]> {
@@ -27,7 +25,7 @@ export class UsersController {
     }
 
     @Get(':id')
-    async getUserbyID(@Param('id') id: string) {
+    async getUserbyID(@Param('id') id: string): Promise<UserModel> {
         const user = await this.usersService.getUserbyID(id);
         return user;
     }

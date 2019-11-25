@@ -15,24 +15,8 @@ export class AuthController {
     @Post()
     @HttpCode(HttpStatus.OK)
     async login(@Response() res: any, @Body() user: UserModel) {
-        if (!(user && user.email && user.password)) {
-            return res.status(HttpStatus.FORBIDDEN).json({
-                message: 'Email and password are required!',
-            });
-        }
-
-        const userOne: UserModel = await this.userService.findOneByEmail(user.email);
-
-        if (userOne) {
-            if (await this.userService.compareHash(user.password, userOne.password)) {
-                return res.status(HttpStatus.OK).json(
-                    await this.authService.createJwtPayload(user));
-            }
-        }
-        if (!userOne.active) {
-            return res.status(HttpStatus.FORBIDDEN).json({ message: 'Sorry, you have to verify your email' });
-        }
-        return res.status(HttpStatus.FORBIDDEN).json({ message: 'Email or password wrong!' });
+        const loginUser = await this.authService.loginUser(user);
+        return loginUser;
     }
 
     // @Post('register')
