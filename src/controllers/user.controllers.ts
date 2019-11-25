@@ -40,8 +40,14 @@ export class UsersController {
         return user;
     }
 
+    @Get('del/:id')
+    async isDelUser(@Param('id') id: string): Promise<boolean> {
+        const delUser = await this.usersService.isDelUser(id);
+        return delUser;
+    }
+
     @Delete(':id')
-    async deleteBook(@Param('id') id: string) {
+    async deleteUser(@Param('id') id: string) {
         const users = await this.usersService.deleteUser(id);
         return users;
     }
