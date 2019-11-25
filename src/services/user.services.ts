@@ -106,15 +106,6 @@ export class UsersService {
   async updateUser(userToUpdate: UserModel): Promise<UserModel> {
     const saltRounds = 10;
     userToUpdate.password = await bcrypt.hash(userToUpdate.password, saltRounds);
-    // const upUser: UserDocument = {
-    //   _id: userToUpdate.id,
-    //   email: userToUpdate.email,
-    //   password: userToUpdate.password,
-    //   role: userToUpdate.role,
-    //   active: userToUpdate.active,
-    //   cypher: userToUpdate.cypher,
-    //   isDel: userToUpdate.isDel,
-    // };
     const res = await this.userRepository.updateUser(userToUpdate);
     return res;
   }

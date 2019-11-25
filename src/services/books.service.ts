@@ -3,65 +3,141 @@ import { ConfigService } from 'src/enviroment/config.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Book } from 'src/models/schemas/book.schema';
 import { Model } from 'mongoose';
+import { BookRepository } from 'src/repositories/book.repository';
+import { BookModel } from 'src/models/book.model';
+import { BookDocument } from 'src/documents/book.document';
 
 @Injectable()
 export class BooksService {
-    private books: Book[] = [];
     constructor(
-        config: ConfigService,
-        @InjectModel('Book') private readonly bookModel: Model<Book>,
-    ) {
-        if (config.isApiAuthEnabled) {}
+        private bookRepository: BookRepository,
+    ) { }
+
+    async insertBook(book: BookModel) {
+        const resRepo = await this.bookRepository.addBook(book);
+        const newBook: BookModel = {};
+        if (resRepo) {
+            newBook.id = resRepo.id;
+            newBook.title = resRepo.title;
+            newBook.author = resRepo.author;
+            newBook.price = resRepo.price;
+            newBook.isDel = resRepo.isDel;
+        }
+        return newBook;
     }
 
-    async insertBook(
-        title: string,
-        author?: string,
-        price?: number,
-    ) {
-        const newBook = new this.bookModel({
-            title,
-            author,
-            price,
-        });
-        const result = await newBook.save();
-        return result.id as string;
+    async getBooks(): Promise<BookModel[]> {
+        const books = await this.bookRepository.getAllBooks();
+        if (!books) {
+            throw new HttpException('You have no books', 404);
+        }
+        const allBooks: BookModel[] = [];
+        for (const oneBook of books) {
+            const book: BookModel = {
+                id: oneBook._id,
+                title: oneBook.title,
+                author: oneBook.author,
+                price: oneBook.price,
+                isDel: oneBook.isDel,
+            };
+            allBooks.push(book);
+        }
+        return allBooks;
     }
 
-    async getBooks() {
-        const books = await this.bookModel.find().exec();
-        return books.map(book => ({
-            id: book.id,
-            title: book.title,
-            author: book.author,
-            price: book.price,
-        }));
-    }
-
-    async getBook(bookID: string) {
-        const book = await this.findBook(bookID);
-        const test: Book = {};
-
-        return test;
-    }
-
-    async findBook(id: string): Promise<Book> {
-        let book;
+    async findBookById(id: string): Promise<BookModel> {
+        const book: BookModel = {};
         try {
-            book = await this.bookModel.findById(id).exec();
+            const resRepo: BookDocument = await this.bookRepository.findBookById(id);
+            if (resRepo) {
+                book.id = resRepo._id;
+                book.title = resRepo.title;
+                book.author = resRepo.author;
+                book.price = resRepo.price;
+                book.isDel = resRepo.isDel;
+            }
+            return book;
         } catch (error) {
             throw new HttpException('Book does not exist!', 404);
         }
-        if (!book) {
-            throw new HttpException('Book does not exist!', 404);
-        }
-        return book;
     }
 
-    async deleteBook(bookID: string) {
-        const result = await this.bookModel.deleteOne({ _id: bookID }).exec();
-        if (result.n === 0) {
+    async findBookByTitle(title: string): Promise<BookModel> {
+        const book: BookModel = {};
+        try {
+            const resRepo: BookDocument = await this.bookRepository.findBookByTitle(title);
+            if (resRepo) {
+                book.id = resRepo._id;
+                book.title = resRepo.title;
+                book.author = resRepo.author;
+                book.price = resRepo.price;
+                book.isDel = resRepo.isDel;
+            }
+            return book;
+        } catch (error) {
             throw new HttpException('Book does not exist!', 404);
         }
+    }
+
+    async findBookByAuthor(author: string): Promise<BookModel> {
+        const book: BookModel = {};
+        try {
+            const resRepo: BookDocument = await this.bookRepository.findBookByAuthor(author);
+            if (resRepo) {
+                book.id = resRepo._id;
+                book.title = resRepo.title;
+                book.author = resRepo.author;
+                book.price = resRepo.price;
+                book.isDel = resRepo.isDel;
+            }
+            return book;
+        } catch (error) {
+            throw new HttpException('Book does not exist!', 404);
+        }
+    }
+
+    async updateBook(userToUpdate: BookModel): Promise<BookModel> {
+        const updatedBook: BookModel = {};
+        const updateBookDoc: BookDocument = {};
+
+        if (userToUpdate) {
+            updateBookDoc._id = userToUpdate.id;
+            updateBookDoc.title = userToUpdate.title;
+            updateBookDoc.author = userToUpdate.author;
+            updateBookDoc.price = userToUpdate.price;
+        }
+
+        const resRepo: BookDocument = await this.bookRepository.updateBook(updateBookDoc);
+        if (resRepo) {
+            updatedBook.id = resRepo._id;
+            updatedBook.title = resRepo.title;
+            updatedBook.author = resRepo.author;
+            updatedBook.price = resRepo.price;
+            updatedBook.isDel = resRepo.isDel;
+        }
+
+        return updatedBook;
+    }
+
+    async isDelBook(id: string) {
+        const bookFromDb: BookDocument = await this.bookRepository.findBookById(id);
+
+        if (bookFromDb) {
+            bookFromDb.isDel = !bookFromDb.isDel;
+            const savedBook = await this.bookRepository.saveBook(bookFromDb);
+            return savedBook;
+        }
+    }
+
+    async deleteBook(id: string): Promise<boolean> {
+        const delBook: BookDocument = {};
+        delBook._id = id;
+        const resRepo = await this.bookRepository.deleteBook(delBook._id);
+        if (resRepo.n === 0) {
+            throw new HttpException('Book does not exist!', 404);
+        }
+        // tslint:disable-next-line: no-console
+        console.log('Successfull del');
+        return true;
     }
 }

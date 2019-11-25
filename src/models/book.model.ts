@@ -3,5 +3,5 @@ export class BookModel {
     title?: string;
     author?: string;
     price?: number;
-    isDel?: string;
+    isDel?: boolean;
 }

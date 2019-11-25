@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Post, Body, Query, Delete, UseFilters, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, UseFilters, HttpException, HttpStatus } from '@nestjs/common';
 import { BooksService } from 'src/services/books.service';
+import { BookModel } from 'src/models/book.model';
 // import { ConfigService } from 'src/enviroment/config.service';
 
 @Controller('books')
@@ -7,37 +8,32 @@ export class BooksController {
     constructor(private readonly booksService: BooksService) { }
 
     @Get()
-    async getBooks() {
+    async getBooks(): Promise<BookModel[]> {
         const books = await this.booksService.getBooks();
         return books;
     }
 
     @Get(':bookID')
-    async getBook(@Param('bookID') bookID: string) {
-        const book = await this.booksService.findBook(bookID);
-
+    async getBook(@Param('bookID') bookID: string): Promise<BookModel> {
+        const book = await this.booksService.findBookById(bookID);
         return book;
     }
 
     @Post()
-    async addBook(
-        @Body('title') bookTitle: string,
-        @Body('author') bookAuthor: string,
-        @Body('price') bookPrice: number,
-    ) {
-        const generatedId = await this.booksService.insertBook(
-            bookTitle,
-            bookAuthor,
-            bookPrice,
-        );
+    async addBook(@Body() book: BookModel) {
+        const newBook = await this.booksService.insertBook(book);
+        return newBook;
+    }
 
-        return { id: generatedId };
+    @Put()
+    async updateBook(@Body() bookToUpdate: BookModel) {
+        const book = await this.booksService.updateBook(bookToUpdate);
+        return book;
     }
 
     @Delete(':bookID')
     async deleteBook(@Param('bookID') bookID: string) {
         const books = await this.booksService.deleteBook(bookID);
-
         return books;
     }
 }

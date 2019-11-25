@@ -23,6 +23,7 @@ import { DevelopmentConfigService } from 'src/enviroment/env.dev';
 import { ProductionConfigService } from 'src/enviroment/env.prod';
 import { UserRepository } from 'src/repositories/user.repository';
 import { AuthRepository } from './repositories/auth.repository';
+import { BookRepository } from './repositories/book.repository';
 
 dotenv.config();
 
@@ -39,11 +40,11 @@ dotenv.config();
     }),
   ],
   controllers: [
-    // BooksController,
+    BooksController,
     AuthController,
     UsersController],
   providers: [
-    // BooksService,
+    BooksService,
     HttpExceptionFilter,
     {
       provide: ConfigService,
@@ -56,6 +57,7 @@ dotenv.config();
     UsersService,
     UserRepository,
     AuthRepository,
+    BookRepository,
   ],
   exports: [ConfigService, UsersService],
 })

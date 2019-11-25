@@ -29,6 +29,7 @@ export class AuthController {
     public async verifyEmail(@Param() params): Promise<boolean> {
         try {
             const isEmailVerified = await this.authService.verifyEmail(params.cypher);
+            // tslint:disable-next-line: no-console
             console.log('LOGIN.EMAIL_VERIFIED', isEmailVerified);
             return isEmailVerified;
         } catch (error) {
