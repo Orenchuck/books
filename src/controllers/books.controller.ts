@@ -19,6 +19,18 @@ export class BooksController {
         return book;
     }
 
+    @Get('title/:title')
+    async findBookByTitle(@Param('title') title: string): Promise<BookModel> {
+        const book = await this.booksService.findBookByTitle(title);
+        return book;
+    }
+
+    @Get('author/:author')
+    async findBookByAuthor(@Param('author') author: string): Promise<BookModel> {
+        const book = await this.booksService.findBookByAuthor(author);
+        return book;
+    }
+
     @Post()
     async addBook(@Body() book: BookModel) {
         const newBook = await this.booksService.insertBook(book);
@@ -29,6 +41,12 @@ export class BooksController {
     async updateBook(@Body() bookToUpdate: BookModel) {
         const book = await this.booksService.updateBook(bookToUpdate);
         return book;
+    }
+
+    @Get('del/:id')
+    async isDelUser(@Param('id') id: string): Promise<boolean> {
+        const delBook = await this.booksService.isDelBook(id);
+        return delBook;
     }
 
     @Delete(':bookID')

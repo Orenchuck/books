@@ -2,8 +2,7 @@ import { Document, Schema, ObjectId } from 'mongoose';
 
 export interface UserDocument extends Document {
     _id?: ObjectId;
-    firstName?: string;
-    lastName?: string;
+    name?: string;
     birth?: Date;
     death?: Date;
     isDel?: boolean;
@@ -12,9 +11,11 @@ export interface UserDocument extends Document {
 
 export const AuthorSchema = new Schema({
     _id: ObjectId,
-    firstName: String,
-    lastName: String,
+    name: String,
     birth: Date,
     death: Date,
-    isDel: Boolean,
+    isDel: {
+        type: Boolean,
+        required: true,
+    },
 });

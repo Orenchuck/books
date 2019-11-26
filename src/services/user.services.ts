@@ -1,10 +1,8 @@
-import { Model } from 'mongoose';
 import { Injectable, HttpException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserModel } from 'src/models/user.model';
 import { UserDocument } from 'src/documents/user.document';
 import { UserRepository } from 'src/repositories/user.repository';
-import { async } from 'rxjs/internal/scheduler/async';
 import { AuthRepository } from 'src/repositories/auth.repository';
 
 @Injectable()

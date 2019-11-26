@@ -1,9 +1,7 @@
 import * as mongoose from 'mongoose';
-import { UserSchema, UserDocument } from 'src/documents/user.document';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Model, objectid } from 'mongoose';
-import * as bcrypt from 'bcrypt';
-import { BookDocument } from 'src/documents/book.document';
+import { BookDocument, BookSchema } from 'src/documents/book.document';
 import { BookModel } from 'src/models/book.model';
 
 @Injectable()
@@ -12,7 +10,7 @@ export class BookRepository {
     private bookModel: Model<BookDocument>;
 
     constructor() {
-        this.bookModel = mongoose.model('User', UserSchema);
+        this.bookModel = mongoose.model('Book', BookSchema);
     }
 
     async addBook(book) {

@@ -1,8 +1,4 @@
 import { Injectable, HttpException } from '@nestjs/common';
-import { ConfigService } from 'src/enviroment/config.service';
-import { InjectModel } from '@nestjs/mongoose';
-import { Book } from 'src/models/schemas/book.schema';
-import { Model } from 'mongoose';
 import { BookRepository } from 'src/repositories/book.repository';
 import { BookModel } from 'src/models/book.model';
 import { BookDocument } from 'src/documents/book.document';
@@ -64,19 +60,16 @@ export class BooksService {
 
     async findBookByTitle(title: string): Promise<BookModel> {
         const book: BookModel = {};
-        try {
-            const resRepo: BookDocument = await this.bookRepository.findBookByTitle(title);
-            if (resRepo) {
-                book.id = resRepo._id;
-                book.title = resRepo.title;
-                book.author = resRepo.author;
-                book.price = resRepo.price;
-                book.isDel = resRepo.isDel;
-            }
+        const resRepo = await this.bookRepository.findBookByTitle(title);
+        if (resRepo) {
+            book.id = resRepo._id;
+            book.title = resRepo.title;
+            book.author = resRepo.author;
+            book.price = resRepo.price;
+            book.isDel = resRepo.isDel;
             return book;
-        } catch (error) {
-            throw new HttpException('Book does not exist!', 404);
         }
+        throw new HttpException('Book does not exist!', 404);
     }
 
     async findBookByAuthor(author: string): Promise<BookModel> {
