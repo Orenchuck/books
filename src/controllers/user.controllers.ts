@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, UseGuards, Param, Delete, Put } from '@nestjs/common';
 import { UsersService } from 'src/services/user.services';
 import { AuthGuard } from '@nestjs/passport';
-import { UserDocument } from 'src/documents/user.document';
 import { UserModel } from 'src/models/user.model';
 import { RolesGuard } from 'src/common/guards/roles.guards';
 

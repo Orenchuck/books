@@ -1,7 +1,6 @@
 import { Controller, Get, Param, Post, Body, Put, Delete, UseFilters, HttpException, HttpStatus } from '@nestjs/common';
 import { BooksService } from 'src/services/books.service';
 import { BookModel } from 'src/models/book.model';
-// import { ConfigService } from 'src/enviroment/config.service';
 
 @Controller('books')
 export class BooksController {

@@ -31,7 +31,8 @@ export class AuthService {
     const userOne: UserModel = await this.usersService.findOneByEmail(user.email);
 
     if (userOne) {
-      if (await this.usersService.compareHash(user.password, userOne.password)) {
+      const passOk = await this.usersService.compareHash(user.password, userOne.password);
+      if (passOk) {
         const jwtPayload = await this.createJwtPayload(user);
         return jwtPayload;
       }
@@ -140,14 +141,51 @@ export class AuthService {
     throw new HttpException('LOGIN.EMAIL_CODE_NOT_VALID', HttpStatus.FORBIDDEN);
   }
 
-  //   async setPassword(user: User): Promise<boolean> {
-  //     const pass = Math.random().toString(36).slice(2);
-  //     user.password = await bcrypt.hash(pass, 10);
-  //     return await user.save();
-  //   }
+  async getForgotPass(email: string): Promise<UserModel> {
+    const emailExist: UserModel = await this.usersService.findOneByEmail(email);
+    const newPass = await this.usersService.getRandomString();
 
-  //   async sendForgotPassword(user: User): Promise<boolean> {
+    if (emailExist) {
+      const sent = await this.sendForgotPassword(emailExist, newPass);
 
-  //     return
-  //   }
+      if (sent) {
+        emailExist.password = newPass;
+        await this.usersService.updateUser(emailExist);
+
+        return emailExist;
+      }
+    }
+
+    throw new HttpException('PASSWORD IS NOT SENT', HttpStatus.FORBIDDEN);
+  }
+
+  async sendForgotPassword(user: UserModel, newPass: string): Promise<boolean> {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'asptestapplication@gmail.com',
+        pass: 'Ghjcnj gfhjkm1',
+      },
+    });
+
+    const mailOptions = {
+      from: '<foo@example.com>',
+      to: user.email,
+      subject: 'New password',
+      text: 'Your new password',
+      html: 'Hi! <br><br> Here is your new password:<br><br>' + newPass,
+    };
+
+    await transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        // console.log('error ' + error);
+        return false;
+      }
+      // tslint:disable-next-line: no-console
+      console.log('Message sent: %s', info.messageId);
+      return true;
+    });
+
+    return true;
+  }
 }

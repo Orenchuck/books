@@ -2,7 +2,6 @@ import * as mongoose from 'mongoose';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Model, objectid } from 'mongoose';
 import { BookDocument, BookSchema } from 'src/documents/book.document';
-import { BookModel } from 'src/models/book.model';
 
 @Injectable()
 export class BookRepository {

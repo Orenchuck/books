@@ -2,7 +2,6 @@ import * as mongoose from 'mongoose';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Model, objectid } from 'mongoose';
 import { AuthorDocument, AuthorSchema } from 'src/documents/author.document';
-import { AuthorModel } from 'src/models/author.model';
 
 @Injectable()
 export class AuthorRepository {
@@ -15,9 +14,7 @@ export class AuthorRepository {
 
     async addAuthor(author) {
         const newAuthor = new this.authorModel(author);
-        // newAuthor.isDel = false;
         const saveAuthor = await newAuthor.save();
-        // const saveAuthor = this.saveAuthor(newAuthor);
         return saveAuthor;
     }
 
@@ -37,8 +34,6 @@ export class AuthorRepository {
     }
 
     async updateAuthor(author: AuthorDocument): Promise<AuthorDocument> {
-        console.log(author._id);
-        
         const updatedAuthor: AuthorDocument = await this.authorModel.findByIdAndUpdate(author._id, author);
         return updatedAuthor;
     }
