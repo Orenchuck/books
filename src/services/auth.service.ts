@@ -33,7 +33,7 @@ export class AuthService {
     if (userOne) {
       const passOk = await this.usersService.compareHash(user.password, userOne.password);
       if (passOk) {
-        const jwtPayload = await this.createJwtPayload(user);
+        const jwtPayload = await this.createJwtPayload(userOne);
         return jwtPayload;
       }
     }
@@ -57,7 +57,8 @@ export class AuthService {
   async createJwtPayload(user) {
     const data: JwtPayload = {
       email: user.email,
-      role: user.role,
+      roles: user.roles,
+      isDel: user.isDel,
     };
     const accessJwt = this.jwtService.sign(data);
     return {

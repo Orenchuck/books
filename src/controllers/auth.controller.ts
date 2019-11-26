@@ -41,10 +41,6 @@ export class AuthController {
     async forgotPasswordEmail(@Param('email') email: string): Promise<UserModel> {
         try {
             const getPass = this.authService.getForgotPass(email);
-            // const EmailExist: UserModel = await this.userService.findOneByEmail(email);
-            // if (EmailExist) {
-            //     const sent = await this.authService.sendForgotPassword(EmailExist);
-            // }
             return getPass;
         } catch (error) {
             throw new HttpException('LOGIN.ERROR', HttpStatus.FORBIDDEN);

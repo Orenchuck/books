@@ -22,7 +22,7 @@ export class UsersService {
       newUser.id = resRepo._id;
       newUser.email = resRepo.email;
       newUser.password = resRepo.password;
-      newUser.role = resRepo.role;
+      newUser.roles = resRepo.roles;
       newUser.active = resRepo.active;
       newUser.cypher = resRepo.cypher;
       newUser.isDel = resRepo.isDel;
@@ -38,7 +38,7 @@ export class UsersService {
       user.id = resRepo._id;
       user.email = resRepo.email;
       user.password = resRepo.password;
-      user.role = resRepo.role;
+      user.roles = resRepo.roles;
       user.active = resRepo.active;
       user.cypher = resRepo.cypher;
       user.isDel = resRepo.isDel;
@@ -72,7 +72,7 @@ export class UsersService {
         user.id = oneUser._id;
         user.email = oneUser.email;
         user.password = oneUser.password;
-        user.role = oneUser.role;
+        user.roles = oneUser.roles;
         user.active = oneUser.active;
         user.isDel = oneUser.isDel;
 
@@ -90,7 +90,7 @@ export class UsersService {
         user.id = resRepo._id;
         user.email = resRepo.email;
         user.password = resRepo.password;
-        user.role = resRepo.role;
+        user.roles = resRepo.roles;
         user.active = resRepo.active;
         user.cypher = resRepo.cypher;
         user.isDel = resRepo.isDel;
@@ -108,7 +108,7 @@ export class UsersService {
       _id: userToUpdate.id,
       email: userToUpdate.email,
       password: userToUpdate.password,
-      role: userToUpdate.role,
+      roles: userToUpdate.roles,
       active: userToUpdate.active,
       cypher: userToUpdate.cypher,
       isDel: userToUpdate.isDel,

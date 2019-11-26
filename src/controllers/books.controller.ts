@@ -1,12 +1,17 @@
-import { Controller, Get, Param, Post, Body, Put, Delete, UseFilters, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, UseFilters, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { BooksService } from 'src/services/books.service';
 import { BookModel } from 'src/models/book.model';
+import { Roles } from 'src/repositories/roles.decorator';
+import { RolesGuard } from 'src/common/guards/roles.guards';
+import { UserRole } from 'src/models/user-role.enum';
 
 @Controller('books')
+@UseGuards(RolesGuard)
 export class BooksController {
     constructor(private readonly booksService: BooksService) { }
 
     @Get()
+    @Roles(UserRole.User)
     async getBooks(): Promise<BookModel[]> {
         const books = await this.booksService.getBooks();
         return books;

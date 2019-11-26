@@ -52,7 +52,7 @@ dotenv.config();
       useClass: process.env.NODE_ENV === 'development' ? DevelopmentConfigService  : ProductionConfigService,
     },
     AuthService,
-    // JwtStrategy,
+    JwtStrategy,
     // // LocalStrategy,
     UsersService,
     AuthorsService,

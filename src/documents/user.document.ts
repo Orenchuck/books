@@ -4,7 +4,7 @@ export interface UserDocument extends mongoose.Document {
     _id?: mongoose.ObjectID;
     email?: string;
     password?: string;
-    role?: string;
+    roles?: string;
     active?: boolean;
     cypher?: string;
     isDel?: boolean;
@@ -23,7 +23,7 @@ export const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    role: {
+    roles: {
         type: String,
         required: true,
         default: 'User',

@@ -50,12 +50,4 @@ export class UsersController {
         const users = await this.usersService.deleteUser(id);
         return users;
     }
-
-  //   @Get()
-  //   @UseGuards(RolesGuard)
-  //   testAuthRoute() {
-  //     return {
-  //         message: 'You did it!',
-  //     };
-  // }
   }
