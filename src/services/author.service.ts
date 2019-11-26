@@ -1,0 +1,125 @@
+import { Injectable, HttpException } from '@nestjs/common';
+import { AuthorRepository } from 'src/repositories/author.repository';
+import { AuthorModel } from 'src/models/author.model';
+import { AuthorDocument } from 'src/documents/author.document';
+
+@Injectable()
+export class AuthorsService {
+    constructor(
+        private authorRepository: AuthorRepository,
+    ) { }
+
+    async insertAuthor(author: AuthorModel) {
+        const resRepo = await this.authorRepository.addAuthor(author);
+        const newAuthor: AuthorModel = {};
+        if (resRepo) {
+            newAuthor.id = resRepo.id;
+            newAuthor.name = resRepo.name;
+            newAuthor.books = resRepo.books;
+            newAuthor.birth = resRepo.birth;
+            newAuthor.death = resRepo.death;
+            newAuthor.isDel = resRepo.isDel;
+        }
+        return newAuthor;
+    }
+
+    async getAuthors(): Promise<AuthorModel[]> {
+        const authors = await this.authorRepository.getAllAuthors();
+        if (!authors) {
+            throw new HttpException('You have no authors', 404);
+        }
+        const allAuthors: AuthorModel[] = [];
+        for (const oneAuthor of authors) {
+            const author: AuthorModel = {
+                id: oneAuthor._id,
+                name: oneAuthor.name,
+                books: oneAuthor.books,
+                birth: oneAuthor.birth,
+                death: oneAuthor.death,
+                isDel: oneAuthor.isDel,
+            };
+            allAuthors.push(author);
+        }
+        return allAuthors;
+    }
+
+    async findAuthorById(id: string): Promise<AuthorModel> {
+        const author: AuthorModel = {};
+        try {
+            const resRepo: AuthorDocument = await this.authorRepository.findAuthorById(id);
+            if (resRepo) {
+                author.id = resRepo._id;
+                author.name = resRepo.name;
+                author.books = resRepo.books;
+                author.birth = resRepo.birth;
+                author.death = resRepo.death;
+                author.isDel = resRepo.isDel;
+            }
+            return author;
+        } catch (error) {
+            throw new HttpException('Author does not exist!', 404);
+        }
+    }
+
+    async findAuthorByName(name: string): Promise<AuthorModel> {
+        const author: AuthorModel = {};
+        const resRepo = await this.authorRepository.findAuthorByName(name);
+        if (resRepo) {
+            author.id = resRepo._id;
+            author.name = resRepo.name;
+            author.books = resRepo.books;
+            author.birth = resRepo.birth;
+            author.death = resRepo.death;
+            author.isDel = resRepo.isDel;
+            return author;
+        }
+        throw new HttpException('Author does not exist!', 404);
+    }
+
+    async updateAuthor(userToUpdate: AuthorModel): Promise<AuthorModel> {
+        const updatedAuthor: AuthorModel = {};
+        const updateAuthorDoc: AuthorDocument = {};
+
+        if (userToUpdate) {
+            updateAuthorDoc._id = userToUpdate.id;
+            updateAuthorDoc.name = userToUpdate.name;
+            updateAuthorDoc.books = userToUpdate.books;
+            updateAuthorDoc.birth = userToUpdate.birth;
+            updateAuthorDoc.death = userToUpdate.death;
+        }
+
+        const resRepo: AuthorDocument = await this.authorRepository.updateAuthor(updateAuthorDoc);
+        if (resRepo) {
+            updatedAuthor.id = resRepo._id;
+            updatedAuthor.name = resRepo.name;
+            updatedAuthor.books = resRepo.books;
+            updatedAuthor.birth = resRepo.birth;
+            updatedAuthor.death = resRepo.death;
+            updatedAuthor.isDel = resRepo.isDel;
+        }
+
+        return updatedAuthor;
+    }
+
+    async isDelAuthor(id: string) {
+        const authorFromDb: AuthorDocument = await this.authorRepository.findAuthorById(id);
+
+        if (authorFromDb) {
+            authorFromDb.isDel = !authorFromDb.isDel;
+            const savedAuthor = await this.authorRepository.saveAuthor(authorFromDb);
+            return savedAuthor;
+        }
+    }
+
+    async deleteAuthor(id: string): Promise<boolean> {
+        const delAuthor: AuthorDocument = {};
+        delAuthor._id = id;
+        const resRepo = await this.authorRepository.deleteAuthor(delAuthor._id);
+        if (resRepo.n === 0) {
+            throw new HttpException('Author does not exist!', 404);
+        }
+        // tslint:disable-next-line: no-console
+        console.log('Successfull del');
+        return true;
+    }
+}

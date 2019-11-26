@@ -15,7 +15,6 @@ export class BookRepository {
 
     async addBook(book) {
         const newBook = new this.bookModel(book);
-        newBook.isDel = false;
         const saveBook = await newBook.save();
         return saveBook;
     }

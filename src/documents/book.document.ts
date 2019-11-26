@@ -24,5 +24,6 @@ export const BookSchema = new mongoose.Schema({
     isDel: {
         type: Boolean,
         required: true,
+        default: false,
     },
 });

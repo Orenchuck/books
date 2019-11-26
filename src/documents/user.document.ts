@@ -26,10 +26,12 @@ export const UserSchema = new mongoose.Schema({
     role: {
         type: String,
         required: true,
+        default: 'User',
     },
     active: {
         type: Boolean,
         required: true,
+        default: false,
     },
     cypher: {
         type: String,
@@ -37,5 +39,6 @@ export const UserSchema = new mongoose.Schema({
     isDel: {
         type: Boolean,
         required: true,
+        default: false,
     },
 });

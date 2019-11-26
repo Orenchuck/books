@@ -24,6 +24,9 @@ import { ProductionConfigService } from 'src/enviroment/env.prod';
 import { UserRepository } from 'src/repositories/user.repository';
 import { AuthRepository } from './repositories/auth.repository';
 import { BookRepository } from './repositories/book.repository';
+import { AuthorsController } from './controllers/author.controller';
+import { AuthorsService } from './services/author.service';
+import { AuthorRepository } from './repositories/author.repository';
 
 dotenv.config();
 
@@ -39,10 +42,7 @@ dotenv.config();
       },
     }),
   ],
-  controllers: [
-    BooksController,
-    AuthController,
-    UsersController],
+  controllers: [BooksController, AuthController, UsersController, AuthorsController],
   providers: [
     BooksService,
     HttpExceptionFilter,
@@ -55,9 +55,11 @@ dotenv.config();
     // JwtStrategy,
     // // LocalStrategy,
     UsersService,
+    AuthorsService,
     UserRepository,
     AuthRepository,
     BookRepository,
+    AuthorRepository,
   ],
   exports: [ConfigService, UsersService],
 })
