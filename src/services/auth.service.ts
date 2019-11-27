@@ -2,11 +2,9 @@ import { Injectable, UnauthorizedException, HttpException, HttpStatus, HttpServi
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/services/user.services';
 import { JwtPayload } from 'src/models/jwt-payload.model';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { UserModel } from 'src/models/user.model';
-import * as bcrypt from 'bcrypt';
 import { AuthRepository } from 'src/repositories/auth.repository';
+import * as bcrypt from 'bcrypt';
 
 import nodemailer = require('nodemailer');
 import { UserRepository } from 'src/repositories/user.repository';
@@ -21,6 +19,22 @@ export class AuthService {
     private authRepository: AuthRepository,
     private userRepository: UserRepository,
   ) {
+  }
+
+  async validateUser(email: string): Promise<any> {
+    console.log(email);
+    
+    const user = await this.usersService.findOneByEmail(email);
+    // const hashPass = await bcrypt.hash(pass, 10);
+    // if (user && user.password === hashPass) {
+    //   const { password, ...result } = user;
+    //   return result;
+    if (user) {
+      console.log(user);
+      
+      return user;
+    }
+    return null;
   }
 
   async loginUser(user: UserModel) {
@@ -62,10 +76,11 @@ export class AuthService {
       roles: user.roles,
       isDel: user.isDel,
     };
-    const accessJwt = this.jwtService.sign(data);
+    const accessJwt = this.jwtService.sign(data, {expiresIn: 900});
+    const refreshJwt = this.jwtService.sign(data, {expiresIn: 2592000});
     return {
-      expiresIn: 3600,
       token: accessJwt,
+      refresh: refreshJwt,
     };
   }
 

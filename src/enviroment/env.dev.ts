@@ -1,29 +1,25 @@
-// export const environment = {
-//     production: false,
-//   };
+// import * as dotenv from 'dotenv';
+// import * as fs from 'fs';
 
-// export interface Config {
-//   http?: any;
+// export class DevelopmentConfigService {
+//   private readonly envConfig: Record<string, string>;
+
+//   constructor(filePath: string) {
+//     this.envConfig = dotenv.parse(fs.readFileSync('src/enviroment/.env'));
+//   }
+
+//   get(key: string): string {
+//     return this.envConfig[key];
+//   }
 // }
 
-// export const dev: Config = {
-//   http: {
-//     port: 443,
-//     host: 'localhost',
-//   },
-// };
+import fs = require('fs');
 
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
-
-export class DevelopmentConfigService {
-  private readonly envConfig: Record<string, string>;
-
-  constructor(filePath: string) {
-    this.envConfig = dotenv.parse(fs.readFileSync('src/enviroment/.env'));
-  }
-
-  get(key: string): string {
-    return this.envConfig[key];
-  }
-}
+export const development = {
+    httpPort: '80',
+    httpsPort: '443',
+    environment: process.env.NODE_ENV,
+    databaseProviderName: 'MONGO-CONNECTION',
+    databaseMongoConnectionUrl: 'mongodb://localhost/root',
+    jwtSecretKey: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
+};

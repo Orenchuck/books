@@ -5,6 +5,7 @@ import { UserModel } from 'src/models/user.model';
 import { RolesGuard } from 'src/common/guards/roles.guards';
 import { Roles } from 'src/common/roles.decorator';
 import { UserRole } from 'src/models/user-role.enum';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 @UseGuards(RolesGuard)
@@ -31,6 +32,7 @@ export class AuthController {
 
     @Get('verify/:cypher')
     @Roles(UserRole.Admin, UserRole.User)
+    @UseGuards(AuthGuard('jwt'))
     public async verifyEmail(@Param() params): Promise<boolean> {
         try {
             const isEmailVerified = await this.authService.verifyEmail(params.cypher);

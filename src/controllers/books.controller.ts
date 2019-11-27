@@ -4,6 +4,7 @@ import { BookModel } from 'src/models/book.model';
 import { Roles } from 'src/common/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guards';
 import { UserRole } from 'src/models/user-role.enum';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('books')
 @UseGuards(RolesGuard)
@@ -36,6 +37,7 @@ export class BooksController {
 
     @Post()
     @Roles(UserRole.Admin)
+    @UseGuards(AuthGuard('jwt'))
     async addBook(@Body() book: BookModel) {
         const newBook = await this.booksService.insertBook(book);
         return newBook;
@@ -43,6 +45,7 @@ export class BooksController {
 
     @Put()
     @Roles(UserRole.Admin)
+    @UseGuards(AuthGuard('jwt'))
     async updateBook(@Body() bookToUpdate: BookModel) {
         const book = await this.booksService.updateBook(bookToUpdate);
         return book;
@@ -50,6 +53,7 @@ export class BooksController {
 
     @Get('del/:id')
     @Roles(UserRole.Admin)
+    @UseGuards(AuthGuard('jwt'))
     async isDelBook(@Param('id') id: string): Promise<boolean> {
         const delBook = await this.booksService.isDelBook(id);
         return delBook;
@@ -57,6 +61,7 @@ export class BooksController {
 
     @Delete(':bookID')
     @Roles(UserRole.Admin)
+    @UseGuards(AuthGuard('jwt'))
     async deleteBook(@Param('bookID') bookID: string) {
         const books = await this.booksService.deleteBook(bookID);
         return books;
