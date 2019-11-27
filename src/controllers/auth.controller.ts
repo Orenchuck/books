@@ -1,9 +1,13 @@
-import { Controller, Get, Post, Body, Response, HttpStatus, HttpException, HttpCode, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpStatus, HttpException, HttpCode, Param, UseGuards } from '@nestjs/common';
 import { AuthService } from 'src/services/auth.service';
 import { UsersService } from 'src/services/user.services';
 import { UserModel } from 'src/models/user.model';
+import { RolesGuard } from 'src/common/guards/roles.guards';
+import { Roles } from 'src/common/roles.decorator';
+import { UserRole } from 'src/models/user-role.enum';
 
 @Controller('auth')
+@UseGuards(RolesGuard)
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
@@ -26,6 +30,7 @@ export class AuthController {
     }
 
     @Get('verify/:cypher')
+    @Roles(UserRole.Admin, UserRole.User)
     public async verifyEmail(@Param() params): Promise<boolean> {
         try {
             const isEmailVerified = await this.authService.verifyEmail(params.cypher);

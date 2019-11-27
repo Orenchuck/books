@@ -29,17 +29,19 @@ export class AuthService {
     }
 
     const userOne: UserModel = await this.usersService.findOneByEmail(user.email);
+    if (!userOne) {
+      throw new HttpException('This email does not exist!', 404);
+    }
 
     if (userOne) {
       const passOk = await this.usersService.compareHash(user.password, userOne.password);
       if (passOk) {
+        if (!userOne.active) {
+          throw new HttpException('Sorry, you have to verify your email', HttpStatus.FORBIDDEN);
+        }
         const jwtPayload = await this.createJwtPayload(userOne);
         return jwtPayload;
       }
-    }
-
-    if (!userOne.active) {
-      throw new HttpException('Sorry, you have to verify your email', HttpStatus.FORBIDDEN);
     }
 
     throw new HttpException('Email or password wrong!', HttpStatus.FORBIDDEN);

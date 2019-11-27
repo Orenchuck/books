@@ -13,9 +13,11 @@ export class BookRepository {
     }
 
     async addBook(book) {
-        const newBook = new this.bookModel(book);
-        const saveBook = await newBook.save();
-        return saveBook;
+        try {
+            const newBook = new this.bookModel(book);
+            const saveBook = await newBook.save();
+            return saveBook;
+        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
     }
 
     async getAllBooks(): Promise<BookDocument[]> {
@@ -24,8 +26,10 @@ export class BookRepository {
     }
 
     async findBookById(id: string): Promise<BookDocument> {
-       const book = await this.bookModel.findById(id).exec();
-       return book;
+        try {
+            const book = await this.bookModel.findById(id).exec();
+            return book;
+        } catch { throw new HttpException('Book does not exist!', 404); }
     }
 
     async findBookByTitle(title: string): Promise<BookDocument> {
@@ -39,15 +43,17 @@ export class BookRepository {
     }
 
     async updateBook(book: BookDocument): Promise<BookDocument> {
-        const updatedBook: BookDocument = await this.bookModel.findByIdAndUpdate(book._id, book);
-        return updatedBook;
+        try {
+            const updatedBook: BookDocument = await this.bookModel.findByIdAndUpdate(book._id, book);
+            return updatedBook;
+        } catch { throw new HttpException('Book does not exist!', 404); }
     }
 
     async saveBook(book) {
         try {
-            const res = await book.save();
+            await book.save();
             return true;
-        } catch { throw new HttpException('error connection with db', HttpStatus.FORBIDDEN); }
+        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
     }
 
     async deleteBook(id: objectid) {

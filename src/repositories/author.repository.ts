@@ -13,9 +13,11 @@ export class AuthorRepository {
     }
 
     async addAuthor(author) {
-        const newAuthor = new this.authorModel(author);
-        const saveAuthor = await newAuthor.save();
-        return saveAuthor;
+        try {
+            const newAuthor = new this.authorModel(author);
+            const saveAuthor = await newAuthor.save();
+            return saveAuthor;
+        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
     }
 
     async getAllAuthors(): Promise<AuthorDocument[]> {
@@ -24,8 +26,10 @@ export class AuthorRepository {
     }
 
     async findAuthorById(id: string): Promise<AuthorDocument> {
-       const author = await this.authorModel.findById(id).exec();
-       return author;
+        try {
+            const author = await this.authorModel.findById(id).exec();
+            return author;
+        } catch { throw new HttpException('Author does not exist!', 404); }
     }
 
     async findAuthorByName(name: string): Promise<AuthorDocument> {
@@ -34,15 +38,17 @@ export class AuthorRepository {
     }
 
     async updateAuthor(author: AuthorDocument): Promise<AuthorDocument> {
-        const updatedAuthor: AuthorDocument = await this.authorModel.findByIdAndUpdate(author._id, author);
-        return updatedAuthor;
+        try {
+            const updatedAuthor: AuthorDocument = await this.authorModel.findByIdAndUpdate(author._id, author);
+            return updatedAuthor;
+        } catch { throw new HttpException('Author does not exist!', 404); }
     }
 
     async saveAuthor(author) {
         try {
             const newAuthor = await author.save();
             return newAuthor;
-        } catch { throw new HttpException('error connection with db', HttpStatus.FORBIDDEN); }
+        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
     }
 
     async deleteAuthor(id: objectid) {

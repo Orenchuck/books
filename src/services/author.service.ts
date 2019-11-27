@@ -45,20 +45,18 @@ export class AuthorsService {
 
     async findAuthorById(id: string): Promise<AuthorModel> {
         const author: AuthorModel = {};
-        try {
-            const resRepo: AuthorDocument = await this.authorRepository.findAuthorById(id);
-            if (resRepo) {
-                author.id = resRepo._id;
-                author.name = resRepo.name;
-                author.books = resRepo.books;
-                author.birth = resRepo.birth;
-                author.death = resRepo.death;
-                author.isDel = resRepo.isDel;
-            }
+        const resRepo: AuthorDocument = await this.authorRepository.findAuthorById(id);
+
+        if (resRepo) {
+            author.id = resRepo._id;
+            author.name = resRepo.name;
+            author.books = resRepo.books;
+            author.birth = resRepo.birth;
+            author.death = resRepo.death;
+            author.isDel = resRepo.isDel;
             return author;
-        } catch (error) {
-            throw new HttpException('Author does not exist!', 404);
         }
+        throw new HttpException('Author does not exist!', 404);
     }
 
     async findAuthorByName(name: string): Promise<AuthorModel> {
@@ -96,9 +94,10 @@ export class AuthorsService {
             updatedAuthor.birth = resRepo.birth;
             updatedAuthor.death = resRepo.death;
             updatedAuthor.isDel = resRepo.isDel;
-        }
 
-        return updatedAuthor;
+            return updatedAuthor;
+        }
+        throw new HttpException('Author does not exist!', 404);
     }
 
     async isDelAuthor(id: string) {
@@ -109,6 +108,7 @@ export class AuthorsService {
             const savedAuthor = await this.authorRepository.saveAuthor(authorFromDb);
             return savedAuthor;
         }
+        throw new HttpException('Author does not exist!', 404);
     }
 
     async deleteAuthor(id: string): Promise<boolean> {

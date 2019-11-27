@@ -43,19 +43,17 @@ export class BooksService {
 
     async findBookById(id: string): Promise<BookModel> {
         const book: BookModel = {};
-        try {
-            const resRepo: BookDocument = await this.bookRepository.findBookById(id);
-            if (resRepo) {
-                book.id = resRepo._id;
-                book.title = resRepo.title;
-                book.author = resRepo.author;
-                book.price = resRepo.price;
-                book.isDel = resRepo.isDel;
-            }
+        const resRepo: BookDocument = await this.bookRepository.findBookById(id);
+
+        if (resRepo) {
+            book.id = resRepo._id;
+            book.title = resRepo.title;
+            book.author = resRepo.author;
+            book.price = resRepo.price;
+            book.isDel = resRepo.isDel;
             return book;
-        } catch (error) {
-            throw new HttpException('Book does not exist!', 404);
         }
+        throw new HttpException('Book does not exist!', 404);
     }
 
     async findBookByTitle(title: string): Promise<BookModel> {
@@ -107,9 +105,10 @@ export class BooksService {
             updatedBook.author = resRepo.author;
             updatedBook.price = resRepo.price;
             updatedBook.isDel = resRepo.isDel;
-        }
 
-        return updatedBook;
+            return updatedBook;
+        }
+        throw new HttpException('Book does not exist!', 404);
     }
 
     async isDelBook(id: string) {
@@ -120,6 +119,7 @@ export class BooksService {
             const savedBook = await this.bookRepository.saveBook(bookFromDb);
             return savedBook;
         }
+        throw new HttpException('Book does not exist!', 404);
     }
 
     async deleteBook(id: string): Promise<boolean> {

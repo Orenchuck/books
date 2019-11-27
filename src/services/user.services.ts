@@ -78,27 +78,26 @@ export class UsersService {
 
         users.push(user);
       }
+      return users;
     }
-    return users;
+    throw new HttpException('You have no users', 404);
   }
 
   async getUserbyID(id: string): Promise<UserModel> {
     const user: UserModel = {};
-    try {
-      const resRepo: UserDocument = await this.userRepository.getUserbyID(id);
-      if (resRepo) {
-        user.id = resRepo._id;
-        user.email = resRepo.email;
-        user.password = resRepo.password;
-        user.roles = resRepo.roles;
-        user.active = resRepo.active;
-        user.cypher = resRepo.cypher;
-        user.isDel = resRepo.isDel;
-      }
+    const resRepo: UserDocument = await this.userRepository.getUserbyID(id);
+    if (resRepo) {
+      user.id = resRepo._id;
+      user.email = resRepo.email;
+      user.password = resRepo.password;
+      user.roles = resRepo.roles;
+      user.active = resRepo.active;
+      user.cypher = resRepo.cypher;
+      user.isDel = resRepo.isDel;
+
       return user;
-    } catch (error) {
-      throw new HttpException('User does not exist!', 404);
     }
+    throw new HttpException('User does not exist!', 404);
   }
 
   async updateUser(userToUpdate: UserModel): Promise<UserModel> {
@@ -115,6 +114,10 @@ export class UsersService {
     };
     const res = await this.userRepository.updateUser(userDoc);
 
+    if (!res) {
+      throw new HttpException('User does not exist!', 404);
+    }
+
     return res;
   }
 
@@ -126,6 +129,7 @@ export class UsersService {
       const savedUser = await this.authRepository.saveUser(userFromDb);
       return savedUser;
     }
+    throw new HttpException('User does not exist!', 404);
   }
 
   async deleteUser(id: string): Promise<boolean> {

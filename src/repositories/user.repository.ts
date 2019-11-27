@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { UserSchema, UserDocument } from 'src/documents/user.document';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Model, objectid } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
@@ -14,13 +14,15 @@ export class UserRepository {
     }
 
     async createUser(user, cypher) {
-        const saltRounds = 10;
-        const createdUser = new this.userModel(user);
-        createdUser.password = await bcrypt.hash(createdUser.password, saltRounds);
-        createdUser.cypher = cypher;
-        const newUser = await createdUser.save();
+        try {
+            const saltRounds = 10;
+            const createdUser = new this.userModel(user);
+            createdUser.password = await bcrypt.hash(createdUser.password, saltRounds);
+            createdUser.cypher = cypher;
+            const newUser = await createdUser.save();
 
-        return newUser;
+            return newUser;
+        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
     }
 
     async findOneByEmail(email: string): Promise<UserDocument> {
@@ -34,13 +36,17 @@ export class UserRepository {
     }
 
     async getUserbyID(id: objectid): Promise<UserDocument> {
-       const user: UserDocument = await this.userModel.findById(id).exec();
-       return user;
+        try {
+            const user: UserDocument = await this.userModel.findById(id).exec();
+            return user;
+        } catch { throw new HttpException('User does not exist!', 404); }
     }
 
     async updateUser(updateUser: UserDocument): Promise<UserDocument> {
-        const updatedUser: UserDocument = await this.userModel.findByIdAndUpdate(updateUser._id, updateUser);
-        return updatedUser;
+        try {
+            const updatedUser: UserDocument = await this.userModel.findByIdAndUpdate(updateUser._id, updateUser);
+            return updatedUser;
+        } catch { throw new HttpException('User does not exist!', 404); }
     }
 
     async deleteUser(id: objectid) {

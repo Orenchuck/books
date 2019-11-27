@@ -1,10 +1,12 @@
 import { Controller, Get, Post, Body, UseGuards, Param, Delete, Put } from '@nestjs/common';
 import { UsersService } from 'src/services/user.services';
-import { AuthGuard } from '@nestjs/passport';
 import { UserModel } from 'src/models/user.model';
 import { RolesGuard } from 'src/common/guards/roles.guards';
+import { Roles } from 'src/common/roles.decorator';
+import { UserRole } from 'src/models/user-role.enum';
 
 @Controller('users')
+@UseGuards(RolesGuard)
 export class UsersController {
     constructor(private usersService: UsersService) {
     }
@@ -16,36 +18,42 @@ export class UsersController {
     }
 
     @Get()
+    @Roles(UserRole.Admin)
     async getAllUsers(): Promise<UserModel[]> {
         const users = await this.usersService.getAllUsers();
         return users;
     }
 
     @Get(':id')
+    @Roles(UserRole.Admin)
     async getUserbyID(@Param('id') id: string): Promise<UserModel> {
         const user = await this.usersService.getUserbyID(id);
         return user;
     }
 
     @Get('email/:email')
+    @Roles(UserRole.Admin)
     async getUserbyEmail(@Param('email') email: string): Promise<UserModel> {
         const user = await this.usersService.findOneByEmail(email);
         return user;
     }
 
     @Put()
+    @Roles(UserRole.Admin, UserRole.User)
     async updateUser(@Body() userToUpdate: UserModel) {
         const user = await this.usersService.updateUser(userToUpdate);
         return user;
     }
 
     @Get('del/:id')
+    @Roles(UserRole.Admin, UserRole.User)
     async isDelUser(@Param('id') id: string): Promise<boolean> {
         const delUser = await this.usersService.isDelUser(id);
         return delUser;
     }
 
     @Delete(':id')
+    @Roles(UserRole.Admin)
     async deleteUser(@Param('id') id: string) {
         const users = await this.usersService.deleteUser(id);
         return users;
