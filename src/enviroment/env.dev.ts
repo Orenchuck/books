@@ -19,7 +19,9 @@ export const development = {
     httpPort: '80',
     httpsPort: '443',
     environment: process.env.NODE_ENV,
-    databaseProviderName: 'MONGO-CONNECTION',
-    databaseMongoConnectionUrl: 'mongodb://localhost/root',
+    db: 'MONGO-CONNECTION',
+    mongoUri: 'mongodb://127.0.0.1:27017/root',
     jwtSecretKey: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
+    expiresInAccess: process.env.ACCESS,
+    expiresInRefresh: process.env.REFRESH,
 };

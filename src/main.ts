@@ -20,7 +20,7 @@ async function bootstrap() {
 
   const server = express();
 
-  mongoose.connect('mongodb://127.0.0.1:27017/root', { useNewUrlParser: true, useFindAndModify: false });
+  mongoose.connect(process.env.MONGO_LOCAL, { useNewUrlParser: true, useFindAndModify: false });
 
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
