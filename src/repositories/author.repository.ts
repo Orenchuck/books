@@ -15,6 +15,7 @@ export class AuthorRepository {
     async addAuthor(author) {
         try {
             const newAuthor = new this.authorModel(author);
+            newAuthor.isDel = false;
             const saveAuthor = await newAuthor.save();
             return saveAuthor;
         } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }

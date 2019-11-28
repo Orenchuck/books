@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body, HttpStatus, HttpException, HttpCode, Param, UseGuards } from '@nestjs/common';
 import { AuthService } from 'src/services/auth.service';
-import { UsersService } from 'src/services/user.services';
 import { UserModel } from 'src/models/user.model';
 import { RolesGuard } from 'src/common/guards/roles.guards';
 
@@ -9,10 +8,7 @@ import { RolesGuard } from 'src/common/guards/roles.guards';
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
-        private readonly userService: UsersService,
-    ) {
-
-    }
+    ) {}
 
     @Post()
     @HttpCode(HttpStatus.OK)

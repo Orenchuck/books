@@ -2,6 +2,7 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { AuthorRepository } from 'src/repositories/author.repository';
 import { AuthorModel } from 'src/models/author.model';
 import { AuthorDocument } from 'src/documents/author.document';
+import { CreateAuthorModel } from 'src/models/create-author.model';
 
 @Injectable()
 export class AuthorsService {
@@ -9,7 +10,7 @@ export class AuthorsService {
         private authorRepository: AuthorRepository,
     ) { }
 
-    async addAuthor(author: AuthorModel) {
+    async addAuthor(author: CreateAuthorModel) {
         const resRepo = await this.authorRepository.addAuthor(author);
         const newAuthor: AuthorModel = {};
         if (resRepo) {
