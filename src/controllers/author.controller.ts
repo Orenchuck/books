@@ -12,19 +12,19 @@ export class AuthorsController {
     constructor(private readonly authorsService: AuthorsService) { }
 
     @Get()
-    async getAuthors(): Promise<AuthorModel[]> {
-        const authors = await this.authorsService.getAuthors();
+    async getAllAuthors(): Promise<AuthorModel[]> {
+        const authors = await this.authorsService.getAllAuthors();
         return authors;
     }
 
     @Get(':authorID')
-    async getAuthor(@Param('authorID') authorID: string): Promise<AuthorModel> {
+    async findAuthorById(@Param('authorID') authorID: string): Promise<AuthorModel> {
         const author = await this.authorsService.findAuthorById(authorID);
         return author;
     }
 
     @Get('name/:name')
-    async findAuthorByTitle(@Param('name') name: string): Promise<AuthorModel> {
+    async findAuthorByName(@Param('name') name: string): Promise<AuthorModel> {
         const author = await this.authorsService.findAuthorByName(name);
         return author;
     }
@@ -33,7 +33,7 @@ export class AuthorsController {
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
     async addAuthor(@Body() author: AuthorModel) {
-        const newAuthor = await this.authorsService.insertAuthor(author);
+        const newAuthor = await this.authorsService.addAuthor(author);
         return newAuthor;
     }
 
@@ -48,7 +48,7 @@ export class AuthorsController {
     @Get('del/:id')
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
-    async isDelUser(@Param('id') id: string): Promise<boolean> {
+    async isDelAuthor(@Param('id') id: string): Promise<boolean> {
         const delAuthor = await this.authorsService.isDelAuthor(id);
         return delAuthor;
     }

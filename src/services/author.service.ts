@@ -9,21 +9,21 @@ export class AuthorsService {
         private authorRepository: AuthorRepository,
     ) { }
 
-    async insertAuthor(author: AuthorModel) {
+    async addAuthor(author: AuthorModel) {
         const resRepo = await this.authorRepository.addAuthor(author);
         const newAuthor: AuthorModel = {};
         if (resRepo) {
             newAuthor.id = resRepo.id;
             newAuthor.name = resRepo.name;
             newAuthor.books = resRepo.books;
-            newAuthor.birth = resRepo.birth;
-            newAuthor.death = resRepo.death;
+            newAuthor.birthDate = resRepo.birthDate;
+            newAuthor.deathDate = resRepo.deathDate;
             newAuthor.isDel = resRepo.isDel;
         }
         return newAuthor;
     }
 
-    async getAuthors(): Promise<AuthorModel[]> {
+    async getAllAuthors(): Promise<AuthorModel[]> {
         const authors = await this.authorRepository.getAllAuthors();
         if (!authors) {
             throw new HttpException('You have no authors', 404);
@@ -34,8 +34,8 @@ export class AuthorsService {
                 id: oneAuthor._id,
                 name: oneAuthor.name,
                 books: oneAuthor.books,
-                birth: oneAuthor.birth,
-                death: oneAuthor.death,
+                birthDate: oneAuthor.birthDate,
+                deathDate: oneAuthor.deathDate,
                 isDel: oneAuthor.isDel,
             };
             allAuthors.push(author);
@@ -51,8 +51,8 @@ export class AuthorsService {
             author.id = resRepo._id;
             author.name = resRepo.name;
             author.books = resRepo.books;
-            author.birth = resRepo.birth;
-            author.death = resRepo.death;
+            author.birthDate = resRepo.birthDate;
+            author.deathDate = resRepo.deathDate;
             author.isDel = resRepo.isDel;
             return author;
         }
@@ -66,8 +66,8 @@ export class AuthorsService {
             author.id = resRepo._id;
             author.name = resRepo.name;
             author.books = resRepo.books;
-            author.birth = resRepo.birth;
-            author.death = resRepo.death;
+            author.birthDate = resRepo.birthDate;
+            author.deathDate = resRepo.deathDate;
             author.isDel = resRepo.isDel;
             return author;
         }
@@ -82,8 +82,8 @@ export class AuthorsService {
             updateAuthorDoc._id = userToUpdate.id;
             updateAuthorDoc.name = userToUpdate.name;
             updateAuthorDoc.books = userToUpdate.books;
-            updateAuthorDoc.birth = userToUpdate.birth;
-            updateAuthorDoc.death = userToUpdate.death;
+            updateAuthorDoc.birthDate = userToUpdate.birthDate;
+            updateAuthorDoc.deathDate = userToUpdate.deathDate;
         }
 
         const resRepo: AuthorDocument = await this.authorRepository.updateAuthor(updateAuthorDoc);
@@ -91,8 +91,8 @@ export class AuthorsService {
             updatedAuthor.id = resRepo._id;
             updatedAuthor.name = resRepo.name;
             updatedAuthor.books = resRepo.books;
-            updatedAuthor.birth = resRepo.birth;
-            updatedAuthor.death = resRepo.death;
+            updatedAuthor.birthDate = resRepo.birthDate;
+            updatedAuthor.deathDate = resRepo.deathDate;
             updatedAuthor.isDel = resRepo.isDel;
 
             return updatedAuthor;

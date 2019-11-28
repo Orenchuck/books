@@ -12,13 +12,13 @@ export class BooksController {
     constructor(private readonly booksService: BooksService) { }
 
     @Get()
-    async getBooks(): Promise<BookModel[]> {
-        const books = await this.booksService.getBooks();
+    async getAllBooks(): Promise<BookModel[]> {
+        const books = await this.booksService.getAllBooks();
         return books;
     }
 
     @Get(':bookID')
-    async getBook(@Param('bookID') bookID: string): Promise<BookModel> {
+    async findBookById(@Param('bookID') bookID: string): Promise<BookModel> {
         const book = await this.booksService.findBookById(bookID);
         return book;
     }
@@ -39,7 +39,7 @@ export class BooksController {
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
     async addBook(@Body() book: BookModel) {
-        const newBook = await this.booksService.insertBook(book);
+        const newBook = await this.booksService.addBook(book);
         return newBook;
     }
 

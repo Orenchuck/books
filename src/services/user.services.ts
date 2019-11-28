@@ -4,6 +4,7 @@ import { UserModel } from 'src/models/user.model';
 import { UserDocument } from 'src/documents/user.document';
 import { UserRepository } from 'src/repositories/user.repository';
 import { AuthRepository } from 'src/repositories/auth.repository';
+import { CreateUserModel } from 'src/models/create-user.model';
 
 @Injectable()
 export class UsersService {
@@ -13,9 +14,9 @@ export class UsersService {
     private authRepository: AuthRepository,
   ) { }
 
-  async create(user: UserModel) {
+  async create(user: CreateUserModel) {
     const cypher = await this.getRandomString();
-    const resRepo = await this.userRepository.createUser(user, cypher);
+    const resRepo = await this.userRepository.create(user, cypher);
     const newUser: UserModel = {};
 
     if (resRepo) {

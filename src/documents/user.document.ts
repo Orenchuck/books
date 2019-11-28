@@ -33,9 +33,7 @@ export const UserSchema = new mongoose.Schema({
         required: true,
         default: false,
     },
-    cypher: {
-        type: String,
-    },
+    cypher: String,
     isDel: {
         type: Boolean,
         required: true,

@@ -9,18 +9,10 @@ export interface BookDocument extends mongoose.Document {
 }
 
 export const BookSchema = new mongoose.Schema({
-    id: {
-        type: String,
-    },
-    title: {
-        type: String,
-    },
-    author: {
-        type: String,
-    },
-    price: {
-        type: Number,
-    },
+    id: String,
+    title: String,
+    author: String,
+    price: Number,
     isDel: {
         type: Boolean,
         required: true,

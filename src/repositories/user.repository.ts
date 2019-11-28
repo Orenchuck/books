@@ -13,12 +13,14 @@ export class UserRepository {
         this.userModel = mongoose.model('User', UserSchema);
     }
 
-    async createUser(user, cypher) {
+    async create(user, cypher) {
         try {
             const saltRounds = 10;
             const createdUser = new this.userModel(user);
             createdUser.password = await bcrypt.hash(createdUser.password, saltRounds);
             createdUser.cypher = cypher;
+            createdUser.active = false;
+            createdUser.isDel = false;
             const newUser = await createdUser.save();
 
             return newUser;

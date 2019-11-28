@@ -4,7 +4,6 @@ import { UsersService } from 'src/services/user.services';
 import { JwtPayload } from 'src/models/jwt-payload.model';
 import { UserModel } from 'src/models/user.model';
 import { AuthRepository } from 'src/repositories/auth.repository';
-import * as bcrypt from 'bcrypt';
 
 import nodemailer = require('nodemailer');
 import { UserRepository } from 'src/repositories/user.repository';
@@ -22,16 +21,9 @@ export class AuthService {
   }
 
   async validateUser(email: string): Promise<any> {
-    console.log(email);
-    
     const user = await this.usersService.findOneByEmail(email);
-    // const hashPass = await bcrypt.hash(pass, 10);
-    // if (user && user.password === hashPass) {
-    //   const { password, ...result } = user;
-    //   return result;
+
     if (user) {
-      console.log(user);
-      
       return user;
     }
     return null;
@@ -196,7 +188,8 @@ export class AuthService {
 
     await transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        // console.log('error ' + error);
+        // tslint:disable-next-line: no-console
+        console.log('error ' + error);
         return false;
       }
       // tslint:disable-next-line: no-console

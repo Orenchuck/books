@@ -39,7 +39,7 @@ export class UsersController {
     @Get('email/:email')
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
-    async getUserbyEmail(@Param('email') email: string): Promise<UserModel> {
+    async findUserbyEmail(@Param('email') email: string): Promise<UserModel> {
         const user = await this.usersService.findOneByEmail(email);
         return user;
     }

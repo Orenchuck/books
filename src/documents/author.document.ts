@@ -5,8 +5,8 @@ export interface AuthorDocument extends Document {
     _id?: ObjectId;
     name?: string;
     books?: BookDocument[];
-    birth?: Date;
-    death?: Date;
+    birthDate?: Date;
+    deathDate?: Date;
     isDel?: boolean;
 
 }
@@ -15,8 +15,8 @@ export const AuthorSchema = new Schema({
     id: String,
     name: String,
     books: Array,
-    birth: Date,
-    death: {
+    birthDate: Date,
+    deathDate: {
         type: Date,
         default: null,
     },

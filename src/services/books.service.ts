@@ -9,7 +9,7 @@ export class BooksService {
         private bookRepository: BookRepository,
     ) { }
 
-    async insertBook(book: BookModel) {
+    async addBook(book: BookModel) {
         const resRepo = await this.bookRepository.addBook(book);
         const newBook: BookModel = {};
         if (resRepo) {
@@ -22,7 +22,7 @@ export class BooksService {
         return newBook;
     }
 
-    async getBooks(): Promise<BookModel[]> {
+    async getAllBooks(): Promise<BookModel[]> {
         const books = await this.bookRepository.getAllBooks();
         if (!books) {
             throw new HttpException('You have no books', 404);
