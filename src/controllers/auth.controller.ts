@@ -1,0 +1,56 @@
+import { Controller, Get, Post, Body, HttpStatus, HttpException, HttpCode, Param, UseGuards } from '@nestjs/common';
+import { AuthService } from 'src/services/auth.service';
+import { UsersService } from 'src/services/user.services';
+import { UserModel } from 'src/models/user.model';
+import { RolesGuard } from 'src/common/guards/roles.guards';
+import { Roles } from 'src/common/roles.decorator';
+import { UserRole } from 'src/models/user-role.enum';
+import { AuthGuard } from '@nestjs/passport';
+
+@Controller('auth')
+@UseGuards(RolesGuard)
+export class AuthController {
+    constructor(
+        private readonly authService: AuthService,
+        private readonly userService: UsersService,
+    ) {
+
+    }
+
+    @Post()
+    @HttpCode(HttpStatus.OK)
+    async login(@Body() user: UserModel) {
+        const loginUser = await this.authService.loginUser(user);
+        return loginUser;
+    }
+
+    @Post('register')
+    async registerUser(@Body() newUser: UserModel) {
+        const registerUser = await this.authService.registerUser(newUser);
+        return registerUser;
+    }
+
+    @Get('verify/:cypher')
+    @Roles(UserRole.Admin, UserRole.User)
+    @UseGuards(AuthGuard('jwt'))
+    public async verifyEmail(@Param() params): Promise<boolean> {
+        try {
+            const isEmailVerified = await this.authService.verifyEmail(params.cypher);
+            // tslint:disable-next-line: no-console
+            console.log('LOGIN.EMAIL_VERIFIED', isEmailVerified);
+            return isEmailVerified;
+        } catch (error) {
+            throw new HttpException('LOGIN.ERROR', HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @Get('forgot-password/:email')
+    async forgotPasswordEmail(@Param('email') email: string): Promise<UserModel> {
+        try {
+            const getPass = this.authService.getForgotPass(email);
+            return getPass;
+        } catch (error) {
+            throw new HttpException('LOGIN.ERROR', HttpStatus.FORBIDDEN);
+        }
+    }
+}
