@@ -68,7 +68,7 @@ export class AuthService {
       roles: user.roles,
       isDel: user.isDel,
     };
-    const accessJwt = this.jwtService.sign(data, {expiresIn: process.env.ACCESS});
+    const accessJwt = this.jwtService.sign(data, {expiresIn: 900});
     const refreshJwt = this.jwtService.sign(data, {expiresIn: process.env.REFRESH});
     return {
       token: accessJwt,

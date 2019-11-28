@@ -2,6 +2,7 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { BookRepository } from 'src/repositories/book.repository';
 import { BookModel } from 'src/models/book.model';
 import { BookDocument } from 'src/documents/book.document';
+import { CreateBookModel } from 'src/models/create-book.model';
 
 @Injectable()
 export class BooksService {
@@ -9,7 +10,7 @@ export class BooksService {
         private bookRepository: BookRepository,
     ) { }
 
-    async addBook(book: BookModel) {
+    async addBook(book: CreateBookModel) {
         const resRepo = await this.bookRepository.addBook(book);
         const newBook: BookModel = {};
         if (resRepo) {
