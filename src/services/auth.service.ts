@@ -1,7 +1,8 @@
 import { Injectable, UnauthorizedException, HttpException, HttpStatus, HttpService } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/services/user.services';
-import { JwtPayload } from 'src/models/jwt-payload.model';
+import { AccessJwtPayload } from 'src/models/access-jwt-payload.model';
+import { RefreshJwtPayload } from 'src/models/refresh-jwt-payload';
 import { UserModel } from 'src/models/user.model';
 import { AuthRepository } from 'src/repositories/auth.repository';
 
@@ -47,7 +48,7 @@ export class AuthService {
           throw new HttpException('You have to verify your email', HttpStatus.FORBIDDEN);
         }
 
-        const jwtPayload = await this.createJwtPayload(userOne);
+        const jwtPayload = await this.createJwt(userOne);
         return jwtPayload;
       }
     }
@@ -55,23 +56,27 @@ export class AuthService {
     throw new HttpException('Email or password wrong!', HttpStatus.FORBIDDEN);
   }
 
-  async validateUserByJwt(payload: JwtPayload) {
+  async validateUserByJwt(payload: AccessJwtPayload) {
     const user = await this.usersService.findOneByEmail(payload.email);
 
     if (user) {
-      return this.createJwtPayload(user);
+      return this.createJwt(user);
     }
     throw new UnauthorizedException();
   }
 
-  async createJwtPayload(user) {
-    const data: JwtPayload = {
+  async createJwt(user) {
+    const accessData: AccessJwtPayload = {
       email: user.email,
       roles: user.roles,
-      isDel: user.isDel,
+      isAccess: true,
     };
-    const accessJwt = this.jwtService.sign(data, { expiresIn: 900 });
-    const refreshJwt = this.jwtService.sign(data, { expiresIn: process.env.REFRESH });
+    const refreshData: RefreshJwtPayload = {
+      email: user.email,
+      isAccess: false,
+    };
+    const accessJwt = this.jwtService.sign(accessData, { expiresIn: 900 });
+    const refreshJwt = this.jwtService.sign(refreshData, { expiresIn: 284000 });
 
     return {
       token: accessJwt,
