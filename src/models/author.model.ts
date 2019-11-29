@@ -1,10 +1,17 @@
 import * as mongoose from 'mongoose';
+import { ApiModelProperty } from '@nestjs/swagger';
 
 export class AuthorModel {
-    id?: string;
-    name?: string;
-    books?: mongoose.Schema.Types.ObjectId;
-    birthDate?: Date;
-    deathDate?: Date;
-    isDel?: boolean;
-  }
+  @ApiModelProperty()
+  id?: string;
+  @ApiModelProperty()
+  name?: string;
+  @ApiModelProperty()
+  books?: mongoose.Schema.Types.ObjectId;
+  @ApiModelProperty()
+  birthDate?: Date;
+  @ApiModelProperty()
+  deathDate?: Date;
+  @ApiModelProperty()
+  isDel?: boolean;
+}

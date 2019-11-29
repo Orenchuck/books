@@ -18,6 +18,7 @@ export class UserRepository {
             const saltRounds = 10;
             const createdUser = new this.userModel(user);
             createdUser.password = await bcrypt.hash(createdUser.password, saltRounds);
+            createdUser.roles = 'User';
             createdUser.cypher = cypher;
             createdUser.active = false;
             createdUser.isDel = false;

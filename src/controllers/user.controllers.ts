@@ -5,17 +5,21 @@ import { RolesGuard } from 'src/common/guards/roles.guards';
 import { Roles } from 'src/common/roles.decorator';
 import { UserRole } from 'src/models/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { CreateUserModel } from 'src/models/create-user.model';
 
 @Controller('users')
-@UseGuards(AuthGuard('jwt'))
+@ApiUseTags('user')
+// @UseGuards(AuthGuard('jwt'))
 @UseGuards(RolesGuard)
+@ApiBearerAuth()
 export class UsersController {
     constructor(private usersService: UsersService) {
     }
 
     @Post()
-    @UseGuards(AuthGuard('jwt'))
-    async create(@Body() user: UserModel) {
+    // @UseGuards(AuthGuard('jwt'))
+    async create(@Body() user: CreateUserModel) {
       const newUser = await this.usersService.create(user);
       return newUser;
     }

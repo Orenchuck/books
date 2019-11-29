@@ -5,7 +5,9 @@ import { Roles } from 'src/common/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guards';
 import { UserRole } from 'src/models/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiUseTags('books')
 @Controller('books')
 @UseGuards(RolesGuard)
 export class BooksController {
@@ -38,6 +40,7 @@ export class BooksController {
     @Post()
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async addBook(@Body() book: BookModel) {
         const newBook = await this.booksService.addBook(book);
         return newBook;
@@ -46,6 +49,7 @@ export class BooksController {
     @Put()
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async updateBook(@Body() bookToUpdate: BookModel) {
         const book = await this.booksService.updateBook(bookToUpdate);
         return book;
@@ -54,6 +58,7 @@ export class BooksController {
     @Get('del/:id')
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async isDelBook(@Param('id') id: string): Promise<boolean> {
         const delBook = await this.booksService.isDelBook(id);
         return delBook;
@@ -62,6 +67,7 @@ export class BooksController {
     @Delete(':bookID')
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async deleteBook(@Param('bookID') bookID: string) {
         const books = await this.booksService.deleteBook(bookID);
         return books;

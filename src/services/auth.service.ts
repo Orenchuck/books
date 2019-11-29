@@ -41,10 +41,12 @@ export class AuthService {
 
     if (userOne) {
       const passOk = await this.usersService.compareHash(user.password, userOne.password);
+
       if (passOk) {
         if (!userOne.active) {
           throw new HttpException('Sorry, you have to verify your email', HttpStatus.FORBIDDEN);
         }
+
         const jwtPayload = await this.createJwtPayload(userOne);
         return jwtPayload;
       }
@@ -68,8 +70,9 @@ export class AuthService {
       roles: user.roles,
       isDel: user.isDel,
     };
-    const accessJwt = this.jwtService.sign(data, {expiresIn: 900});
-    const refreshJwt = this.jwtService.sign(data, {expiresIn: process.env.REFRESH});
+    const accessJwt = this.jwtService.sign(data, { expiresIn: 900 });
+    const refreshJwt = this.jwtService.sign(data, { expiresIn: process.env.REFRESH });
+
     return {
       token: accessJwt,
       refresh: refreshJwt,
@@ -89,13 +92,16 @@ export class AuthService {
       if (userSave) {
         newUser.password = undefined;
       }
+
       const sent = await this.sendEmail(userSave);
+
       if (!sent) {
         // tslint:disable-next-line: no-console
         console.log('REGISTRATION.ERROR.MAIL_NOT_SENT');
       }
       // tslint:disable-next-line: no-console
       console.log('REGISTRATION.USER_REGISTERED_SUCCESSFULLY');
+
       return userSave;
     }
     throw new HttpException('Email exists', HttpStatus.FORBIDDEN);
@@ -194,7 +200,6 @@ export class AuthService {
       }
       // tslint:disable-next-line: no-console
       console.log('Message sent: %s', info.messageId);
-      return true;
     });
 
     return true;

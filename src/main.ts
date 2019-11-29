@@ -7,11 +7,12 @@ import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express
 import * as express from 'express';
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const http = require('http');
   const https = require('https');
-  const { MongoClient } = require('mongodb');
+  // const { MongoClient } = require('mongodb');
 
   const httpsOptions = {
     key: fs.readFileSync('src/secrets/key.pem'),
@@ -26,12 +27,22 @@ async function bootstrap() {
     AppModule,
     new ExpressAdapter(server),
   );
-  await app.init();
+
+  const options = new DocumentBuilder()
+    .setTitle('Books')
+    .setVersion('1.0')
+    .setSchemes('https')
+    .addBearerAuth('Authorization', 'header', 'basic')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api', app, document);
+
   dotenv.config();
 
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.use(LoggerMiddleware);
 
+  await app.init();
+  app.use(LoggerMiddleware);
   await https.createServer(httpsOptions, server).listen(process.env.PORT);
   await http.createServer((req, res) => {
     // tslint:disable-next-line: no-console
@@ -39,6 +50,7 @@ async function bootstrap() {
     res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
     res.end();
   }).listen(80);
+  await app.listen(3000);
 
 }
 bootstrap();

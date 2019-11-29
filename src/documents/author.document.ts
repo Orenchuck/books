@@ -1,7 +1,7 @@
 import { ObjectId, Document, Schema } from 'mongoose';
 
 export interface AuthorDocument extends Document {
-    _id?: ObjectId;
+    _id?: Schema.Types.ObjectId;
     name?: string;
     books?: ObjectId;
     birthDate?: Date;
