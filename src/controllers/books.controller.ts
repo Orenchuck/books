@@ -6,6 +6,7 @@ import { RolesGuard } from 'src/common/guards/roles.guards';
 import { UserRole } from 'src/models/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { CreateBookModel } from 'src/models/create-book.model';
 
 @ApiUseTags('books')
 @Controller('books')
@@ -41,7 +42,9 @@ export class BooksController {
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
-    async addBook(@Body() book: BookModel) {
+    async addBook(@Body() book: CreateBookModel) {
+        console.log('book');
+        
         const newBook = await this.booksService.addBook(book);
         return newBook;
     }

@@ -12,10 +12,11 @@ export interface AuthorDocument extends Document {
 export const AuthorSchema = new Schema({
     id: String,
     name: String,
-    books: {
-        type: Schema.Types.ObjectId,
-        ref: 'Book',
-    },
+    // books: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Book',
+    // },
+    books: String,
     birthDate: Date,
     deathDate: {
         type: Date,

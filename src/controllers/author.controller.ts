@@ -6,6 +6,7 @@ import { Roles } from 'src/common/roles.decorator';
 import { UserRole } from 'src/models/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { CreateAuthorModel } from 'src/models/create-author.model';
 
 @ApiUseTags('authors')
 @Controller('authors')
@@ -35,7 +36,7 @@ export class AuthorsController {
     @Roles(UserRole.Admin)
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    async addAuthor(@Body() author: AuthorModel) {
+    async addAuthor(@Body() author: CreateAuthorModel) {
         const newAuthor = await this.authorsService.addAuthor(author);
         return newAuthor;
     }

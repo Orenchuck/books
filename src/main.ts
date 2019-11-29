@@ -32,7 +32,7 @@ async function bootstrap() {
     .setTitle('Books')
     .setVersion('1.0')
     .setSchemes('https')
-    .addBearerAuth('Authorization', 'header', 'basic')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);

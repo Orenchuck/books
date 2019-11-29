@@ -1,12 +1,10 @@
 import { Controller, Get, Post, Body, HttpStatus, HttpException, HttpCode, Param, UseGuards } from '@nestjs/common';
 import { AuthService } from 'src/services/auth.service';
 import { UserModel } from 'src/models/user.model';
-import { RolesGuard } from 'src/common/guards/roles.guards';
 import { ApiUseTags } from '@nestjs/swagger';
 import { CreateUserModel } from 'src/models/create-user.model';
 
 @Controller('auth')
-@UseGuards(RolesGuard)
 @ApiUseTags('auth')
 export class AuthController {
     constructor(

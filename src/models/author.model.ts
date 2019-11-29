@@ -7,10 +7,18 @@ export class AuthorModel {
   @ApiModelProperty()
   name?: string;
   @ApiModelProperty()
-  books?: mongoose.Schema.Types.ObjectId;
-  @ApiModelProperty()
+  books?: string;
+  @ApiModelProperty({
+    example: new Date(Date.now()),
+    type: String,
+    required: true,
+  })
   birthDate?: Date;
-  @ApiModelProperty()
+  @ApiModelProperty({
+    example: new Date(Date.now()),
+    type: String,
+    required: true,
+  })
   deathDate?: Date;
   @ApiModelProperty()
   isDel?: boolean;

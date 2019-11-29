@@ -8,6 +8,7 @@ import { AuthRepository } from 'src/repositories/auth.repository';
 import nodemailer = require('nodemailer');
 import { UserRepository } from 'src/repositories/user.repository';
 import { UserDocument } from 'src/documents/user.document';
+import { CreateUserModel } from 'src/models/create-user.model';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,7 @@ export class AuthService {
     return null;
   }
 
-  async loginUser(user: UserModel) {
+  async loginUser(user: CreateUserModel) {
     if (!(user && user.email && user.password)) {
       throw new HttpException('Email and password are required!', HttpStatus.FORBIDDEN);
     }
@@ -41,10 +42,9 @@ export class AuthService {
 
     if (userOne) {
       const passOk = await this.usersService.compareHash(user.password, userOne.password);
-
       if (passOk) {
         if (!userOne.active) {
-          throw new HttpException('Sorry, you have to verify your email', HttpStatus.FORBIDDEN);
+          throw new HttpException('You have to verify your email', HttpStatus.FORBIDDEN);
         }
 
         const jwtPayload = await this.createJwtPayload(userOne);
