@@ -27,10 +27,12 @@
     "@nestjs/mongoose": "^6.1.2",
     "@nestjs/passport": "^6.1.0",
     "@nestjs/platform-express": "^6.7.2",
+    "@nestjs/swagger": "^3.1.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "dotenv-parse-variables": "^0.2.3",
+    "fastify-swagger": "^2.4.0",
     "hbs": "^4.0.6",
     "mongoose": "^5.7.7",
     "mysql2": "^2.0.1",
@@ -46,6 +48,8 @@
     "rxjs": "^6.5.3",
     "sequelize": "^5.21.2",
     "sequelize-typescript": "^1.0.0",
+
+    "swagger-ui-express": "^4.1.2",
     "typegoose": "^5.9.1"
   },
   "devDependencies": {

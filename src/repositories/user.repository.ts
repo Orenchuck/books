@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { UserSchema, UserDocument } from 'src/documents/user.document';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { Model, objectid } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
@@ -13,18 +13,19 @@ export class UserRepository {
         this.userModel = mongoose.model('User', UserSchema);
     }
 
-    async create(user, cypher) {
+    async create(user, cypher): Promise<UserDocument> {
         try {
             const saltRounds = 10;
             const createdUser = new this.userModel(user);
             createdUser.password = await bcrypt.hash(createdUser.password, saltRounds);
+            createdUser.roles = 'User';
             createdUser.cypher = cypher;
             createdUser.active = false;
             createdUser.isDel = false;
-            const newUser = await createdUser.save();
+            const newUser: UserDocument = await createdUser.save();
 
             return newUser;
-        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
+        } catch { throw new HttpException('Error connection with db', 504); }
     }
 
     async findOneByEmail(email: string): Promise<UserDocument> {

@@ -1,5 +1,8 @@
+import { ApiModelProperty } from '@nestjs/swagger';
+
 export class CreateUserModel {
-    email?: string;
-    password?: string;
-    roles?: string;
-  }
+  @ApiModelProperty()
+  email?: string;
+  @ApiModelProperty()
+  password?: string;
+}

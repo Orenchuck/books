@@ -1,11 +1,14 @@
-import { Controller, Get, Param, Post, Body, Put, Delete, UseFilters, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, UseGuards } from '@nestjs/common';
 import { BooksService } from 'src/services/books.service';
 import { BookModel } from 'src/models/book.model';
 import { Roles } from 'src/common/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guards';
 import { UserRole } from 'src/models/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { CreateBookModel } from 'src/models/create-book.model';
 
+@ApiUseTags('books')
 @Controller('books')
 @UseGuards(RolesGuard)
 export class BooksController {
@@ -38,7 +41,8 @@ export class BooksController {
     @Post()
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
-    async addBook(@Body() book: BookModel) {
+    @ApiBearerAuth()
+    async addBook(@Body() book: CreateBookModel) {
         const newBook = await this.booksService.addBook(book);
         return newBook;
     }
@@ -46,6 +50,7 @@ export class BooksController {
     @Put()
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async updateBook(@Body() bookToUpdate: BookModel) {
         const book = await this.booksService.updateBook(bookToUpdate);
         return book;
@@ -54,6 +59,7 @@ export class BooksController {
     @Get('del/:id')
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async isDelBook(@Param('id') id: string): Promise<boolean> {
         const delBook = await this.booksService.isDelBook(id);
         return delBook;
@@ -62,6 +68,7 @@ export class BooksController {
     @Delete(':bookID')
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async deleteBook(@Param('bookID') bookID: string) {
         const books = await this.booksService.deleteBook(bookID);
         return books;

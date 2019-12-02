@@ -5,7 +5,10 @@ import { RolesGuard } from 'src/common/guards/roles.guards';
 import { Roles } from 'src/common/roles.decorator';
 import { UserRole } from 'src/models/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { CreateAuthorModel } from 'src/models/create-author.model';
 
+@ApiUseTags('authors')
 @Controller('authors')
 @UseGuards(RolesGuard)
 export class AuthorsController {
@@ -31,22 +34,25 @@ export class AuthorsController {
 
     @Post()
     @Roles(UserRole.Admin)
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    async addAuthor(@Body() author: AuthorModel) {
+    async addAuthor(@Body() author: CreateAuthorModel): Promise<AuthorModel> {
         const newAuthor = await this.authorsService.addAuthor(author);
         return newAuthor;
     }
 
     @Put()
     @Roles(UserRole.Admin)
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    async updateAuthor(@Body() authorToUpdate: AuthorModel) {
+    async updateAuthor(@Body() authorToUpdate: AuthorModel): Promise<AuthorModel> {
         const author = await this.authorsService.updateAuthor(authorToUpdate);
         return author;
     }
 
     @Get('del/:id')
     @Roles(UserRole.Admin)
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     async isDelAuthor(@Param('id') id: string): Promise<boolean> {
         const delAuthor = await this.authorsService.isDelAuthor(id);
@@ -55,8 +61,9 @@ export class AuthorsController {
 
     @Delete(':authorID')
     @Roles(UserRole.Admin)
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    async deleteAuthor(@Param('authorID') authorID: string) {
+    async deleteAuthor(@Param('authorID') authorID: string): Promise<boolean> {
         const authors = await this.authorsService.deleteAuthor(authorID);
         return authors;
     }

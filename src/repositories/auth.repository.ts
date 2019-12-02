@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { UserSchema, UserDocument } from 'src/documents/user.document';
 import { Model } from 'mongoose';
@@ -17,10 +17,10 @@ export class AuthRepository {
         return emailVerif;
     }
 
-    async saveUser(user) {
+    async saveUser(user): Promise<boolean> {
         try {
-            const res = await user.save();
+            await user.save();
             return true;
-        } catch { throw new HttpException('error connection with db', HttpStatus.FORBIDDEN); }
+        } catch { throw new HttpException('Error connection with db', 504); }
     }
 }

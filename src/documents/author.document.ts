@@ -1,20 +1,18 @@
-import { Document, Schema, ObjectId } from 'mongoose';
-import { BookDocument } from 'src/documents/book.document';
+import { ObjectId, Document, Schema } from 'mongoose';
 
 export interface AuthorDocument extends Document {
-    _id?: ObjectId;
+    _id?: Schema.Types.ObjectId;
     name?: string;
-    books?: BookDocument[];
+    books?: ObjectId;
     birthDate?: Date;
     deathDate?: Date;
     isDel?: boolean;
-
 }
 
 export const AuthorSchema = new Schema({
     id: String,
     name: String,
-    books: Array,
+    books: String,
     birthDate: Date,
     deathDate: {
         type: Date,

@@ -26,17 +26,14 @@ export const UserSchema = new mongoose.Schema({
     roles: {
         type: String,
         required: true,
-        default: 'User',
     },
     active: {
         type: Boolean,
         required: true,
-        default: false,
     },
     cypher: String,
     isDel: {
         type: Boolean,
         required: true,
-        default: false,
     },
 });
