@@ -5,17 +5,18 @@ import { RolesGuard } from 'src/common/guards/roles.guards';
 import { Roles } from 'src/common/roles.decorator';
 import { UserRole } from 'src/models/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { CreateUserModel } from 'src/models/create-user.model';
 
 @Controller('users')
-@UseGuards(AuthGuard('jwt'))
+@ApiUseTags('user')
 @UseGuards(RolesGuard)
 export class UsersController {
     constructor(private usersService: UsersService) {
     }
 
     @Post()
-    @UseGuards(AuthGuard('jwt'))
-    async create(@Body() user: UserModel) {
+    async create(@Body() user: CreateUserModel): Promise<UserModel> {
       const newUser = await this.usersService.create(user);
       return newUser;
     }
@@ -23,6 +24,7 @@ export class UsersController {
     @Get()
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async getAllUsers(): Promise<UserModel[]> {
         const users = await this.usersService.getAllUsers();
         return users;
@@ -31,6 +33,7 @@ export class UsersController {
     @Get(':id')
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async getUserbyID(@Param('id') id: string): Promise<UserModel> {
         const user = await this.usersService.getUserbyID(id);
         return user;
@@ -39,7 +42,8 @@ export class UsersController {
     @Get('email/:email')
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
-    async getUserbyEmail(@Param('email') email: string): Promise<UserModel> {
+    @ApiBearerAuth()
+    async findUserbyEmail(@Param('email') email: string): Promise<UserModel> {
         const user = await this.usersService.findOneByEmail(email);
         return user;
     }
@@ -47,7 +51,8 @@ export class UsersController {
     @Put()
     @Roles(UserRole.Admin, UserRole.User)
     @UseGuards(AuthGuard('jwt'))
-    async updateUser(@Body() userToUpdate: UserModel) {
+    @ApiBearerAuth()
+    async updateUser(@Body() userToUpdate: UserModel): Promise<UserModel> {
         const user = await this.usersService.updateUser(userToUpdate);
         return user;
     }
@@ -55,6 +60,7 @@ export class UsersController {
     @Get('del/:id')
     @Roles(UserRole.Admin, UserRole.User)
     @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async isDelUser(@Param('id') id: string): Promise<boolean> {
         const delUser = await this.usersService.isDelUser(id);
         return delUser;
@@ -63,7 +69,8 @@ export class UsersController {
     @Delete(':id')
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
-    async deleteUser(@Param('id') id: string) {
+    @ApiBearerAuth()
+    async deleteUser(@Param('id') id: string): Promise<boolean> {
         const users = await this.usersService.deleteUser(id);
         return users;
     }

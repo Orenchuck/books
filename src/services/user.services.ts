@@ -4,6 +4,7 @@ import { UserModel } from 'src/models/user.model';
 import { UserDocument } from 'src/documents/user.document';
 import { UserRepository } from 'src/repositories/user.repository';
 import { AuthRepository } from 'src/repositories/auth.repository';
+import { CreateUserModel } from 'src/models/create-user.model';
 
 @Injectable()
 export class UsersService {
@@ -13,9 +14,9 @@ export class UsersService {
     private authRepository: AuthRepository,
   ) { }
 
-  async create(user: UserModel) {
-    const cypher = await this.getRandomString();
-    const resRepo = await this.userRepository.createUser(user, cypher);
+  async create(user: CreateUserModel): Promise<UserModel> {
+    const cypher: string = await this.getRandomString();
+    const resRepo: UserDocument = await this.userRepository.create(user, cypher);
     const newUser: UserModel = {};
 
     if (resRepo) {
@@ -31,7 +32,7 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<UserModel> {
-    const resRepo = await this.userRepository.findOneByEmail(email);
+    const resRepo: UserDocument = await this.userRepository.findOneByEmail(email);
     const user: UserModel = {};
 
     if (resRepo) {
@@ -48,7 +49,7 @@ export class UsersService {
     return resRepo;
   }
 
-  async getRandomString() {
+  async getRandomString(): Promise<string> {
     const abc = 'abcdefghijklmnopqrstuvwxyz';
     let res = '';
     while (res.length < 10) {
@@ -121,7 +122,7 @@ export class UsersService {
     return res;
   }
 
-  async isDelUser(id: string) {
+  async isDelUser(id: string): Promise<boolean> {
     const userFromDb: UserDocument = await this.userRepository.getUserbyID(id);
 
     if (userFromDb) {

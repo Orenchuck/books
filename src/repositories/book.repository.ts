@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { Model, objectid } from 'mongoose';
 import { BookDocument, BookSchema } from 'src/documents/book.document';
 
@@ -17,17 +17,17 @@ export class BookRepository {
             const newBook = new this.bookModel(book);
             const saveBook = await newBook.save();
             return saveBook;
-        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
+        } catch { throw new HttpException('Error connection with db', 504); }
     }
 
     async getAllBooks(): Promise<BookDocument[]> {
-        const books = await this.bookModel.find().exec();
+        const books: BookDocument[] = await this.bookModel.find().exec();
         return books;
     }
 
     async findBookById(id: string): Promise<BookDocument> {
         try {
-            const book = await this.bookModel.findById(id).exec();
+            const book: BookDocument = await this.bookModel.findById(id).exec();
             return book;
         } catch { throw new HttpException('Book does not exist!', 404); }
     }
@@ -49,11 +49,11 @@ export class BookRepository {
         } catch { throw new HttpException('Book does not exist!', 404); }
     }
 
-    async saveBook(book) {
+    async saveBook(book): Promise<boolean> {
         try {
             await book.save();
             return true;
-        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
+        } catch { throw new HttpException('Error connection with db', 504); }
     }
 
     async deleteBook(id: objectid) {

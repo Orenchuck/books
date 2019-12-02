@@ -1,9 +1,7 @@
 import * as mongoose from 'mongoose';
 import { ApiModelProperty } from '@nestjs/swagger';
 
-export class AuthorModel {
-  @ApiModelProperty()
-  id?: string;
+export class CreateAuthorModel {
   @ApiModelProperty()
   name?: string;
   @ApiModelProperty()
@@ -20,6 +18,4 @@ export class AuthorModel {
     required: true,
   })
   deathDate?: Date;
-  @ApiModelProperty()
-  isDel?: boolean;
 }

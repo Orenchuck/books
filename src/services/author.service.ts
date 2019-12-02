@@ -1,7 +1,8 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { AuthorRepository } from 'src/repositories/author.repository';
 import { AuthorModel } from 'src/models/author.model';
 import { AuthorDocument } from 'src/documents/author.document';
+import { CreateAuthorModel } from 'src/models/create-author.model';
 
 @Injectable()
 export class AuthorsService {
@@ -9,24 +10,24 @@ export class AuthorsService {
         private authorRepository: AuthorRepository,
     ) { }
 
-    async insertAuthor(author: AuthorModel) {
-        const resRepo = await this.authorRepository.addAuthor(author);
+    async addAuthor(author: CreateAuthorModel): Promise<AuthorModel> {
+        const resRepo: AuthorDocument = await this.authorRepository.addAuthor(author);
         const newAuthor: AuthorModel = {};
         if (resRepo) {
-            newAuthor.id = resRepo.id;
+            newAuthor.id = resRepo._id;
             newAuthor.name = resRepo.name;
             newAuthor.books = resRepo.books;
-            newAuthor.birth = resRepo.birth;
-            newAuthor.death = resRepo.death;
+            newAuthor.birthDate = resRepo.birthDate;
+            newAuthor.deathDate = resRepo.deathDate;
             newAuthor.isDel = resRepo.isDel;
         }
         return newAuthor;
     }
 
-    async getAuthors(): Promise<AuthorModel[]> {
-        const authors = await this.authorRepository.getAllAuthors();
+    async getAllAuthors(): Promise<AuthorModel[]> {
+        const authors: AuthorDocument[] = await this.authorRepository.getAllAuthors();
         if (!authors) {
-            throw new HttpException('You have no authors', 404);
+            throw new HttpException('You have no authors',  HttpStatus.NOT_FOUND);
         }
         const allAuthors: AuthorModel[] = [];
         for (const oneAuthor of authors) {
@@ -34,8 +35,8 @@ export class AuthorsService {
                 id: oneAuthor._id,
                 name: oneAuthor.name,
                 books: oneAuthor.books,
-                birth: oneAuthor.birth,
-                death: oneAuthor.death,
+                birthDate: oneAuthor.birthDate,
+                deathDate: oneAuthor.deathDate,
                 isDel: oneAuthor.isDel,
             };
             allAuthors.push(author);
@@ -51,27 +52,27 @@ export class AuthorsService {
             author.id = resRepo._id;
             author.name = resRepo.name;
             author.books = resRepo.books;
-            author.birth = resRepo.birth;
-            author.death = resRepo.death;
+            author.birthDate = resRepo.birthDate;
+            author.deathDate = resRepo.deathDate;
             author.isDel = resRepo.isDel;
             return author;
         }
-        throw new HttpException('Author does not exist!', 404);
+        throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND);
     }
 
     async findAuthorByName(name: string): Promise<AuthorModel> {
         const author: AuthorModel = {};
-        const resRepo = await this.authorRepository.findAuthorByName(name);
+        const resRepo: AuthorDocument = await this.authorRepository.findAuthorByName(name);
         if (resRepo) {
             author.id = resRepo._id;
             author.name = resRepo.name;
             author.books = resRepo.books;
-            author.birth = resRepo.birth;
-            author.death = resRepo.death;
+            author.birthDate = resRepo.birthDate;
+            author.deathDate = resRepo.deathDate;
             author.isDel = resRepo.isDel;
             return author;
         }
-        throw new HttpException('Author does not exist!', 404);
+        throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND);
     }
 
     async updateAuthor(userToUpdate: AuthorModel): Promise<AuthorModel> {
@@ -82,8 +83,8 @@ export class AuthorsService {
             updateAuthorDoc._id = userToUpdate.id;
             updateAuthorDoc.name = userToUpdate.name;
             updateAuthorDoc.books = userToUpdate.books;
-            updateAuthorDoc.birth = userToUpdate.birth;
-            updateAuthorDoc.death = userToUpdate.death;
+            updateAuthorDoc.birthDate = userToUpdate.birthDate;
+            updateAuthorDoc.deathDate = userToUpdate.deathDate;
         }
 
         const resRepo: AuthorDocument = await this.authorRepository.updateAuthor(updateAuthorDoc);
@@ -91,16 +92,16 @@ export class AuthorsService {
             updatedAuthor.id = resRepo._id;
             updatedAuthor.name = resRepo.name;
             updatedAuthor.books = resRepo.books;
-            updatedAuthor.birth = resRepo.birth;
-            updatedAuthor.death = resRepo.death;
+            updatedAuthor.birthDate = resRepo.birthDate;
+            updatedAuthor.deathDate = resRepo.deathDate;
             updatedAuthor.isDel = resRepo.isDel;
 
             return updatedAuthor;
         }
-        throw new HttpException('Author does not exist!', 404);
+        throw new HttpException('Author does not exist!',  HttpStatus.NOT_FOUND);
     }
 
-    async isDelAuthor(id: string) {
+    async isDelAuthor(id: string): Promise<boolean> {
         const authorFromDb: AuthorDocument = await this.authorRepository.findAuthorById(id);
 
         if (authorFromDb) {
@@ -108,7 +109,7 @@ export class AuthorsService {
             const savedAuthor = await this.authorRepository.saveAuthor(authorFromDb);
             return savedAuthor;
         }
-        throw new HttpException('Author does not exist!', 404);
+        throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND);
     }
 
     async deleteAuthor(id: string): Promise<boolean> {
@@ -116,7 +117,7 @@ export class AuthorsService {
         delAuthor._id = id;
         const resRepo = await this.authorRepository.deleteAuthor(delAuthor._id);
         if (resRepo.n === 0) {
-            throw new HttpException('Author does not exist!', 404);
+            throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND);
         }
         // tslint:disable-next-line: no-console
         console.log('Successfull del');
