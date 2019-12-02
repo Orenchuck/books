@@ -43,8 +43,6 @@ export class BooksController {
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
     async addBook(@Body() book: CreateBookModel) {
-        console.log('book');
-        
         const newBook = await this.booksService.addBook(book);
         return newBook;
     }

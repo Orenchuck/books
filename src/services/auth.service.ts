@@ -10,6 +10,9 @@ import nodemailer = require('nodemailer');
 import { UserRepository } from 'src/repositories/user.repository';
 import { UserDocument } from 'src/documents/user.document';
 import { CreateUserModel } from 'src/models/create-user.model';
+import { environment } from 'src/enviroment/enviroment';
+
+const getEnv = environment();
 
 @Injectable()
 export class AuthService {
@@ -75,8 +78,8 @@ export class AuthService {
       email: user.email,
       isAccess: false,
     };
-    const accessJwt = this.jwtService.sign(accessData, { expiresIn: 900 });
-    const refreshJwt = this.jwtService.sign(refreshData, { expiresIn: 284000 });
+    const accessJwt = this.jwtService.sign(accessData, { expiresIn: getEnv.expiresInAccess});
+    const refreshJwt = this.jwtService.sign(refreshData, { expiresIn: getEnv.expiresInRefresh });
 
     return {
       token: accessJwt,
