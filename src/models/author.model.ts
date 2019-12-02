@@ -1,4 +1,3 @@
-import * as mongoose from 'mongoose';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class AuthorModel {

@@ -12,15 +12,13 @@ import { JwtStrategy } from 'src/common/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { UsersController } from 'src/controllers/user.controllers';
 import { UsersService } from 'src/services/user.services';
-import * as dotenv from 'dotenv';
 import { UserRepository } from 'src/repositories/user.repository';
 import { AuthRepository } from 'src/repositories/auth.repository';
 import { BookRepository } from 'src/repositories/book.repository';
 import { AuthorsController } from 'src/controllers/author.controller';
 import { AuthorsService } from 'src/services/author.service';
 import { AuthorRepository } from 'src/repositories/author.repository';
-
-dotenv.config();
+import { databaseProviders } from 'src/providers/database.provider';
 
 @Module({
   imports: [
@@ -41,6 +39,7 @@ dotenv.config();
     AuthRepository,
     BookRepository,
     AuthorRepository,
+    ...databaseProviders,
   ],
   exports: [UsersService],
 })

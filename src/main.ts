@@ -41,8 +41,6 @@ async function bootstrap() {
   await app.init();
   await https.createServer(httpsOptions, server).listen(getEnv.httpsPort);
   await http.createServer((req, res) => {
-    // tslint:disable-next-line: no-console
-    console.log(`https://${req.headers.host}${req.url}`);
     res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
     res.end();
   }).listen(getEnv.httpPort);
