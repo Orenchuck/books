@@ -22,7 +22,7 @@ export class RolesGuard implements CanActivate {
         const token: string = headers.replace('Bearer ', '');
         const payload = this.jwtService.decode(token);
         // tslint:disable-next-line: no-string-literal
-        const userRole = payload['roles'];
+        const userRole: string = payload['roles'];
         const hasRole: boolean = roles.includes(userRole);
         // tslint:disable-next-line: no-string-literal
         return payload['email'] && userRole && hasRole;

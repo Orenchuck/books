@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { Model, objectid } from 'mongoose';
 import { AuthorDocument, AuthorSchema } from 'src/documents/author.document';
 
@@ -18,7 +18,7 @@ export class AuthorRepository {
             newAuthor.isDel = false;
             const saveAuthor = await newAuthor.save();
             return saveAuthor;
-        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
+        } catch { throw new HttpException('Error connection with db', 504); }
     }
 
     async getAllAuthors(): Promise<AuthorDocument[]> {
@@ -45,11 +45,11 @@ export class AuthorRepository {
         } catch { throw new HttpException('Author does not exist!', 404); }
     }
 
-    async saveAuthor(author) {
+    async saveAuthor(author): Promise<boolean> {
         try {
             const newAuthor = await author.save();
             return newAuthor;
-        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
+        } catch { throw new HttpException('Error connection with db', 504); }
     }
 
     async deleteAuthor(id: objectid) {

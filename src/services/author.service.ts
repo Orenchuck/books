@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { AuthorRepository } from 'src/repositories/author.repository';
 import { AuthorModel } from 'src/models/author.model';
 import { AuthorDocument } from 'src/documents/author.document';
@@ -10,11 +10,11 @@ export class AuthorsService {
         private authorRepository: AuthorRepository,
     ) { }
 
-    async addAuthor(author: CreateAuthorModel) {
-        const resRepo = await this.authorRepository.addAuthor(author);
+    async addAuthor(author: CreateAuthorModel): Promise<AuthorModel> {
+        const resRepo: AuthorDocument = await this.authorRepository.addAuthor(author);
         const newAuthor: AuthorModel = {};
         if (resRepo) {
-            newAuthor.id = resRepo.id;
+            newAuthor.id = resRepo._id;
             newAuthor.name = resRepo.name;
             newAuthor.books = resRepo.books;
             newAuthor.birthDate = resRepo.birthDate;
@@ -25,9 +25,9 @@ export class AuthorsService {
     }
 
     async getAllAuthors(): Promise<AuthorModel[]> {
-        const authors = await this.authorRepository.getAllAuthors();
+        const authors: AuthorDocument[] = await this.authorRepository.getAllAuthors();
         if (!authors) {
-            throw new HttpException('You have no authors', 404);
+            throw new HttpException('You have no authors',  HttpStatus.NOT_FOUND);
         }
         const allAuthors: AuthorModel[] = [];
         for (const oneAuthor of authors) {
@@ -57,12 +57,12 @@ export class AuthorsService {
             author.isDel = resRepo.isDel;
             return author;
         }
-        throw new HttpException('Author does not exist!', 404);
+        throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND);
     }
 
     async findAuthorByName(name: string): Promise<AuthorModel> {
         const author: AuthorModel = {};
-        const resRepo = await this.authorRepository.findAuthorByName(name);
+        const resRepo: AuthorDocument = await this.authorRepository.findAuthorByName(name);
         if (resRepo) {
             author.id = resRepo._id;
             author.name = resRepo.name;
@@ -72,7 +72,7 @@ export class AuthorsService {
             author.isDel = resRepo.isDel;
             return author;
         }
-        throw new HttpException('Author does not exist!', 404);
+        throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND);
     }
 
     async updateAuthor(userToUpdate: AuthorModel): Promise<AuthorModel> {
@@ -98,10 +98,10 @@ export class AuthorsService {
 
             return updatedAuthor;
         }
-        throw new HttpException('Author does not exist!', 404);
+        throw new HttpException('Author does not exist!',  HttpStatus.NOT_FOUND);
     }
 
-    async isDelAuthor(id: string) {
+    async isDelAuthor(id: string): Promise<boolean> {
         const authorFromDb: AuthorDocument = await this.authorRepository.findAuthorById(id);
 
         if (authorFromDb) {
@@ -109,7 +109,7 @@ export class AuthorsService {
             const savedAuthor = await this.authorRepository.saveAuthor(authorFromDb);
             return savedAuthor;
         }
-        throw new HttpException('Author does not exist!', 404);
+        throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND);
     }
 
     async deleteAuthor(id: string): Promise<boolean> {
@@ -117,7 +117,7 @@ export class AuthorsService {
         delAuthor._id = id;
         const resRepo = await this.authorRepository.deleteAuthor(delAuthor._id);
         if (resRepo.n === 0) {
-            throw new HttpException('Author does not exist!', 404);
+            throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND);
         }
         // tslint:disable-next-line: no-console
         console.log('Successfull del');

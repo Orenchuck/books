@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { UserSchema, UserDocument } from 'src/documents/user.document';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { Model, objectid } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
@@ -25,7 +25,7 @@ export class UserRepository {
             const newUser: UserDocument = await createdUser.save();
 
             return newUser;
-        } catch { throw new HttpException('Error connection with db', HttpStatus.FORBIDDEN); }
+        } catch { throw new HttpException('Error connection with db', 504); }
     }
 
     async findOneByEmail(email: string): Promise<UserDocument> {

@@ -36,7 +36,7 @@ export class AuthorsController {
     @Roles(UserRole.Admin)
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    async addAuthor(@Body() author: CreateAuthorModel) {
+    async addAuthor(@Body() author: CreateAuthorModel): Promise<AuthorModel> {
         const newAuthor = await this.authorsService.addAuthor(author);
         return newAuthor;
     }
@@ -45,7 +45,7 @@ export class AuthorsController {
     @Roles(UserRole.Admin)
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    async updateAuthor(@Body() authorToUpdate: AuthorModel) {
+    async updateAuthor(@Body() authorToUpdate: AuthorModel): Promise<AuthorModel> {
         const author = await this.authorsService.updateAuthor(authorToUpdate);
         return author;
     }
@@ -63,7 +63,7 @@ export class AuthorsController {
     @Roles(UserRole.Admin)
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    async deleteAuthor(@Param('authorID') authorID: string) {
+    async deleteAuthor(@Param('authorID') authorID: string): Promise<boolean> {
         const authors = await this.authorsService.deleteAuthor(authorID);
         return authors;
     }

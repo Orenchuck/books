@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   async validateUser(email: string): Promise<any> {
-    const user = await this.usersService.findOneByEmail(email);
+    const user: UserDocument = await this.usersService.findOneByEmail(email);
 
     if (user) {
       return user;
@@ -34,21 +34,21 @@ export class AuthService {
     return null;
   }
 
-  async loginUser(user: CreateUserModel) {
+  async loginUser(user: CreateUserModel): Promise<any> {
     if (!(user && user.email && user.password)) {
-      throw new HttpException('Email and password are required!', HttpStatus.FORBIDDEN);
+      throw new HttpException('Email and password are required!', HttpStatus.UNAUTHORIZED);
     }
 
     const userOne: UserModel = await this.usersService.findOneByEmail(user.email);
     if (!userOne) {
-      throw new HttpException('This email does not exist!', 404);
+      throw new HttpException('This email does not exist!', HttpStatus.NOT_FOUND);
     }
 
     if (userOne) {
       const passOk = await this.usersService.compareHash(user.password, userOne.password);
       if (passOk) {
         if (!userOne.active) {
-          throw new HttpException('You have to verify your email', HttpStatus.FORBIDDEN);
+          throw new HttpException('You have to verify your email', HttpStatus.UNAUTHORIZED);
         }
 
         const jwtPayload = await this.createJwt(userOne);
@@ -56,11 +56,11 @@ export class AuthService {
       }
     }
 
-    throw new HttpException('Email or password wrong!', HttpStatus.FORBIDDEN);
+    throw new HttpException('Email or password wrong!', HttpStatus.UNAUTHORIZED);
   }
 
-  async validateUserByJwt(payload: AccessJwtPayload) {
-    const user = await this.usersService.findOneByEmail(payload.email);
+  async validateUserByJwt(payload: AccessJwtPayload): Promise<any> {
+    const user: UserDocument = await this.usersService.findOneByEmail(payload.email);
 
     if (user) {
       return this.createJwt(user);
@@ -87,12 +87,12 @@ export class AuthService {
     };
   }
 
-  async registerUser(newUser) {
+  async registerUser(newUser): Promise<UserModel> {
     if (!(newUser && newUser.email && newUser.password)) {
-      throw new HttpException('Username and password are required!', HttpStatus.FORBIDDEN);
+      throw new HttpException('Username and password are required!', HttpStatus.UNAUTHORIZED);
     }
 
-    const user = await this.usersService.findOneByEmail(newUser.email);
+    const user: UserDocument = await this.usersService.findOneByEmail(newUser.email);
 
     if (!user) {
       const userSave = await this.usersService.create(newUser);
@@ -112,7 +112,7 @@ export class AuthService {
 
       return userSave;
     }
-    throw new HttpException('Email exists', HttpStatus.FORBIDDEN);
+    throw new HttpException('Email exists', HttpStatus.UNAUTHORIZED);
   }
 
   async sendEmail(user: UserModel): Promise<boolean> {
@@ -148,7 +148,7 @@ export class AuthService {
   }
 
   async verifyEmail(cypher: string): Promise<boolean> {
-    const resRepo = await this.authRepository.verifyEmail(cypher);
+    const resRepo: UserDocument = await this.authRepository.verifyEmail(cypher);
     if (resRepo) {
       const userFromDb: UserDocument = await this.userRepository.findOneByEmail(resRepo.email);
 
@@ -162,7 +162,7 @@ export class AuthService {
         }
       }
     }
-    throw new HttpException('LOGIN.EMAIL_CODE_NOT_VALID', HttpStatus.FORBIDDEN);
+    throw new HttpException('LOGIN. EMAIL CODE NOT VALID', HttpStatus.FORBIDDEN);
   }
 
   async getForgotPass(email: string): Promise<UserModel> {
@@ -170,7 +170,7 @@ export class AuthService {
     const newPass = await this.usersService.getRandomString();
 
     if (emailExist) {
-      const sent = await this.sendForgotPassword(emailExist, newPass);
+      const sent: boolean = await this.sendForgotPassword(emailExist, newPass);
 
       if (sent) {
         emailExist.password = newPass;
@@ -180,7 +180,7 @@ export class AuthService {
       }
     }
 
-    throw new HttpException('PASSWORD IS NOT SENT. LOGIN ERROR', HttpStatus.FORBIDDEN);
+    throw new HttpException('PASSWORD IS NOT SENT. LOGIN ERROR', HttpStatus.NOT_IMPLEMENTED);
   }
 
   async sendForgotPassword(user: UserModel, newPass: string): Promise<boolean> {

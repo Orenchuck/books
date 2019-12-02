@@ -19,7 +19,7 @@ export class AuthController {
     }
 
     @Post('register')
-    async registerUser(@Body() newUser: CreateUserModel) {
+    async registerUser(@Body() newUser: CreateUserModel): Promise<UserModel> {
         const registerUser = await this.authService.registerUser(newUser);
         return registerUser;
     }
