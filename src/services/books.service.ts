@@ -12,8 +12,6 @@ export class BooksService {
 
     async addBook(book: CreateBookModel) {
         const resRepo = await this.bookRepository.addBook(book);
-        console.log(resRepo);
-        
         const newBook: BookModel = {};
         if (resRepo) {
             newBook.id = resRepo.id;

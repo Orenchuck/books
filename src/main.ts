@@ -1,18 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'src/app.module';
 import { HttpExceptionFilter } from 'src/common/exception.filter';
-import { LoggerMiddleware } from 'src/common/middleware.request';
 import * as fs from 'fs';
 import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express';
 import * as express from 'express';
-import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { environment } from 'src/enviroment/enviroment';
 
 async function bootstrap() {
   const http = require('http');
   const https = require('https');
-  // const { MongoClient } = require('mongodb');
 
   const httpsOptions = {
     key: fs.readFileSync('src/secrets/key.pem'),
@@ -20,8 +18,9 @@ async function bootstrap() {
   };
 
   const server = express();
+  const getEnv = environment();
 
-  mongoose.connect(process.env.MONGO_LOCAL, { useNewUrlParser: true, useFindAndModify: false });
+  mongoose.connect(getEnv.mongoUri, { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true });
 
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
@@ -37,20 +36,16 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 
-  dotenv.config();
-
   app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.init();
-  app.use(LoggerMiddleware);
-  await https.createServer(httpsOptions, server).listen(process.env.PORT);
+  await https.createServer(httpsOptions, server).listen(getEnv.httpsPort);
   await http.createServer((req, res) => {
     // tslint:disable-next-line: no-console
     console.log(`https://${req.headers.host}${req.url}`);
     res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
     res.end();
-  }).listen(80);
-  await app.listen(3000);
-
+  }).listen(getEnv.httpPort);
 }
+
 bootstrap();

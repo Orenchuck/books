@@ -1,7 +1,3 @@
-// export const environment = {
-//     production: false,
-//   };
-
 import { development } from 'src/enviroment/env.dev';
 import { production } from 'src/enviroment/env.prod';
 

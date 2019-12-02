@@ -34,11 +34,7 @@ export class AuthController {
 
     @Get('forgot-password/:email')
     async sendForgotPasswordEmail(@Param('email') email: string): Promise<UserModel> {
-        try {
             const getPass = this.authService.getForgotPass(email);
             return getPass;
-        } catch (error) {
-            throw new HttpException('LOGIN.ERROR', HttpStatus.FORBIDDEN);
-        }
     }
 }

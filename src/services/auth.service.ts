@@ -82,8 +82,8 @@ export class AuthService {
     const refreshJwt = this.jwtService.sign(refreshData, { expiresIn: getEnv.expiresInRefresh });
 
     return {
-      token: accessJwt,
-      refresh: refreshJwt,
+      accessToken: accessJwt,
+      refreshToken: refreshJwt,
     };
   }
 
@@ -180,7 +180,7 @@ export class AuthService {
       }
     }
 
-    throw new HttpException('PASSWORD IS NOT SENT', HttpStatus.FORBIDDEN);
+    throw new HttpException('PASSWORD IS NOT SENT. LOGIN ERROR', HttpStatus.FORBIDDEN);
   }
 
   async sendForgotPassword(user: UserModel, newPass: string): Promise<boolean> {

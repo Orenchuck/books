@@ -16,7 +16,7 @@ export class UsersController {
     }
 
     @Post()
-    async create(@Body() user: CreateUserModel) {
+    async create(@Body() user: CreateUserModel): Promise<UserModel> {
       const newUser = await this.usersService.create(user);
       return newUser;
     }
@@ -52,7 +52,7 @@ export class UsersController {
     @Roles(UserRole.Admin, UserRole.User)
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
-    async updateUser(@Body() userToUpdate: UserModel) {
+    async updateUser(@Body() userToUpdate: UserModel): Promise<UserModel> {
         const user = await this.usersService.updateUser(userToUpdate);
         return user;
     }
@@ -70,7 +70,7 @@ export class UsersController {
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
-    async deleteUser(@Param('id') id: string) {
+    async deleteUser(@Param('id') id: string): Promise<boolean> {
         const users = await this.usersService.deleteUser(id);
         return users;
     }
