@@ -27,6 +27,8 @@ async function bootstrap() {
     new ExpressAdapter(server),
   );
 
+  app.enableCors();
+
   const options = new DocumentBuilder()
     .setTitle('Books')
     .setVersion('1.0')

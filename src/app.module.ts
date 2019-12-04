@@ -19,6 +19,10 @@ import { AuthorsController } from 'src/controllers/author.controller';
 import { AuthorsService } from 'src/services/author.service';
 import { AuthorRepository } from 'src/repositories/author.repository';
 import { databaseProviders } from 'src/providers/database.provider';
+import { booksProviders } from 'src/providers/books.provider';
+import { authorsBooksProviders } from 'src/providers/authors-books.provider';
+import { authorsProviders } from 'src/providers/authors.provider';
+import { userProviders } from 'src/providers/users.provider';
 
 @Module({
   imports: [
@@ -40,6 +44,10 @@ import { databaseProviders } from 'src/providers/database.provider';
     BookRepository,
     AuthorRepository,
     ...databaseProviders,
+    ...booksProviders,
+    ...authorsBooksProviders,
+    ...authorsProviders,
+    ...userProviders,
   ],
   exports: [UsersService],
 })

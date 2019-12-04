@@ -1,22 +1,6 @@
 import { Table, Column, Model } from 'sequelize-typescript';
 
 @Table
-export class User extends Model<User> {
-  @Column
-  email: string;
+export class AuthorsBooks extends Model<AuthorsBooks> {
 
-  @Column
-  password: string;
-
-  @Column
-  roles: string;
-
-  @Column
-  active: boolean;
-
-  @Column
-  cypher: string;
-
-  @Column
-  isDelete: boolean;
 }

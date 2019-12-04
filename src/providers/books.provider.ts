@@ -1,8 +1,9 @@
 import { Book } from 'src/entities/book.entity';
+import { BOOKS_REPOSITORY } from 'src/constants/constants';
 
 export const booksProviders = [
   {
-    provide: 'BOOK_REPOSITORY',
+    provide: BOOKS_REPOSITORY,
     useValue: Book,
   },
 ];

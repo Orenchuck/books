@@ -10,24 +10,36 @@ const getEnv = environment();
 export const databaseProviders = [
     {
         provide: 'SEQUELIZE',
-        useFactory: async () => {
-            const sequelize = new Sequelize({});
-            // tslint:disable-next-line: no-string-literal
-            sequelize['dialect'] = getEnv.sqlDialect,
-                // tslint:disable-next-line: no-string-literal
-                sequelize['host'] = getEnv.host,
-                // tslint:disable-next-line: no-string-literal
-                sequelize['port'] = getEnv.sqlPort,
-                // tslint:disable-next-line: no-string-literal
-                sequelize['username'] = getEnv.sqlUsername,
-                // tslint:disable-next-line: no-string-literal
-                sequelize['password'] = getEnv.sqlPassword,
-                // tslint:disable-next-line: no-string-literal
-                sequelize['database'] = getEnv.sqlDBname,
+    useFactory: async () => {
+      const sequelize = new Sequelize({
+        dialect: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        username: 'admin',
+        password: 'root',
+        database: 'root',
+      });
+      sequelize.addModels([Book, Author, User, AuthorsBooks]);
+      await sequelize.sync();
+      return sequelize;
+        // useFactory: async () => {
+        //     const sequelize = new Sequelize({});
+        //     // tslint:disable-next-line: no-string-literal
+        //     sequelize['dialect'] = getEnv.sqlDialect,
+        //         // tslint:disable-next-line: no-string-literal
+        //         sequelize['host'] = getEnv.host,
+        //         // tslint:disable-next-line: no-string-literal
+        //         sequelize['port'] = getEnv.sqlPort,
+        //         // tslint:disable-next-line: no-string-literal
+        //         sequelize['username'] = getEnv.sqlUsername,
+        //         // tslint:disable-next-line: no-string-literal
+        //         sequelize['password'] = getEnv.sqlPassword,
+        //         // tslint:disable-next-line: no-string-literal
+        //         sequelize['database'] = getEnv.sqlDBname,
 
-                sequelize.addModels([Book, Author, User, AuthorsBooks]);
-            await sequelize.sync();
-            return sequelize;
+        //         sequelize.addModels([Book, Author, User, AuthorsBooks]);
+        //     await sequelize.sync();
+        //     return sequelize;
         },
     },
 ];
