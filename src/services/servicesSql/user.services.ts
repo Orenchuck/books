@@ -1,10 +1,10 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserModel } from 'src/models/user.model';
-import { UserDocument } from 'src/documents/user.document';
-import { UserRepository } from 'src/repositories/user.repository';
-import { AuthRepository } from 'src/repositories/auth.repository';
+import { UserRepository } from 'src/repositories/repoSql/user.repository';
+import { AuthRepository } from 'src/repositories/repoSql/auth.repository';
 import { CreateUserModel } from 'src/models/create-user.model';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -15,15 +15,26 @@ export class UsersService {
   ) { }
 
   async create(user: CreateUserModel): Promise<UserModel> {
+    const saltRounds = 10;
     const cypher: string = await this.getRandomString();
-    const resRepo: UserDocument = await this.userRepository.create(user, cypher);
+    const userToCreate: User = {} as any;
+
+    userToCreate.email = user.email;
+    userToCreate.password = await bcrypt.hash(user.password, saltRounds);
+    userToCreate.roles = 'User';
+    userToCreate.cypher = cypher;
+    userToCreate.active = false;
+    userToCreate.isDelete = false;
+    userToCreate.id = await this.getRandomString();
+
+    const resRepo = await this.userRepository.create(userToCreate);
     const newUser: UserModel = {};
 
     if (resRepo) {
-      newUser.id = resRepo._id;
+      newUser.id = resRepo.id;
       newUser.email = resRepo.email;
       newUser.password = resRepo.password;
-      // newUser.roles = resRepo.roles;
+      newUser.roles = resRepo.roles;
       newUser.active = resRepo.active;
       newUser.cypher = resRepo.cypher;
       newUser.isDelete = resRepo.isDelete;
@@ -32,11 +43,11 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<UserModel> {
-    const resRepo: UserDocument = await this.userRepository.findOneByEmail(email);
+    const resRepo: User = await this.userRepository.findOneByEmail(email);
     const user: UserModel = {};
 
     if (resRepo) {
-      user.id = resRepo._id;
+      user.id = resRepo.id;
       user.email = resRepo.email;
       user.password = resRepo.password;
       // user.roles = resRepo.roles;
@@ -64,13 +75,13 @@ export class UsersService {
   }
 
   async getAllUsers(): Promise<UserModel[]> {
-    const resRepo: UserDocument[] = await this.userRepository.getAllUsers();
+    const resRepo: User[] = await this.userRepository.getAllUsers();
     const users: UserModel[] = [];
 
     if (resRepo) {
       for (const oneUser of resRepo) {
         const user: UserModel = {};
-        user.id = oneUser._id;
+        user.id = oneUser.id;
         user.email = oneUser.email;
         user.password = oneUser.password;
         // user.roles = oneUser.roles;
@@ -86,9 +97,9 @@ export class UsersService {
 
   async getUserbyID(id: string): Promise<UserModel> {
     const user: UserModel = {};
-    const resRepo: UserDocument = await this.userRepository.getUserbyID(id);
+    const resRepo: User = await this.userRepository.getUserbyID(id);
     if (resRepo) {
-      user.id = resRepo._id;
+      user.id = resRepo.id;
       user.email = resRepo.email;
       user.password = resRepo.password;
       // user.roles = resRepo.roles;
@@ -101,29 +112,28 @@ export class UsersService {
     throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND);
   }
 
-  async updateUser(userToUpdate: UserModel): Promise<UserModel> {
+  async updateUser(userToUpdate: UserModel) {
     const saltRounds = 10;
     userToUpdate.password = await bcrypt.hash(userToUpdate.password, saltRounds);
-    const userDoc: UserDocument = {
-      _id: userToUpdate.id,
-      email: userToUpdate.email,
-      password: userToUpdate.password,
-      // roles: userToUpdate.roles,
-      active: userToUpdate.active,
-      cypher: userToUpdate.cypher,
-      isDelete: userToUpdate.isDelete,
-    };
+    const userDoc: User = {} as any;
+    userDoc.id = userToUpdate.id;
+    userDoc.email = userToUpdate.email;
+    userDoc.password = userToUpdate.password;
+    userDoc.roles = userToUpdate.roles;
+    userDoc.active = userToUpdate.active;
+    userDoc.cypher = userToUpdate.cypher;
+    userDoc.isDelete = userToUpdate.isDelete;
     const res = await this.userRepository.updateUser(userDoc);
 
     if (!res) {
       throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND);
     }
 
-    return res;
+    return true;
   }
 
   async isDeleteUser(id: string): Promise<boolean> {
-    const userFromDb: UserDocument = await this.userRepository.getUserbyID(id);
+    const userFromDb: User = await this.userRepository.getUserbyID(id);
 
     if (userFromDb) {
       userFromDb.isDelete = !userFromDb.isDelete;
@@ -134,14 +144,12 @@ export class UsersService {
   }
 
   async deleteUser(id: string): Promise<boolean> {
-    const delUser: UserDocument = {};
-    delUser._id = id;
-    const resRepo = await this.userRepository.deleteUser(delUser._id);
-    if (resRepo.n === 0) {
+    const delUser: User = {} as User;
+    delUser.id = id;
+    const resRepo = await this.userRepository.deleteUser(delUser.id);
+    if (!resRepo) {
       throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND);
     }
-    // tslint:disable-next-line: no-console
-    console.log('Successfull del');
     return true;
   }
 }

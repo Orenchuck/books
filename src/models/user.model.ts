@@ -14,5 +14,5 @@ export class UserModel {
   @ApiModelProperty()
   cypher?: string;
   @ApiModelProperty()
-  isDel?: boolean;
+  isDelete?: boolean;
 }

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, UseGuards, Param, Delete, Put } from '@nestjs/common';
-import { UsersService } from 'src/services/user.services';
+import { UsersService } from 'src/services/servicesSql/user.services';
 import { UserModel } from 'src/models/user.model';
 import { RolesGuard } from 'src/common/guards/roles.guards';
 import { Roles } from 'src/common/roles.decorator';
@@ -22,9 +22,9 @@ export class UsersController {
     }
 
     @Get()
-    @Roles(UserRole.Admin)
-    @UseGuards(AuthGuard('jwt'))
-    @ApiBearerAuth()
+    // @Roles(UserRole.Admin)
+    // @UseGuards(AuthGuard('jwt'))
+    // @ApiBearerAuth()
     async getAllUsers(): Promise<UserModel[]> {
         const users = await this.usersService.getAllUsers();
         return users;
@@ -49,10 +49,10 @@ export class UsersController {
     }
 
     @Put()
-    @Roles(UserRole.Admin, UserRole.User)
-    @UseGuards(AuthGuard('jwt'))
-    @ApiBearerAuth()
-    async updateUser(@Body() userToUpdate: UserModel): Promise<UserModel> {
+    // @Roles(UserRole.Admin, UserRole.User)
+    // @UseGuards(AuthGuard('jwt'))
+    // @ApiBearerAuth()
+    async updateUser(@Body() userToUpdate: UserModel): Promise<boolean> {
         const user = await this.usersService.updateUser(userToUpdate);
         return user;
     }
@@ -62,7 +62,7 @@ export class UsersController {
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
     async isDelUser(@Param('id') id: string): Promise<boolean> {
-        const delUser = await this.usersService.isDelUser(id);
+        const delUser = await this.usersService.isDeleteUser(id);
         return delUser;
     }
 

@@ -7,7 +7,7 @@ export interface UserDocument extends mongoose.Document {
     roles?: string;
     active?: boolean;
     cypher?: string;
-    isDel?: boolean;
+    isDelete?: boolean;
 }
 
 export const UserSchema = new mongoose.Schema({
@@ -32,7 +32,7 @@ export const UserSchema = new mongoose.Schema({
         required: true,
     },
     cypher: String,
-    isDel: {
+    isDelete: {
         type: Boolean,
         required: true,
     },

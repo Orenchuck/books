@@ -15,7 +15,7 @@ export const databaseProviders = [
         dialect: 'mysql',
         host: 'localhost',
         port: 3306,
-        username: 'admin',
+        username: 'root',
         password: 'root',
         database: 'root',
       });
