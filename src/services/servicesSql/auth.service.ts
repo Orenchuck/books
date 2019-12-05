@@ -4,13 +4,13 @@ import { UsersService } from 'src/services/servicesSql/user.services';
 import { AccessJwtPayload } from 'src/models/access-jwt-payload.model';
 import { RefreshJwtPayload } from 'src/models/refresh-jwt-payload';
 import { UserModel } from 'src/models/user.model';
-// import { AuthRepository } from 'src/repositories/repoSql/auth.repository';
 
 import nodemailer = require('nodemailer');
 import { UserRepository } from 'src/repositories/repoSql/user.repository';
 import { CreateUserModel } from 'src/models/create-user.model';
 import { environment } from 'src/enviroment/enviroment';
 import { User } from 'src/entities/user.entity';
+import { getRandomString } from 'src/common/random.helper';
 
 const getEnv = environment();
 
@@ -20,19 +20,8 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    // private authRepository: AuthRepository,
     private userRepository: UserRepository,
-  ) {
-  }
-
-  async validateUser(email: string): Promise<any> {
-    const user: UserModel = await this.usersService.findOneByEmail(email);
-
-    if (user) {
-      return user;
-    }
-    return null;
-  }
+  ) {}
 
   async loginUser(user: CreateUserModel): Promise<any> {
     if (!(user && user.email && user.password)) {
@@ -100,15 +89,7 @@ export class AuthService {
       if (userSave) {
         newUser.password = undefined;
       }
-
-      const sent = await this.sendEmail(userSave);
-
-      if (!sent) {
-        // tslint:disable-next-line: no-console
-        console.log('REGISTRATION.ERROR.MAIL_NOT_SENT');
-      }
-      // tslint:disable-next-line: no-console
-      console.log('REGISTRATION.USER_REGISTERED_SUCCESSFULLY');
+      await this.sendEmail(userSave);
 
       return userSave;
     }
@@ -136,11 +117,8 @@ export class AuthService {
 
     await transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        // console.log('error ' + error);
         return false;
       }
-      // tslint:disable-next-line: no-console
-      console.log('Message sent: %s', info.messageId);
       return true;
     });
 
@@ -167,7 +145,7 @@ export class AuthService {
 
   async getForgotPass(email: string): Promise<UserModel> {
     const emailExist: UserModel = await this.usersService.findOneByEmail(email);
-    const newPass = await this.usersService.getRandomString();
+    const newPass = await getRandomString();
 
     if (emailExist) {
       const sent: boolean = await this.sendForgotPassword(emailExist, newPass);

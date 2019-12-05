@@ -3,6 +3,7 @@ import { BookRepository } from 'src/repositories/repoSql/book.repository';
 import { BookModel } from 'src/models/book.model';
 import { CreateBookModel } from 'src/models/create-book.model';
 import { Book } from 'src/entities/book.entity';
+import { generateUuid } from 'src/common/random.helper';
 
 @Injectable()
 export class BooksService {
@@ -11,7 +12,14 @@ export class BooksService {
     ) { }
 
     async addBook(book: CreateBookModel): Promise<BookModel> {
-        const resRepo: Book = await this.bookRepository.addBook(book);
+        const bookToCreate: Book = {
+            id: await generateUuid(),
+            title: book.title,
+            author: book.author,
+            price: book.price,
+            isDelete: false,
+        } as any;
+        const resRepo: Book = await this.bookRepository.addBook(bookToCreate);
         const newBook: BookModel = {};
         if (resRepo) {
             newBook.id = resRepo.id;
@@ -98,12 +106,6 @@ export class BooksService {
 
         const resRepo = await this.bookRepository.updateBook(updateBookDoc);
         if (resRepo) {
-            // updatedBook.id = resRepo.id;
-            // updatedBook.title = resRepo.title;
-            // updatedBook.author = resRepo.author;
-            // updatedBook.price = resRepo.price;
-            // updatedBook.isDelete = resRepo.isDelete;
-
             return true;
         }
         throw new HttpException('Book does not exist!', HttpStatus.NOT_FOUND);

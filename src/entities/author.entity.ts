@@ -1,7 +1,11 @@
-import { Table, Column, Model } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany } from 'sequelize-typescript';
+import { AuthorsBooks } from 'src/entities/authors-books.entity';
 
 @Table
 export class Author extends Model<Author> {
+  @Column ({primaryKey: true})
+  id: string;
+
   @Column
   name: string;
 
@@ -16,4 +20,7 @@ export class Author extends Model<Author> {
 
   @Column
   isDelete: boolean;
+
+  @HasMany(() => AuthorsBooks)
+    authorBooks: AuthorsBooks[];
 }

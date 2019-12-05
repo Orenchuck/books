@@ -2,21 +2,20 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserModel } from 'src/models/user.model';
 import { UserRepository } from 'src/repositories/repoSql/user.repository';
-// import { AuthRepository } from 'src/repositories/repoSql/auth.repository';
 import { CreateUserModel } from 'src/models/create-user.model';
 import { User } from 'src/entities/user.entity';
+import { getRandomString, generateUuid } from 'src/common/random.helper';
 
 @Injectable()
 export class UsersService {
 
   constructor(
     private userRepository: UserRepository,
-    // private authRepository: AuthRepository,
   ) { }
 
   async create(user: CreateUserModel): Promise<UserModel> {
     const saltRounds = 10;
-    const cypher: string = await this.getRandomString();
+    const cypher: string = await getRandomString();
     const userToCreate: User = {} as any;
 
     userToCreate.email = user.email;
@@ -25,7 +24,7 @@ export class UsersService {
     userToCreate.cypher = cypher;
     userToCreate.active = false;
     userToCreate.isDelete = false;
-    userToCreate.id = await this.getRandomString();
+    userToCreate.id = await generateUuid();
 
     const resRepo = await this.userRepository.create(userToCreate);
     const newUser: UserModel = {};
@@ -58,15 +57,6 @@ export class UsersService {
       return user;
     }
     return resRepo;
-  }
-
-  async getRandomString(): Promise<string> {
-    const abc = 'abcdefghijklmnopqrstuvwxyz';
-    let res = '';
-    while (res.length < 10) {
-      res += abc[Math.floor(Math.random() * abc.length)];
-    }
-    return res;
   }
 
   async compareHash(password: string | undefined, hash: string | undefined): Promise<boolean> {

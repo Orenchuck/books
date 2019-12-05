@@ -14,7 +14,6 @@ import { BookRepository } from 'src/repositories/repoSql/book.repository';
 
 import { AuthService } from 'src/services/servicesSql/auth.service';
 import { AuthController } from 'src/controllers/auth.controller';
-// import { AuthRepository } from 'src/repositories/repoSql/auth.repository';
 
 import { UsersController } from 'src/controllers/user.controllers';
 import { UsersService } from 'src/services/servicesSql/user.services';
@@ -46,7 +45,6 @@ import { userProviders } from 'src/providers/users.provider';
     UsersService,
     AuthorsService,
     UserRepository,
-    // AuthRepository,
     BookRepository,
     AuthorRepository,
     ...databaseProviders,

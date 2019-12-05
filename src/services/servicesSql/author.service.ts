@@ -3,6 +3,7 @@ import { AuthorRepository } from 'src/repositories/repoSql/author.repository';
 import { AuthorModel } from 'src/models/author.model';
 import { CreateAuthorModel } from 'src/models/create-author.model';
 import { Author } from 'src/entities/author.entity';
+import { generateUuid } from 'src/common/random.helper';
 
 @Injectable()
 export class AuthorsService {
@@ -12,6 +13,7 @@ export class AuthorsService {
 
     async addAuthor(author: CreateAuthorModel): Promise<AuthorModel> {
         const authorToCreate: Author = {
+            id: await generateUuid(),
             name: author.name,
             books: author.books,
             birthDate: author.birthDate,
