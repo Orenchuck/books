@@ -10,5 +10,5 @@ export class BookModel {
     @ApiModelProperty()
     price?: number;
     @ApiModelProperty()
-    isDel?: boolean;
+    isDelete?: boolean;
 }

@@ -30,14 +30,10 @@ export class UserRepository {
     }
 
     async getUserbyID(id: string): Promise<User> {
-        // try {
-            console.log('id' + id);
-            
+        try {
             const user: User = await this.usersRepository.findOne({ where: { id } });
-            console.log(user);
-            
             return user;
-        // } catch { throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND); }
+        } catch { throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND); }
     }
 
     async updateUser(userToUpdate: User): Promise<any[]> {

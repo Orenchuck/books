@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post, Body, Put, Delete, UseGuards } from '@nestjs/common';
-import { BooksService } from 'src/services/books.service';
+import { BooksService } from 'src/services/servicesSql/books.service';
 import { BookModel } from 'src/models/book.model';
 import { Roles } from 'src/common/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guards';
@@ -61,7 +61,7 @@ export class BooksController {
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
     async isDelBook(@Param('id') id: string): Promise<boolean> {
-        const delBook = await this.booksService.isDelBook(id);
+        const delBook = await this.booksService.isDeleteBook(id);
         return delBook;
     }
 

@@ -97,8 +97,6 @@ export class UsersService {
 
   async getUserbyID(id: string): Promise<UserModel> {
     const user: UserModel = {};
-    console.log('id' + id);
-    
     const resRepo: User = await this.userRepository.getUserbyID(id);
     if (resRepo) {
       user.id = resRepo.id;
@@ -134,16 +132,16 @@ export class UsersService {
     return true;
   }
 
-  // async isDeleteUser(id: string): Promise<boolean> {
-  //   const userFromDb: User = await this.userRepository.getUserbyID(id);
+  async isDeleteUser(id: string): Promise<boolean> {
+    const userFromDb: User = await this.userRepository.getUserbyID(id);
 
-  //   if (userFromDb) {
-  //     userFromDb.isDelete = !userFromDb.isDelete;
-  //     const savedUser = await this.authRepository.saveUser(userFromDb);
-  //     return savedUser;
-  //   }
-  //   throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND);
-  // }
+    if (userFromDb) {
+      userFromDb.isDelete = !userFromDb.isDelete;
+      const savedUser = await this.userRepository.saveUser(userFromDb);
+      return savedUser;
+    }
+    throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND);
+  }
 
   async deleteUser(id: string): Promise<boolean> {
     const delUser: User = {} as User;

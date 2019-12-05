@@ -9,8 +9,8 @@ import { HttpExceptionFilter } from 'src/common/exception.filter';
 import { LoggerMiddleware } from 'src/common/middleware.request';
 
 import { BooksController } from 'src/controllers/books.controller';
-import { BooksService } from 'src/services/books.service';
-import { BookRepository } from 'src/repositories/book.repository';
+import { BooksService } from 'src/services/servicesSql/books.service';
+import { BookRepository } from 'src/repositories/repoSql/book.repository';
 
 import { AuthService } from 'src/services/servicesSql/auth.service';
 import { AuthController } from 'src/controllers/auth.controller';
@@ -34,7 +34,7 @@ import { userProviders } from 'src/providers/users.provider';
   imports: [
     PassportModule,
     JwtModule.register({
-      secretOrPrivateKey: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
+      secret: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
     }),
   ],
   controllers: [BooksController, AuthController, UsersController, AuthorsController],

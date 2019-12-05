@@ -57,14 +57,14 @@ export class UsersController {
         return user;
     }
 
-    // @Get('del/:id')
-    // @Roles(UserRole.Admin, UserRole.User)
-    // @UseGuards(AuthGuard('jwt'))
-    // @ApiBearerAuth()
-    // async isDelUser(@Param('id') id: string): Promise<boolean> {
-    //     const delUser = await this.usersService.isDeleteUser(id);
-    //     return delUser;
-    // }
+    @Get('del/:id')
+    @Roles(UserRole.Admin, UserRole.User)
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
+    async isDelUser(@Param('id') id: string): Promise<boolean> {
+        const delUser = await this.usersService.isDeleteUser(id);
+        return delUser;
+    }
 
     @Delete(':id')
     @Roles(UserRole.Admin)
