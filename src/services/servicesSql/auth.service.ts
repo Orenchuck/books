@@ -1,16 +1,16 @@
 import { Injectable, UnauthorizedException, HttpException, HttpStatus, HttpService } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/services/user.services';
+import { UsersService } from 'src/services/servicesSql/user.services';
 import { AccessJwtPayload } from 'src/models/access-jwt-payload.model';
 import { RefreshJwtPayload } from 'src/models/refresh-jwt-payload';
 import { UserModel } from 'src/models/user.model';
-import { AuthRepository } from 'src/repositories/auth.repository';
+// import { AuthRepository } from 'src/repositories/repoSql/auth.repository';
 
 import nodemailer = require('nodemailer');
-import { UserRepository } from 'src/repositories/user.repository';
-import { UserDocument } from 'src/documents/user.document';
+import { UserRepository } from 'src/repositories/repoSql/user.repository';
 import { CreateUserModel } from 'src/models/create-user.model';
 import { environment } from 'src/enviroment/enviroment';
+import { User } from 'src/entities/user.entity';
 
 const getEnv = environment();
 
@@ -20,13 +20,13 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private authRepository: AuthRepository,
+    // private authRepository: AuthRepository,
     private userRepository: UserRepository,
   ) {
   }
 
   async validateUser(email: string): Promise<any> {
-    const user: UserDocument = await this.usersService.findOneByEmail(email);
+    const user: UserModel = await this.usersService.findOneByEmail(email);
 
     if (user) {
       return user;
@@ -60,7 +60,7 @@ export class AuthService {
   }
 
   async validateUserByJwt(payload: AccessJwtPayload): Promise<any> {
-    const user: UserDocument = await this.usersService.findOneByEmail(payload.email);
+    const user: UserModel = await this.usersService.findOneByEmail(payload.email);
 
     if (user) {
       return this.createJwt(user);
@@ -92,7 +92,7 @@ export class AuthService {
       throw new HttpException('Username and password are required!', HttpStatus.UNAUTHORIZED);
     }
 
-    const user: UserDocument = await this.usersService.findOneByEmail(newUser.email);
+    const user: UserModel = await this.usersService.findOneByEmail(newUser.email);
 
     if (!user) {
       const userSave = await this.usersService.create(newUser);
@@ -148,14 +148,16 @@ export class AuthService {
   }
 
   async verifyEmail(cypher: string): Promise<boolean> {
-    const resRepo: UserDocument = await this.authRepository.verifyEmail(cypher);
+    // const resRepo: User = await this.authRepository.verifyEmail(cypher);
+    const resRepo: User = await this.userRepository.findOneByCypher(cypher);
     if (resRepo) {
-      const userFromDb: UserDocument = await this.userRepository.findOneByEmail(resRepo.email);
+      const userFromDb: User = await this.userRepository.findOneByEmail(resRepo.email);
 
       if (userFromDb) {
         userFromDb.active = true;
         userFromDb.cypher = undefined;
-        const savedUser = await this.authRepository.saveUser(userFromDb);
+        const savedUser = await this.userRepository.saveUser(userFromDb);
+        // const savedUser = await this.userRepository.updateUser(userFromDb);
 
         if (savedUser) {
           return true;

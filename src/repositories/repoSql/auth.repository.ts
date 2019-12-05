@@ -1,26 +1,19 @@
-import { Injectable, HttpException } from '@nestjs/common';
-import * as mongoose from 'mongoose';
-import { UserSchema, UserDocument } from 'src/documents/user.document';
-import { Model } from 'mongoose';
+import { Injectable, HttpException, Inject } from '@nestjs/common';
+import { User } from 'src/entities/user.entity';
+import { UserModel } from 'src/models/user.model';
+import { AUTH_REPOSITORY } from 'src/constants/constants';
 
 @Injectable()
 export class AuthRepository {
+    constructor(@Inject(AUTH_REPOSITORY) private readonly authRepository: typeof User) {}
 
-    private userModel: Model<UserDocument>;
-
-    constructor() {
-        this.userModel = mongoose.model('User', UserSchema);
-    }
-
-    async verifyEmail(cypher: string): Promise<UserDocument> {
-        const emailVerif = await this.userModel.findOne({ cypher });
+    async verifyEmail(cypher: string): Promise<User> {
+        const emailVerif = await this.authRepository.findOne({where: { cypher }});
         return emailVerif;
     }
 
-    async saveUser(user): Promise<boolean> {
-        try {
+    async saveUser(user: User): Promise<boolean> {
             await user.save();
             return true;
-        } catch { throw new HttpException('Error connection with db', 504); }
     }
 }

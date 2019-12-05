@@ -1,5 +1,4 @@
 import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { User } from 'src/entities/user.entity';
 import { UserModel } from 'src/models/user.model';
 import { USERS_REPOSITORY } from 'src/constants/constants';
@@ -20,21 +19,35 @@ export class UserRepository {
         return res;
     }
 
+    async findOneByCypher(cypher: string): Promise<User> {
+        const res: User = await this.usersRepository.findOne({ where: { cypher } });
+        return res;
+    }
+
     async getAllUsers(): Promise<User[]> {
         const allUsers: User[] = await this.usersRepository.findAll<User>();
         return allUsers;
     }
 
     async getUserbyID(id: string): Promise<User> {
-        try {
+        // try {
+            console.log('id' + id);
+            
             const user: User = await this.usersRepository.findOne({ where: { id } });
+            console.log(user);
+            
             return user;
-        } catch { throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND); }
+        // } catch { throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND); }
     }
 
     async updateUser(userToUpdate: User): Promise<any[]> {
-            const updatedUser = await this.usersRepository.update<User>(userToUpdate, { where: { id: userToUpdate.id } });
-            return updatedUser;
+        const updatedUser = await this.usersRepository.update<User>(userToUpdate, { where: { id: userToUpdate.id } });
+        return updatedUser;
+    }
+
+    async saveUser(user: User): Promise<boolean> {
+        await user.save();
+        return true;
     }
 
     async deleteUser(id: string) {

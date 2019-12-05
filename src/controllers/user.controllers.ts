@@ -17,8 +17,8 @@ export class UsersController {
 
     @Post()
     async create(@Body() user: CreateUserModel): Promise<UserModel> {
-      const newUser = await this.usersService.create(user);
-      return newUser;
+        const newUser = await this.usersService.create(user);
+        return newUser;
     }
 
     @Get()
@@ -49,22 +49,22 @@ export class UsersController {
     }
 
     @Put()
-    // @Roles(UserRole.Admin, UserRole.User)
-    // @UseGuards(AuthGuard('jwt'))
-    // @ApiBearerAuth()
+    @Roles(UserRole.Admin, UserRole.User)
+    @UseGuards(AuthGuard('jwt'))
+    @ApiBearerAuth()
     async updateUser(@Body() userToUpdate: UserModel): Promise<boolean> {
         const user = await this.usersService.updateUser(userToUpdate);
         return user;
     }
 
-    @Get('del/:id')
-    @Roles(UserRole.Admin, UserRole.User)
-    @UseGuards(AuthGuard('jwt'))
-    @ApiBearerAuth()
-    async isDelUser(@Param('id') id: string): Promise<boolean> {
-        const delUser = await this.usersService.isDeleteUser(id);
-        return delUser;
-    }
+    // @Get('del/:id')
+    // @Roles(UserRole.Admin, UserRole.User)
+    // @UseGuards(AuthGuard('jwt'))
+    // @ApiBearerAuth()
+    // async isDelUser(@Param('id') id: string): Promise<boolean> {
+    //     const delUser = await this.usersService.isDeleteUser(id);
+    //     return delUser;
+    // }
 
     @Delete(':id')
     @Roles(UserRole.Admin)
@@ -74,4 +74,4 @@ export class UsersController {
         const users = await this.usersService.deleteUser(id);
         return users;
     }
-  }
+}

@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserModel } from 'src/models/user.model';
 import { UserRepository } from 'src/repositories/repoSql/user.repository';
-import { AuthRepository } from 'src/repositories/repoSql/auth.repository';
+// import { AuthRepository } from 'src/repositories/repoSql/auth.repository';
 import { CreateUserModel } from 'src/models/create-user.model';
 import { User } from 'src/entities/user.entity';
 
@@ -11,7 +11,7 @@ export class UsersService {
 
   constructor(
     private userRepository: UserRepository,
-    private authRepository: AuthRepository,
+    // private authRepository: AuthRepository,
   ) { }
 
   async create(user: CreateUserModel): Promise<UserModel> {
@@ -50,7 +50,7 @@ export class UsersService {
       user.id = resRepo.id;
       user.email = resRepo.email;
       user.password = resRepo.password;
-      // user.roles = resRepo.roles;
+      user.roles = resRepo.roles;
       user.active = resRepo.active;
       user.cypher = resRepo.cypher;
       user.isDelete = resRepo.isDelete;
@@ -84,7 +84,7 @@ export class UsersService {
         user.id = oneUser.id;
         user.email = oneUser.email;
         user.password = oneUser.password;
-        // user.roles = oneUser.roles;
+        user.roles = oneUser.roles;
         user.active = oneUser.active;
         user.isDelete = oneUser.isDelete;
 
@@ -97,12 +97,14 @@ export class UsersService {
 
   async getUserbyID(id: string): Promise<UserModel> {
     const user: UserModel = {};
+    console.log('id' + id);
+    
     const resRepo: User = await this.userRepository.getUserbyID(id);
     if (resRepo) {
       user.id = resRepo.id;
       user.email = resRepo.email;
       user.password = resRepo.password;
-      // user.roles = resRepo.roles;
+      user.roles = resRepo.roles;
       user.active = resRepo.active;
       user.cypher = resRepo.cypher;
       user.isDelete = resRepo.isDelete;
@@ -132,16 +134,16 @@ export class UsersService {
     return true;
   }
 
-  async isDeleteUser(id: string): Promise<boolean> {
-    const userFromDb: User = await this.userRepository.getUserbyID(id);
+  // async isDeleteUser(id: string): Promise<boolean> {
+  //   const userFromDb: User = await this.userRepository.getUserbyID(id);
 
-    if (userFromDb) {
-      userFromDb.isDelete = !userFromDb.isDelete;
-      const savedUser = await this.authRepository.saveUser(userFromDb);
-      return savedUser;
-    }
-    throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND);
-  }
+  //   if (userFromDb) {
+  //     userFromDb.isDelete = !userFromDb.isDelete;
+  //     const savedUser = await this.authRepository.saveUser(userFromDb);
+  //     return savedUser;
+  //   }
+  //   throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND);
+  // }
 
   async deleteUser(id: string): Promise<boolean> {
     const delUser: User = {} as User;
