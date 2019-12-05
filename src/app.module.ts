@@ -21,8 +21,8 @@ import { UsersService } from 'src/services/servicesSql/user.services';
 import { UserRepository } from 'src/repositories/repoSql/user.repository';
 
 import { AuthorsController } from 'src/controllers/author.controller';
-import { AuthorsService } from 'src/services/author.service';
-import { AuthorRepository } from 'src/repositories/author.repository';
+import { AuthorsService } from 'src/services/servicesSql/author.service';
+import { AuthorRepository } from 'src/repositories/repoSql/author.repository';
 
 import { databaseProviders } from 'src/providers/database.provider';
 import { booksProviders } from 'src/providers/books.provider';

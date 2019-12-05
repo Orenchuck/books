@@ -148,7 +148,6 @@ export class AuthService {
   }
 
   async verifyEmail(cypher: string): Promise<boolean> {
-    // const resRepo: User = await this.authRepository.verifyEmail(cypher);
     const resRepo: User = await this.userRepository.findOneByCypher(cypher);
     if (resRepo) {
       const userFromDb: User = await this.userRepository.findOneByEmail(resRepo.email);
@@ -157,7 +156,6 @@ export class AuthService {
         userFromDb.active = true;
         userFromDb.cypher = undefined;
         const savedUser = await this.userRepository.saveUser(userFromDb);
-        // const savedUser = await this.userRepository.updateUser(userFromDb);
 
         if (savedUser) {
           return true;
@@ -204,12 +202,8 @@ export class AuthService {
 
     await transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        // tslint:disable-next-line: no-console
-        console.log('error ' + error);
         return false;
       }
-      // tslint:disable-next-line: no-console
-      console.log('Message sent: %s', info.messageId);
     });
 
     return true;

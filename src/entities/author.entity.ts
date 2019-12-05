@@ -12,7 +12,7 @@ export class Author extends Model<Author> {
   birthDate: Date;
 
   @Column
-  deathhDate: Date;
+  deathDate: Date;
 
   @Column
   isDelete: boolean;

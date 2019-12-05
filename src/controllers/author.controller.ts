@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post, Body, Put, Delete, UseGuards } from '@nestjs/common';
-import { AuthorsService } from 'src/services/author.service';
+import { AuthorsService } from 'src/services/servicesSql/author.service';
 import { AuthorModel } from 'src/models/author.model';
 import { RolesGuard } from 'src/common/guards/roles.guards';
 import { Roles } from 'src/common/roles.decorator';
@@ -45,7 +45,7 @@ export class AuthorsController {
     @Roles(UserRole.Admin)
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    async updateAuthor(@Body() authorToUpdate: AuthorModel): Promise<AuthorModel> {
+    async updateAuthor(@Body() authorToUpdate: AuthorModel): Promise<boolean> {
         const author = await this.authorsService.updateAuthor(authorToUpdate);
         return author;
     }
@@ -55,7 +55,7 @@ export class AuthorsController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     async isDelAuthor(@Param('id') id: string): Promise<boolean> {
-        const delAuthor = await this.authorsService.isDelAuthor(id);
+        const delAuthor = await this.authorsService.isDeleteAuthor(id);
         return delAuthor;
     }
 

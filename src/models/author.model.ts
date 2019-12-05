@@ -20,5 +20,5 @@ export class AuthorModel {
   })
   deathDate?: Date;
   @ApiModelProperty()
-  isDel?: boolean;
+  isDelete?: boolean;
 }

@@ -112,7 +112,7 @@ export class UsersService {
     throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND);
   }
 
-  async updateUser(userToUpdate: UserModel) {
+  async updateUser(userToUpdate: UserModel): Promise<boolean> {
     const saltRounds = 10;
     userToUpdate.password = await bcrypt.hash(userToUpdate.password, saltRounds);
     const userDoc: User = {} as any;

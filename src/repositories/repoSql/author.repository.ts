@@ -1,59 +1,51 @@
-import * as mongoose from 'mongoose';
-import { Injectable, HttpException } from '@nestjs/common';
-import { Model, objectid } from 'mongoose';
-import { AuthorDocument, AuthorSchema } from 'src/documents/author.document';
+import { Injectable, HttpException, Inject, HttpStatus } from '@nestjs/common';
+import { Author } from 'src/entities/author.entity';
+import { AUTHORS_REPOSITORY } from 'src/constants/constants';
 
 @Injectable()
 export class AuthorRepository {
-
-    private authorModel: Model<AuthorDocument>;
-
-    constructor() {
-        this.authorModel = mongoose.model('Author', AuthorSchema);
-    }
+    constructor(@Inject(AUTHORS_REPOSITORY) private readonly authorsRepository: typeof Author) { }
 
     async addAuthor(author) {
         try {
-            const newAuthor = new this.authorModel(author);
-            newAuthor.isDel = false;
-            const saveAuthor = await newAuthor.save();
-            return saveAuthor;
-        } catch { throw new HttpException('Error connection with db', 504); }
+            const newAuthor = this.authorsRepository.create(author);
+            return newAuthor;
+        } catch { throw new HttpException('Error connection with db', HttpStatus.GATEWAY_TIMEOUT); }
     }
 
-    async getAllAuthors(): Promise<AuthorDocument[]> {
-        const authors = await this.authorModel.find().exec();
+    async getAllAuthors(): Promise<Author[]> {
+        const authors = await this.authorsRepository.findAll();
         return authors;
     }
 
-    async findAuthorById(id: string): Promise<AuthorDocument> {
+    async findAuthorById(id: string): Promise<Author> {
         try {
-            const author = await this.authorModel.findById(id).exec();
+            const author = await this.authorsRepository.findOne({ where: { id }});
             return author;
-        } catch { throw new HttpException('Author does not exist!', 404); }
+        } catch { throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND); }
     }
 
-    async findAuthorByName(name: string): Promise<AuthorDocument> {
-        const res: AuthorDocument = await this.authorModel.findOne({ name }).exec();
+    async findAuthorByName(name: string): Promise<Author> {
+        const res: Author = await this.authorsRepository.findOne({ where: { name }});
         return res;
     }
 
-    async updateAuthor(author: AuthorDocument): Promise<AuthorDocument> {
+    async updateAuthor(author: Author): Promise<any[]> {
         try {
-            const updatedAuthor: AuthorDocument = await this.authorModel.findByIdAndUpdate(author._id, author);
+            const updatedAuthor = await this.authorsRepository.update(author, {where: { id: author.id }});
             return updatedAuthor;
-        } catch { throw new HttpException('Author does not exist!', 404); }
+        } catch { throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND); }
     }
 
     async saveAuthor(author): Promise<boolean> {
         try {
             const newAuthor = await author.save();
             return newAuthor;
-        } catch { throw new HttpException('Error connection with db', 504); }
+        } catch { throw new HttpException('Error connection with db', HttpStatus.GATEWAY_TIMEOUT); }
     }
 
-    async deleteAuthor(id: objectid) {
-        const result = await this.authorModel.deleteOne({ _id: id }).exec();
+    async deleteAuthor(id: string) {
+        const result = await this.authorsRepository.destroy({ where: { id }});
         return result;
     }
 }
