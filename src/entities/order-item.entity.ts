@@ -5,7 +5,7 @@ import { Book } from 'src/entities/book.entity';
 @Table
 export class OrderItem extends Model<OrderItem> {
   @Column ({primaryKey: true})
-  orderItemId: string;
+  id: string;
 
   @ForeignKey(() => Order)
   @Column
@@ -15,16 +15,12 @@ export class OrderItem extends Model<OrderItem> {
   @Column
   bookId: string;
 
-  @Column
+  @Column({defaultValue: 1})
   amount: number;
-
-  @Column
-  count: number;
 
   @BelongsTo(() => Book)
   book: Book;
 
   @BelongsTo(() => Order)
   author: Order;
-
 }

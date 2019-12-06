@@ -30,9 +30,14 @@ import { authorsProviders } from 'src/providers/authors.provider';
 import { userProviders } from 'src/providers/users.provider';
 import { orderItemProviders } from 'src/providers/order-item.provider';
 import { orderProviders } from 'src/providers/order.provider';
+
 import { OrdersController } from 'src/controllers/order.controller';
 import { OrdersService } from 'src/services/servicesSql/order.service';
 import { OrderRepository } from 'src/repositories/repoSql/order.repository';
+
+import { OrderItemsController } from 'src/controllers/order-item.controller';
+import { OrderItemsService } from 'src/services/servicesSql/order-item.service';
+import { OrderItemRepository } from 'src/repositories/repoSql/order-item.repository';
 
 @Module({
   imports: [
@@ -41,7 +46,14 @@ import { OrderRepository } from 'src/repositories/repoSql/order.repository';
       secret: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
     }),
   ],
-  controllers: [BooksController, AuthController, UsersController, AuthorsController, OrdersController],
+  controllers: [
+    BooksController,
+    AuthController,
+    UsersController,
+    AuthorsController,
+    OrdersController,
+    OrderItemsController,
+  ],
   providers: [
     BooksService,
     HttpExceptionFilter,
@@ -54,6 +66,8 @@ import { OrderRepository } from 'src/repositories/repoSql/order.repository';
     AuthorRepository,
     OrdersService,
     OrderRepository,
+    OrderItemsService,
+    OrderItemRepository,
     ...databaseProviders,
     ...booksProviders,
     ...authorsBooksProviders,
