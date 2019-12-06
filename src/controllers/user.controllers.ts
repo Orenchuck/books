@@ -3,7 +3,7 @@ import { UsersService } from 'src/services/servicesSql/user.services';
 import { UserModel } from 'src/models/user.model';
 import { RolesGuard } from 'src/common/guards/roles.guards';
 import { Roles } from 'src/common/roles.decorator';
-import { UserRole } from 'src/models/user-role.enum';
+import { UserRole } from 'src/enums/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateUserModel } from 'src/models/create-user.model';

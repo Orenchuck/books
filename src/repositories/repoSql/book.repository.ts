@@ -1,5 +1,6 @@
 import { Injectable, HttpException, Inject, HttpStatus } from '@nestjs/common';
 import { Book } from 'src/entities/book.entity';
+import { OrderItem } from 'src/entities/order-item.entity';
 import { BOOKS_REPOSITORY } from 'src/constants/constants';
 
 @Injectable()

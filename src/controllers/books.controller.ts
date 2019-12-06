@@ -3,7 +3,7 @@ import { BooksService } from 'src/services/servicesSql/books.service';
 import { BookModel } from 'src/models/book.model';
 import { Roles } from 'src/common/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guards';
-import { UserRole } from 'src/models/user-role.enum';
+import { UserRole } from 'src/enums/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateBookModel } from 'src/models/create-book.model';

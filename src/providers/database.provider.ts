@@ -4,6 +4,8 @@ import { Author } from 'src/entities/author.entity';
 import { User } from 'src/entities/user.entity';
 import { AuthorsBooks } from 'src/entities/authors-books.entity';
 import { environment } from 'src/enviroment/enviroment';
+import { Order } from 'src/entities/order.entity';
+import { OrderItem } from 'src/entities/order-item.entity';
 
 const getEnv = environment();
 
@@ -19,7 +21,7 @@ export const databaseProviders = [
         password: 'root',
         database: 'root',
       });
-      sequelize.addModels([Book, Author, User, AuthorsBooks]);
+      sequelize.addModels([Book, Author, User, AuthorsBooks, Order, OrderItem]);
       await sequelize.sync();
       return sequelize;
         // useFactory: async () => {

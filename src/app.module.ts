@@ -28,6 +28,8 @@ import { booksProviders } from 'src/providers/books.provider';
 import { authorsBooksProviders } from 'src/providers/authors-books.provider';
 import { authorsProviders } from 'src/providers/authors.provider';
 import { userProviders } from 'src/providers/users.provider';
+import { orderItemProviders } from 'src/providers/order-item.provider';
+import { orderProviders } from 'src/providers/order.provider';
 
 @Module({
   imports: [
@@ -52,6 +54,8 @@ import { userProviders } from 'src/providers/users.provider';
     ...authorsBooksProviders,
     ...authorsProviders,
     ...userProviders,
+    ...orderItemProviders,
+    ...orderProviders,
   ],
   exports: [UsersService],
 })
