@@ -30,6 +30,9 @@ import { authorsProviders } from 'src/providers/authors.provider';
 import { userProviders } from 'src/providers/users.provider';
 import { orderItemProviders } from 'src/providers/order-item.provider';
 import { orderProviders } from 'src/providers/order.provider';
+import { OrdersController } from 'src/controllers/order.controller';
+import { OrdersService } from 'src/services/servicesSql/order.service';
+import { OrderRepository } from 'src/repositories/repoSql/order.repository';
 
 @Module({
   imports: [
@@ -38,7 +41,7 @@ import { orderProviders } from 'src/providers/order.provider';
       secret: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
     }),
   ],
-  controllers: [BooksController, AuthController, UsersController, AuthorsController],
+  controllers: [BooksController, AuthController, UsersController, AuthorsController, OrdersController],
   providers: [
     BooksService,
     HttpExceptionFilter,
@@ -49,6 +52,8 @@ import { orderProviders } from 'src/providers/order.provider';
     UserRepository,
     BookRepository,
     AuthorRepository,
+    OrdersService,
+    OrderRepository,
     ...databaseProviders,
     ...booksProviders,
     ...authorsBooksProviders,

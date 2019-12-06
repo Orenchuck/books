@@ -21,6 +21,9 @@ export class Order extends Model<Order> {
   currency: string;
 
   @Column
+  status: string;
+
+  @Column
   isDelete: boolean;
 
   @HasMany(() => OrderItem)

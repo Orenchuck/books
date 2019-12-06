@@ -10,6 +10,8 @@ export class OrderModel {
   @ApiModelProperty()
   currency?: string;
   @ApiModelProperty()
+  status?: string;
+  @ApiModelProperty()
   date?: Date;
   @ApiModelProperty()
   isDelete?: boolean;
