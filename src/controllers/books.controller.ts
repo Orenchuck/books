@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Put, Delete, UseGuards, Query } from '@nestjs/common';
 import { BooksService } from 'src/services/servicesSql/books.service';
 import { BookModel } from 'src/models/book.model';
 import { Roles } from 'src/common/roles.decorator';
@@ -7,12 +7,19 @@ import { UserRole } from 'src/enums/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateBookModel } from 'src/models/create-book.model';
+import { FilterModel } from 'src/models/filter.model';
 
 @ApiUseTags('books')
 @Controller('books')
 @UseGuards(RolesGuard)
 export class BooksController {
     constructor(private readonly booksService: BooksService) { }
+
+    @Get('filter')
+    async getFilteredBooks(@Query()filter: FilterModel): Promise<BookModel[]> {
+        const filteredBooks: BookModel[] = await this.booksService.getFilteredBooks(filter);
+        return filteredBooks;
+    }
 
     @Get()
     async getAllBooks(): Promise<BookModel[]> {

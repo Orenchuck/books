@@ -1,10 +1,46 @@
 import { Injectable, HttpException, Inject, HttpStatus } from '@nestjs/common';
 import { Book } from 'src/entities/book.entity';
 import { BOOKS_REPOSITORY } from 'src/constants/constants';
+import { FilterModel } from 'src/models/filter.model';
 
 @Injectable()
 export class BookRepository {
     constructor(@Inject(BOOKS_REPOSITORY) private readonly booksRepository: typeof Book) {}
+
+    async getFilteredBooks(filter: FilterModel): Promise<Book[]> {
+        let query = {where: {}};
+        query.where['price'] = {$gte: 1};
+
+        console.log(query);
+
+        const books = await this.booksRepository.findAll(query);
+        return books;
+        // const price = {} as any;
+        // if (filter.priceFrom) {
+        //     price.$between = [filter.priceFrom, filter.priceTo];
+        // }
+        // if (filter.priceTo) {
+        //     // tslint:disable-next-line:no-string-literal
+        //     price['$lte'] = filter.priceTo;
+        // }
+
+        // const title = { RegExp: filter.title };
+        // const author = { $regex: filter.author };
+        // const query = {
+        //     title,
+        //     author,
+        // };
+
+        // if (Object.entries(price).length !== 0) {
+            // query['price'] = price;
+        // }
+        // if (filter.title) {
+        //     query.title.$regexp = filter.title;
+        // }
+        // if (filter.author) {
+        //     query.author.$regexp = filter.author;
+        // }
+    }
 
     async addBook(book) {
         try {

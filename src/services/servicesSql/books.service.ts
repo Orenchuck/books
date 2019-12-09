@@ -4,12 +4,28 @@ import { BookModel } from 'src/models/book.model';
 import { CreateBookModel } from 'src/models/create-book.model';
 import { Book } from 'src/entities/book.entity';
 import { generateUuid } from 'src/common/random.helper';
+import { FilterModel } from 'src/models/filter.model';
+import { Sequelize } from 'sequelize';
 
 @Injectable()
 export class BooksService {
     constructor(
         private bookRepository: BookRepository,
     ) { }
+
+    async getFilteredBooks(filter: FilterModel): Promise<BookModel[]> {
+        console.log(filter);
+        
+        // const sequelize = require('sequelize');
+        // const Op = sequelize.Op;
+        // if (filter.priceFrom) {
+        //     const price = {} as any;
+        //     price.gte = filter.priceFrom;
+        // }
+        const filteredBooks = await this.bookRepository.getFilteredBooks(filter);
+
+        return filteredBooks;
+    }
 
     async addBook(book: CreateBookModel): Promise<BookModel> {
         const bookToCreate: Book = {
