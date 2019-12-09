@@ -21,6 +21,12 @@ export class BooksController {
         return filteredBooks;
     }
 
+    @Get('pagination/:limit/:offset')
+    async pagination(@Param('limit') limit: string, @Param('offset') offset: string): Promise<BookModel[]> {
+        const books: BookModel[] = await this.booksService.pagination(limit, offset);
+        return books;
+    }
+
     @Get()
     async getAllBooks(): Promise<BookModel[]> {
         const books = await this.booksService.getAllBooks();

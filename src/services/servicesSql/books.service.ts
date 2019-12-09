@@ -15,7 +15,7 @@ export class BooksService {
 
     async getFilteredBooks(filter: FilterModel): Promise<BookModel[]> {
         console.log(filter);
-        
+
         // const sequelize = require('sequelize');
         // const Op = sequelize.Op;
         // if (filter.priceFrom) {
@@ -25,6 +25,14 @@ export class BooksService {
         const filteredBooks = await this.bookRepository.getFilteredBooks(filter);
 
         return filteredBooks;
+    }
+
+    async pagination(limit, offset) {
+        if (+limit < 0 && +offset < 0) {
+            return
+        }
+        const books = this.bookRepository.pagination(+limit, +offset);
+        return books;
     }
 
     async addBook(book: CreateBookModel): Promise<BookModel> {

@@ -9,11 +9,13 @@ export class BookRepository {
 
     async getFilteredBooks(filter: FilterModel): Promise<Book[]> {
         let query = {where: {}};
-        query.where['price'] = {$gte: 1};
+        // query.where['author'] = {$in: 'Tolstoi'};
+        query.where['price'] = {$in: 'Tolstoi'};
+
 
         console.log(query);
 
-        const books = await this.booksRepository.findAll(query);
+        const books = await this.booksRepository.findAll({ where: {price: filter.priceFrom}});
         return books;
         // const price = {} as any;
         // if (filter.priceFrom) {
@@ -40,6 +42,11 @@ export class BookRepository {
         // if (filter.author) {
         //     query.author.$regexp = filter.author;
         // }
+    }
+
+    async pagination(limit, offset): Promise<Book[]> {
+        const books: Book[] = await this.booksRepository.findAll<Book>({limit, offset});
+        return books;
     }
 
     async addBook(book) {
