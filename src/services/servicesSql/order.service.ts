@@ -5,12 +5,65 @@ import { CreateOrderModel } from 'src/models/create-order.model';
 import { Order } from 'src/entities/order.entity';
 import { generateUuid } from 'src/common/random.helper';
 import { Status } from 'src/enums/status.enum';
+import { InjectStripe } from 'nestjs-stripe';
+import * as Stripe from 'stripe';
+const stripe = require('stripe')('sk_test_OcjwM7VYcSRwBBNU7gbLFpt400jxaeH5MN');
 
 @Injectable()
 export class OrdersService {
     constructor(
         private orderRepository: OrderRepository,
+        // private stripe: Stripe = new Stripe('sk_test_OcjwM7VYcSRwBBNU7gbLFpt400jxaeH5MN'),
+
     ) { }
+
+    async addPayment(order) {
+        // const customer = await Stripe.customers.create({
+        //     description: "customer@email.com",
+        //     card: 'tok_visa',
+        // });
+        // console.log(customer);
+        // (async () => {
+        //     const charge = await Stripe.charges.create({
+        //       amount: 999,
+        //       currency: 'usd',
+        //       description: 'Example charge',
+        //       source: 'tok_visa',
+        //       customer,
+        //     }, function(err, res) {
+        //         if (err) {
+        //             console.log(err);
+        //             return err;
+        //         }
+        //         console.log(res);
+        //         return res;
+        //     });
+        //   })();
+        // return true;
+
+        // async checkout(data): Promise<void> {
+        const res = await stripe.customers
+            .create({
+                email: order.email,
+            })
+            .then((customer) => {
+                return stripe.customers.createSource(customer.id, {
+                    source: order.token,
+                });
+            })
+            .then((source) => {
+                const charges = stripe.charges.create({
+                    amount: order.amount,
+                    currency: order.currency,
+                    customer: source.customer,
+                });
+                return charges;
+            });
+            console.log(res);
+            
+        return res.status;
+        // ));
+    }
 
     async addOrder(order: CreateOrderModel): Promise<OrderModel> {
         const orderToCreate: Order = {

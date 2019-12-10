@@ -14,6 +14,12 @@ import { CreateOrderModel } from 'src/models/create-order.model';
 export class OrdersController {
     constructor(private readonly ordersService: OrdersService) { }
 
+    @Post('payment')
+    async addPayment(@Body() order: CreateOrderModel): Promise<void> {
+        const newOrder = await this.ordersService.addPayment(order);
+        return newOrder;
+    }
+
     @Get()
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))

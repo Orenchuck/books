@@ -38,12 +38,16 @@ import { OrderRepository } from 'src/repositories/repoSql/order.repository';
 import { OrderItemsController } from 'src/controllers/order-item.controller';
 import { OrderItemsService } from 'src/services/servicesSql/order-item.service';
 import { OrderItemRepository } from 'src/repositories/repoSql/order-item.repository';
+import { StripeModule } from 'nestjs-stripe';
 
 @Module({
   imports: [
     PassportModule,
     JwtModule.register({
       secret: fs.readFileSync('src/secrets/jwtSecretKey.pem'),
+    }),
+    StripeModule.forRoot({
+      apiKey: 'sk_test_OcjwM7VYcSRwBBNU7gbLFpt400jxaeH5MN',
     }),
   ],
   controllers: [
