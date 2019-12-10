@@ -7,41 +7,9 @@ import { FilterModel } from 'src/models/filter.model';
 export class BookRepository {
     constructor(@Inject(BOOKS_REPOSITORY) private readonly booksRepository: typeof Book) {}
 
-    async getFilteredBooks(filter: FilterModel): Promise<Book[]> {
-        let query = {where: {}};
-        // query.where['author'] = {$in: 'Tolstoi'};
-        query.where['price'] = {$in: 'Tolstoi'};
-
-
-        console.log(query);
-
-        const books = await this.booksRepository.findAll({ where: {price: filter.priceFrom}});
+    async getFilteredBooks(query): Promise<Book[]> {
+        const books = await this.booksRepository.findAll(query);
         return books;
-        // const price = {} as any;
-        // if (filter.priceFrom) {
-        //     price.$between = [filter.priceFrom, filter.priceTo];
-        // }
-        // if (filter.priceTo) {
-        //     // tslint:disable-next-line:no-string-literal
-        //     price['$lte'] = filter.priceTo;
-        // }
-
-        // const title = { RegExp: filter.title };
-        // const author = { $regex: filter.author };
-        // const query = {
-        //     title,
-        //     author,
-        // };
-
-        // if (Object.entries(price).length !== 0) {
-            // query['price'] = price;
-        // }
-        // if (filter.title) {
-        //     query.title.$regexp = filter.title;
-        // }
-        // if (filter.author) {
-        //     query.author.$regexp = filter.author;
-        // }
     }
 
     async pagination(limit, offset): Promise<Book[]> {

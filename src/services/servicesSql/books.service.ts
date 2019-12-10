@@ -5,7 +5,8 @@ import { CreateBookModel } from 'src/models/create-book.model';
 import { Book } from 'src/entities/book.entity';
 import { generateUuid } from 'src/common/random.helper';
 import { FilterModel } from 'src/models/filter.model';
-import { Sequelize } from 'sequelize';
+// tslint:disable-next-line: no-var-requires
+const Sequelize = require('sequelize');
 
 @Injectable()
 export class BooksService {
@@ -14,22 +15,33 @@ export class BooksService {
     ) { }
 
     async getFilteredBooks(filter: FilterModel): Promise<BookModel[]> {
-        console.log(filter);
-
-        // const sequelize = require('sequelize');
-        // const Op = sequelize.Op;
-        // if (filter.priceFrom) {
-        //     const price = {} as any;
-        //     price.gte = filter.priceFrom;
-        // }
-        const filteredBooks = await this.bookRepository.getFilteredBooks(filter);
+        const Op = Sequelize.Op;
+        const query = {where: {}} as any;
+        const price = {};
+        if (filter.priceFrom) {
+           price[Op.gte] = filter.priceFrom;
+        }
+        if (filter.priceTo) {
+            price[Op.lte] = filter.priceTo;
+        }
+        if (price) {
+            query.where.price = price;
+        }
+        if (filter.title) {
+            query.where.title = {[Op.regexp]: filter.title};
+        }
+        if (filter.author) {
+            query.where.author = {[Op.regexp]: filter.author};
+        }
+        const filteredBooks = await this.bookRepository.getFilteredBooks(query);
 
         return filteredBooks;
     }
 
     async pagination(limit, offset) {
         if (+limit < 0 && +offset < 0) {
-            return
+            const allBooks = this.bookRepository.getAllBooks();
+            return allBooks;
         }
         const books = this.bookRepository.pagination(+limit, +offset);
         return books;
