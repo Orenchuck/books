@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, HttpStatus, HttpCode, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpStatus, HttpCode, Param, Redirect, Res } from '@nestjs/common';
 import { AuthService } from 'src/services/servicesSql/auth.service';
 import { UserModel } from 'src/models/user.model';
 import { ApiUseTags } from '@nestjs/swagger';
@@ -25,20 +25,21 @@ export class AuthController {
     }
 
     @Get('verify/:cypher')
-    public async verifyEmail(@Param() params): Promise<boolean> {
+    public async verifyEmail(@Param() params, @Res() res): Promise<boolean> {
         const isEmailVerified = await this.authService.verifyEmail(params.cypher);
-        return isEmailVerified;
+        return res.redirect('/books');
     }
 
     @Get('forgot-password/:email')
+    @Redirect('https://localhost/books', 302)
     async sendForgotPasswordEmail(@Param('email') email: string): Promise<UserModel> {
-            const getPass = this.authService.getForgotPass(email);
-            return getPass;
+        const getPass = await this.authService.getForgotPass(email);
+        return getPass;
     }
 
     @Post('refresh')
     async refreshToken(@Body() token) {
-            const newToken = this.authService.refreshToken(token);
-            return newToken;
+        const newToken = await this.authService.refreshToken(token);
+        return newToken;
     }
 }
