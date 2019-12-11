@@ -21,7 +21,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private userRepository: UserRepository,
-  ) {}
+  ) { }
 
   async loginUser(user: CreateUserModel): Promise<any> {
     if (!(user && user.email && user.password)) {
@@ -67,7 +67,7 @@ export class AuthService {
       email: user.email,
       isAccess: false,
     };
-    const accessJwt = this.jwtService.sign(accessData, { expiresIn: getEnv.expiresInAccess});
+    const accessJwt = this.jwtService.sign(accessData, { expiresIn: getEnv.expiresInAccess });
     const refreshJwt = this.jwtService.sign(refreshData, { expiresIn: getEnv.expiresInRefresh });
 
     return {
@@ -185,5 +185,30 @@ export class AuthService {
     });
 
     return true;
+  }
+
+  async refreshToken(token) {
+    const payloadAccess = this.jwtService.decode(token.access);
+    const pyloadRefresh = this.jwtService.decode(token.refresh);
+    // tslint:disable-next-line: no-string-literal
+    const exp = payloadAccess['exp'];
+    // tslint:disable-next-line: no-string-literal
+    const refreshExp = pyloadRefresh['exp'];
+    const date = new Date().valueOf() / 1000;
+    if (exp <= date ) {
+      if (refreshExp <= date) {
+        throw new HttpException('Enter your email and password', HttpStatus.UNAUTHORIZED);
+      }
+
+      const user = {
+        // tslint:disable-next-line: no-string-literal
+        email: payloadAccess['email'],
+        // tslint:disable-next-line: no-string-literal
+        role: payloadAccess['role'],
+      };
+      const tokens = this.createJwt(user);
+      return tokens;
+    }
+    return token;
   }
 }

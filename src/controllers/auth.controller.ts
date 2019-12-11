@@ -35,4 +35,10 @@ export class AuthController {
             const getPass = this.authService.getForgotPass(email);
             return getPass;
     }
+
+    @Post('refresh')
+    async refreshToken(@Body() token) {
+            const newToken = this.authService.refreshToken(token);
+            return newToken;
+    }
 }
