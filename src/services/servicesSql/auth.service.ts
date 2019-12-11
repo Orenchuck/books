@@ -132,7 +132,7 @@ export class AuthService {
 
       if (userFromDb) {
         userFromDb.active = true;
-        userFromDb.cypher = undefined;
+        userFromDb.cypher = null;
         const savedUser = await this.userRepository.saveUser(userFromDb);
 
         if (savedUser) {

@@ -7,12 +7,12 @@ export class AuthorsBooks extends Model<AuthorsBooks> {
 
     @ForeignKey(() => Author)
     @PrimaryKey
-    @Column
+    @Column({unique: false})
     authorId: string;
 
     @ForeignKey(() => Book)
     @PrimaryKey
-    @Column
+    @Column({unique: false})
     bookId: string;
 
     @BelongsTo(() => Book)

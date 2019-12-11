@@ -15,4 +15,5 @@ export const production = {
     sqlDBname: 'root',
     sqlDialect: 'mysql',
     sqlPort: 3306,
+    stripe: 'sk_test_OcjwM7VYcSRwBBNU7gbLFpt400jxaeH5MN',
 };

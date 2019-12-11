@@ -56,30 +56,4 @@ export class OrdersController {
         return newOrder;
     }
 
-    @Put()
-    @Roles(UserRole.Admin)
-    @UseGuards(AuthGuard('jwt'))
-    @ApiBearerAuth()
-    async updateOrder(@Body() orderToUpdate: OrderModel) {
-        const order = await this.ordersService.updateOrder(orderToUpdate);
-        return order;
-    }
-
-    @Get('del/:id')
-    @Roles(UserRole.Admin)
-    @UseGuards(AuthGuard('jwt'))
-    @ApiBearerAuth()
-    async isDelOrder(@Param('id') id: string): Promise<boolean> {
-        const delOrder = await this.ordersService.isDeleteOrder(id);
-        return delOrder;
-    }
-
-    @Delete(':orderID')
-    @Roles(UserRole.Admin)
-    @UseGuards(AuthGuard('jwt'))
-    @ApiBearerAuth()
-    async deleteOrder(@Param('orderID') orderID: string) {
-        const orders = await this.ordersService.deleteOrder(orderID);
-        return orders;
-    }
 }

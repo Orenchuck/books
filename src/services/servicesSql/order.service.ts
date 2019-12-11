@@ -5,8 +5,11 @@ import { CreateOrderModel } from 'src/models/create-order.model';
 import { Order } from 'src/entities/order.entity';
 import { generateUuid } from 'src/common/random.helper';
 import { Status } from 'src/enums/status.enum';
+import { environment } from 'src/enviroment/enviroment';
+
+const getEnv = environment();
 // tslint:disable-next-line: no-var-requires
-const stripe = require('stripe')('sk_test_OcjwM7VYcSRwBBNU7gbLFpt400jxaeH5MN');
+const stripe = require('stripe')(getEnv.stripe);
 
 @Injectable()
 export class OrdersService {
@@ -39,8 +42,9 @@ export class OrdersService {
         const orderToCreate: Order = {
             id: await generateUuid(),
             userId: order.userId,
-            paymentId: order.paymentId,
+            // paymentId: order.paymentId,
             currency: order.currency,
+            amount: order.amount,
             status: Status.NewOrder,
             date: new Date(),
             isDelete: false,
@@ -52,6 +56,7 @@ export class OrdersService {
             newOrder.userId = resRepo.userId;
             newOrder.paymentId = resRepo.paymentId;
             newOrder.currency = resRepo.currency;
+            newOrder.amount = resRepo.amount;
             newOrder.status = resRepo.status;
             newOrder.date = resRepo.date;
             newOrder.isDelete = resRepo.isDelete;
@@ -71,6 +76,7 @@ export class OrdersService {
                 userId: oneOrder.userId,
                 paymentId: oneOrder.paymentId,
                 currency: oneOrder.currency,
+                amount: oneOrder.amount,
                 status: oneOrder.status,
                 date: oneOrder.date,
                 isDelete: oneOrder.isDelete,
@@ -89,6 +95,7 @@ export class OrdersService {
             order.userId = resRepo.userId;
             order.paymentId = resRepo.paymentId;
             order.currency = resRepo.currency;
+            order.amount = resRepo.amount;
             order.status = resRepo.status;
             order.date = resRepo.date;
             order.isDelete = resRepo.isDelete;
@@ -105,51 +112,12 @@ export class OrdersService {
             order.userId = resRepo.userId;
             order.paymentId = resRepo.paymentId;
             order.currency = resRepo.currency;
+            order.amount = resRepo.amount;
             order.status = resRepo.status;
             order.date = resRepo.date;
             order.isDelete = resRepo.isDelete;
             return order;
         }
         throw new HttpException('Order does not exist!', HttpStatus.NOT_FOUND);
-    }
-
-    async updateOrder(userToUpdate: OrderModel): Promise<boolean> {
-        const updateOrderDoc: Order = {} as any;
-
-        if (userToUpdate) {
-            updateOrderDoc.id = userToUpdate.id;
-            updateOrderDoc.paymentId = userToUpdate.paymentId;
-            updateOrderDoc.userId = userToUpdate.userId;
-            updateOrderDoc.currency = userToUpdate.currency;
-            updateOrderDoc.status = userToUpdate.status;
-            updateOrderDoc.date = userToUpdate.date;
-        }
-
-        const resRepo = await this.orderRepository.updateOrder(updateOrderDoc);
-        if (resRepo) {
-            return true;
-        }
-        throw new HttpException('Order does not exist!', HttpStatus.NOT_FOUND);
-    }
-
-    async isDeleteOrder(id: string): Promise<boolean> {
-        const orderFromDb: Order = await this.orderRepository.findOrderById(id);
-
-        if (orderFromDb) {
-            orderFromDb.isDelete = !orderFromDb.isDelete;
-            const savedOrder: boolean = await this.orderRepository.saveOrder(orderFromDb);
-            return savedOrder;
-        }
-        throw new HttpException('Order does not exist!', HttpStatus.NOT_FOUND);
-    }
-
-    async deleteOrder(id: string): Promise<boolean> {
-        const delOrder: Order = {} as any;
-        delOrder.id = id;
-        const resRepo = await this.orderRepository.deleteOrder(delOrder.id);
-        if (!resRepo) {
-            throw new HttpException('Order does not exist!', HttpStatus.NOT_FOUND);
-        }
-        return true;
     }
 }

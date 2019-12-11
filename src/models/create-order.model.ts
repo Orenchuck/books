@@ -4,7 +4,7 @@ export class CreateOrderModel {
   @ApiModelProperty()
   userId?: string;
   @ApiModelProperty()
-  paymentId?: string;
-  @ApiModelProperty()
   currency?: string;
+  @ApiModelProperty()
+  amount?: number;
 }

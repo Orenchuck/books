@@ -29,13 +29,21 @@ export class UserRepository {
     }
 
     async getUserbyID(id: string): Promise<User> {
-        try {
             const user: User = await this.usersRepository.findOne({ where: { id } });
             return user;
-        } catch { throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND); }
+    }
+
+    async getUserforDel(id): Promise<User> {
+        const user: User = await this.usersRepository.findOne({ where: { id: id.id } });
+        return user;
     }
 
     async updateUser(userToUpdate: User): Promise<any[]> {
+        const updatedUser = await this.usersRepository.update<User>(userToUpdate, { where: { id: userToUpdate.id } });
+        return updatedUser;
+    }
+
+    async updateUserPass(userToUpdate: User): Promise<any[]> {
         const updatedUser = await this.usersRepository.update<User>(userToUpdate, { where: { id: userToUpdate.id } });
         return updatedUser;
     }

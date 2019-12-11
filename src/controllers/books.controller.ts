@@ -69,11 +69,11 @@ export class BooksController {
         return book;
     }
 
-    @Get('del/:id')
+    @Put('del')
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
-    async isDelBook(@Param('id') id: string): Promise<boolean> {
+    async isDelBook(@Body() id: string): Promise<boolean> {
         const delBook = await this.booksService.isDeleteBook(id);
         return delBook;
     }

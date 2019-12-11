@@ -25,6 +25,11 @@ export class AuthorRepository {
         } catch { throw new HttpException('Author does not exist!', HttpStatus.NOT_FOUND); }
     }
 
+    async findAuthorForDel(id): Promise<Author> {
+            const author = await this.authorsRepository.findOne({ where: { id: id.id }});
+            return author;
+    }
+
     async findAuthorByName(name: string): Promise<Author> {
         const res: Author = await this.authorsRepository.findOne({ where: { name }});
         return res;

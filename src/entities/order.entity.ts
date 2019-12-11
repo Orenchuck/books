@@ -21,6 +21,9 @@ export class Order extends Model<Order> {
   currency: string;
 
   @Column
+  amount: number;
+
+  @Column
   status: string;
 
   @Column

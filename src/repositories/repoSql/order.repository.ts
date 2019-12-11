@@ -29,23 +29,4 @@ export class OrderRepository {
         const res: Order = await this.ordersRepository.findOne({ where: { userId }});
         return res;
     }
-
-    async updateOrder(order: Order): Promise<any[]> {
-        try {
-            const updatedOrder = await this.ordersRepository.update(order, {where: {id: order.id}});
-            return updatedOrder;
-        } catch { throw new HttpException('Order does not exist!', HttpStatus.NOT_FOUND); }
-    }
-
-    async saveOrder(order): Promise<boolean> {
-        try {
-            await order.save();
-            return true;
-        } catch { throw new HttpException('Error connection with db', HttpStatus.GATEWAY_TIMEOUT); }
-    }
-
-    async deleteOrder(id: string) {
-        const result = await this.ordersRepository.destroy({ where: { id }});
-        return result;
-    }
 }

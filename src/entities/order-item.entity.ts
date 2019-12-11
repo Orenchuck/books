@@ -16,6 +16,9 @@ export class OrderItem extends Model<OrderItem> {
   bookId: string;
 
   @Column({defaultValue: 1})
+  count: number;
+
+  @Column
   amount: number;
 
   @BelongsTo(() => Book)

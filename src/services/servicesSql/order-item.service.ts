@@ -17,6 +17,7 @@ export class OrderItemsService {
             id: await generateUuid(),
             orderId: orderItem.orderId,
             bookId: orderItem.bookId,
+            count: orderItem.count,
             amount: orderItem.amount,
         } as any;
         const resRepo: OrderItem = await this.orderItemRepository.addOrderItem(orderItemToCreate);
@@ -25,6 +26,7 @@ export class OrderItemsService {
             newOrderItem.id = resRepo.id;
             newOrderItem.orderId = resRepo.orderId;
             newOrderItem.bookId = resRepo.bookId;
+            newOrderItem.count = resRepo.count;
             newOrderItem.amount = resRepo.amount;
         }
         return newOrderItem;
@@ -41,6 +43,7 @@ export class OrderItemsService {
                 id: oneOrderItem.id,
                 orderId: oneOrderItem.orderId,
                 bookId: oneOrderItem.bookId,
+                count: oneOrderItem.count,
                 amount: oneOrderItem.amount,
             };
             allOrderItems.push(orderItem);
@@ -56,6 +59,7 @@ export class OrderItemsService {
             orderItem.id = resRepo.id;
             orderItem.orderId = resRepo.orderId;
             orderItem.bookId = resRepo.bookId;
+            orderItem.count = resRepo.count;
             orderItem.amount = resRepo.amount;
             return orderItem;
         }
@@ -69,6 +73,7 @@ export class OrderItemsService {
             updateOrderItemDoc.id = userToUpdate.id;
             updateOrderItemDoc.bookId = userToUpdate.bookId;
             updateOrderItemDoc.orderId = userToUpdate.orderId;
+            updateOrderItemDoc.count = userToUpdate.count;
             updateOrderItemDoc.amount = userToUpdate.amount;
         }
 

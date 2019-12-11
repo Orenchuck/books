@@ -24,7 +24,7 @@ export class BooksService {
         if (filter.priceTo) {
             price[Op.lte] = filter.priceTo;
         }
-        if (price) {
+        if (Object.keys(price).length !== 0) {
             query.where.price = price;
         }
         if (filter.title) {
@@ -60,7 +60,7 @@ export class BooksService {
         if (resRepo) {
             newBook.id = resRepo.id;
             newBook.title = resRepo.title;
-            newBook.author = resRepo.author;
+            // newBook.author = resRepo.author;
             newBook.price = resRepo.price;
             newBook.isDelete = resRepo.isDelete;
         }
@@ -77,7 +77,7 @@ export class BooksService {
             const book: BookModel = {
                 id: oneBook.id,
                 title: oneBook.title,
-                author: oneBook.author,
+                // author: oneBook.author,
                 price: oneBook.price,
                 isDelete: oneBook.isDelete,
             };
@@ -93,7 +93,7 @@ export class BooksService {
         if (resRepo) {
             book.id = resRepo.id;
             book.title = resRepo.title;
-            book.author = resRepo.author;
+            // book.author = resRepo.author;
             book.price = resRepo.price;
             book.isDelete = resRepo.isDelete;
             return book;
@@ -107,7 +107,7 @@ export class BooksService {
         if (resRepo) {
             book.id = resRepo.id;
             book.title = resRepo.title;
-            book.author = resRepo.author;
+            // book.author = resRepo.author;
             book.price = resRepo.price;
             book.isDelete = resRepo.isDelete;
             return book;
@@ -121,7 +121,7 @@ export class BooksService {
         if (resRepo) {
             book.id = resRepo.id;
             book.title = resRepo.title;
-            book.author = resRepo.author;
+            // book.author = resRepo.author;
             book.price = resRepo.price;
             book.isDelete = resRepo.isDelete;
             return book;
@@ -136,7 +136,7 @@ export class BooksService {
         if (userToUpdate) {
             updateBookDoc.id = userToUpdate.id;
             updateBookDoc.title = userToUpdate.title;
-            updateBookDoc.author = userToUpdate.author;
+            // updateBookDoc.author = userToUpdate.author;
             updateBookDoc.price = userToUpdate.price;
         }
 
@@ -148,7 +148,7 @@ export class BooksService {
     }
 
     async isDeleteBook(id: string): Promise<boolean> {
-        const bookFromDb: Book = await this.bookRepository.findBookById(id);
+        const bookFromDb: Book = await this.bookRepository.findBookForDel(id);
 
         if (bookFromDb) {
             bookFromDb.isDelete = !bookFromDb.isDelete;

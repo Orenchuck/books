@@ -25,7 +25,7 @@ export class AuthorsService {
         if (resRepo) {
             newAuthor.id = resRepo.id;
             newAuthor.name = resRepo.name;
-            newAuthor.books = resRepo.books;
+            // newAuthor.books = resRepo.books;
             newAuthor.birthDate = resRepo.birthDate;
             newAuthor.deathDate = resRepo.deathDate;
             newAuthor.isDelete = resRepo.isDelete;
@@ -43,7 +43,7 @@ export class AuthorsService {
             const author: AuthorModel = {
                 id: oneAuthor.id,
                 name: oneAuthor.name,
-                books: oneAuthor.books,
+                // books: oneAuthor.books,
                 birthDate: oneAuthor.birthDate,
                 deathDate: oneAuthor.deathDate,
                 isDelete: oneAuthor.isDelete,
@@ -60,7 +60,7 @@ export class AuthorsService {
         if (resRepo) {
             author.id = resRepo.id;
             author.name = resRepo.name;
-            author.books = resRepo.books;
+            // author.books = resRepo.books;
             author.birthDate = resRepo.birthDate;
             author.deathDate = resRepo.deathDate;
             author.isDelete = resRepo.isDelete;
@@ -75,7 +75,7 @@ export class AuthorsService {
         if (resRepo) {
             author.id = resRepo.id;
             author.name = resRepo.name;
-            author.books = resRepo.books;
+            // author.books = resRepo.books;
             author.birthDate = resRepo.birthDate;
             author.deathDate = resRepo.deathDate;
             author.isDelete = resRepo.isDelete;
@@ -90,7 +90,7 @@ export class AuthorsService {
         if (authorToUpdate) {
             updateAuthorDoc.id = authorToUpdate.id;
             updateAuthorDoc.name = authorToUpdate.name;
-            updateAuthorDoc.books = authorToUpdate.books;
+            // updateAuthorDoc.books = authorToUpdate.books;
             updateAuthorDoc.birthDate = authorToUpdate.birthDate;
             updateAuthorDoc.deathDate = authorToUpdate.deathDate;
         }
@@ -103,7 +103,7 @@ export class AuthorsService {
     }
 
     async isDeleteAuthor(id: string): Promise<boolean> {
-        const authorFromDb: Author = await this.authorRepository.findAuthorById(id);
+        const authorFromDb: Author = await this.authorRepository.findAuthorForDel(id);
 
         if (authorFromDb) {
             authorFromDb.isDelete = !authorFromDb.isDelete;

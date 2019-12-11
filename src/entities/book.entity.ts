@@ -10,9 +10,6 @@ export class Book extends Model<Book> {
   title: string;
 
   @Column
-  author: string;
-
-  @Column
   price: number;
 
   @Column

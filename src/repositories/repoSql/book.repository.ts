@@ -36,6 +36,11 @@ export class BookRepository {
         } catch { throw new HttpException('Book does not exist!', HttpStatus.NOT_FOUND); }
     }
 
+    async findBookForDel(id): Promise<Book> {
+            const book: Book = await this.booksRepository.findOne({ where: { id: id.id }});
+            return book;
+    }
+
     async findBookByTitle(title: string): Promise<Book> {
         const res: Book = await this.booksRepository.findOne({ where: { title }});
         return res;

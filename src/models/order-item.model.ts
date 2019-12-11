@@ -8,5 +8,7 @@ export class OrderItemModel {
   @ApiModelProperty()
   bookId?: string;
   @ApiModelProperty()
+  count?: number;
+  @ApiModelProperty()
   amount?: number;
 }

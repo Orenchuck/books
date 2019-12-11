@@ -122,8 +122,24 @@ export class UsersService {
     return true;
   }
 
+  async updateUserPass(userToUpdate: CreateUserModel): Promise<boolean> {
+    const saltRounds = 10;
+    userToUpdate.password = await bcrypt.hash(userToUpdate.password, saltRounds);
+
+    const userDoc = await this.userRepository.findOneByEmail(userToUpdate.email) as any;
+    userDoc.email = userToUpdate.email;
+    userDoc.password = userToUpdate.password;
+    const res = await this.userRepository.updateUserPass(userDoc);
+
+    if (!res) {
+      throw new HttpException('User does not exist!', HttpStatus.NOT_FOUND);
+    }
+
+    return true;
+  }
+
   async isDeleteUser(id: string): Promise<boolean> {
-    const userFromDb: User = await this.userRepository.getUserbyID(id);
+    const userFromDb: User = await this.userRepository.getUserforDel(id);
 
     if (userFromDb) {
       userFromDb.isDelete = !userFromDb.isDelete;

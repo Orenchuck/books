@@ -50,11 +50,11 @@ export class AuthorsController {
         return author;
     }
 
-    @Get('del/:id')
+    @Put('del')
     @Roles(UserRole.Admin)
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    async isDelAuthor(@Param('id') id: string): Promise<boolean> {
+    async isDelAuthor(@Body() id: string): Promise<boolean> {
         const delAuthor = await this.authorsService.isDeleteAuthor(id);
         return delAuthor;
     }
