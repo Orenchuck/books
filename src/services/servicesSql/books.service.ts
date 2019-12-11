@@ -129,15 +129,15 @@ export class BooksService {
         throw new HttpException('Book does not exist!', HttpStatus.NOT_FOUND);
     }
 
-    async updateBook(userToUpdate: BookModel): Promise<boolean> {
+    async updateBook(bookToUpdate: BookModel): Promise<boolean> {
         const updatedBook: BookModel = {};
         const updateBookDoc: Book = {} as any;
 
-        if (userToUpdate) {
-            updateBookDoc.id = userToUpdate.id;
-            updateBookDoc.title = userToUpdate.title;
-            // updateBookDoc.author = userToUpdate.author;
-            updateBookDoc.price = userToUpdate.price;
+        if (bookToUpdate) {
+            updateBookDoc.id = bookToUpdate.id;
+            updateBookDoc.title = bookToUpdate.title;
+            // updateBookDoc.author = bookToUpdate.author;
+            updateBookDoc.price = bookToUpdate.price;
         }
 
         const resRepo = await this.bookRepository.updateBook(updateBookDoc);

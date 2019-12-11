@@ -35,10 +35,15 @@ import { OrdersController } from 'src/controllers/order.controller';
 import { OrdersService } from 'src/services/servicesSql/order.service';
 import { OrderRepository } from 'src/repositories/repoSql/order.repository';
 
+import { AuthorBooksController } from 'src/controllers/author-book.controller';
+import { AuthorBooksService } from 'src/services/servicesSql/author-book.service';
+import { AuthorBookRepository } from 'src/repositories/repoSql/author-book.repository';
+
 import { OrderItemsController } from 'src/controllers/order-item.controller';
 import { OrderItemsService } from 'src/services/servicesSql/order-item.service';
 import { OrderItemRepository } from 'src/repositories/repoSql/order-item.repository';
 import { StripeModule } from 'nestjs-stripe';
+
 
 @Module({
   imports: [
@@ -57,6 +62,7 @@ import { StripeModule } from 'nestjs-stripe';
     AuthorsController,
     OrdersController,
     OrderItemsController,
+    AuthorBooksController,
   ],
   providers: [
     BooksService,
@@ -72,6 +78,8 @@ import { StripeModule } from 'nestjs-stripe';
     OrderRepository,
     OrderItemsService,
     OrderItemRepository,
+    AuthorBooksService,
+    AuthorBookRepository,
     ...databaseProviders,
     ...booksProviders,
     ...authorsBooksProviders,
