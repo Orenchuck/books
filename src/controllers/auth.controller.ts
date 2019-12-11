@@ -31,7 +31,6 @@ export class AuthController {
     }
 
     @Get('forgot-password/:email')
-    @Redirect('https://localhost/books', 302)
     async sendForgotPasswordEmail(@Param('email') email: string): Promise<UserModel> {
         const getPass = await this.authService.getForgotPass(email);
         return getPass;
