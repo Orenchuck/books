@@ -8,11 +8,11 @@ export class OrderItem extends Model<OrderItem> {
   id: string;
 
   @ForeignKey(() => Order)
-  @Column
+  @Column({unique: false})
   orderId: string;
 
   @ForeignKey(() => Book)
-  @Column
+  @Column({unique: false})
   bookId: string;
 
   @Column({defaultValue: 1})
