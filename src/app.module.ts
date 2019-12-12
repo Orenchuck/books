@@ -1,5 +1,6 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import * as fs from 'fs';
+import { StripeModule } from 'nestjs-stripe';
 
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -23,14 +24,6 @@ import { AuthorsController } from 'src/controllers/author.controller';
 import { AuthorsService } from 'src/services/servicesSql/author.service';
 import { AuthorRepository } from 'src/repositories/repoSql/author.repository';
 
-import { databaseProviders } from 'src/providers/database.provider';
-import { booksProviders } from 'src/providers/books.provider';
-import { authorsBooksProviders } from 'src/providers/authors-books.provider';
-import { authorsProviders } from 'src/providers/authors.provider';
-import { userProviders } from 'src/providers/users.provider';
-import { orderItemProviders } from 'src/providers/order-item.provider';
-import { orderProviders } from 'src/providers/order.provider';
-
 import { OrdersController } from 'src/controllers/order.controller';
 import { OrdersService } from 'src/services/servicesSql/order.service';
 import { OrderRepository } from 'src/repositories/repoSql/order.repository';
@@ -42,8 +35,19 @@ import { AuthorBookRepository } from 'src/repositories/repoSql/author-book.repos
 import { OrderItemsController } from 'src/controllers/order-item.controller';
 import { OrderItemsService } from 'src/services/servicesSql/order-item.service';
 import { OrderItemRepository } from 'src/repositories/repoSql/order-item.repository';
-import { StripeModule } from 'nestjs-stripe';
 
+import { ImgController } from './controllers/img.controller';
+import { ImgService } from './services/servicesSql/img.service';
+import { ImgRepository } from './repositories/repoSql/img.repository';
+
+import { databaseProviders } from 'src/providers/database.provider';
+import { booksProviders } from 'src/providers/books.provider';
+import { authorsBooksProviders } from 'src/providers/authors-books.provider';
+import { authorsProviders } from 'src/providers/authors.provider';
+import { userProviders } from 'src/providers/users.provider';
+import { orderItemProviders } from 'src/providers/order-item.provider';
+import { orderProviders } from 'src/providers/order.provider';
+import { imgProviders } from './providers/img.provider';
 
 @Module({
   imports: [
@@ -63,6 +67,7 @@ import { StripeModule } from 'nestjs-stripe';
     OrdersController,
     OrderItemsController,
     AuthorBooksController,
+    ImgController,
   ],
   providers: [
     BooksService,
@@ -80,6 +85,8 @@ import { StripeModule } from 'nestjs-stripe';
     OrderItemRepository,
     AuthorBooksService,
     AuthorBookRepository,
+    ImgService,
+    ImgRepository,
     ...databaseProviders,
     ...booksProviders,
     ...authorsBooksProviders,
@@ -87,6 +94,7 @@ import { StripeModule } from 'nestjs-stripe';
     ...userProviders,
     ...orderItemProviders,
     ...orderProviders,
+    ...imgProviders,
   ],
   exports: [UsersService],
 })

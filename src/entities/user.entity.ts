@@ -1,9 +1,12 @@
-import { Table, Column, Model, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, DataType } from 'sequelize-typescript';
 import { Order } from 'src/entities/order.entity';
 
 @Table
 export class User extends Model<User> {
-  @Column ({primaryKey: true})
+  @Column ({
+    primaryKey: true,
+    type: DataType.UUID,
+  })
   id: string;
 
   @Column

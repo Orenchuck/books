@@ -51,8 +51,8 @@ export class OrdersController {
     @Roles(UserRole.Admin)
     @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
-    async addOrder(@Body() order: CreateOrderModel) {
-        const newOrder = await this.ordersService.addOrder(order);
+    async addOrder(@Body() order: CreateOrderModel, payment) {
+        const newOrder = await this.ordersService.addOrder(order, payment);
         return newOrder;
     }
 

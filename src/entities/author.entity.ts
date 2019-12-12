@@ -1,9 +1,12 @@
-import { Table, Column, Model, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, DataType } from 'sequelize-typescript';
 import { AuthorsBooks } from 'src/entities/authors-books.entity';
 
 @Table
 export class Author extends Model<Author> {
-  @Column ({primaryKey: true})
+  @Column ({
+    primaryKey: true,
+    type: DataType.UUID,
+  })
   id: string;
 
   @Column

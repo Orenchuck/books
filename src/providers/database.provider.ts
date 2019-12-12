@@ -6,6 +6,7 @@ import { AuthorsBooks } from 'src/entities/authors-books.entity';
 import { environment } from 'src/enviroment/enviroment';
 import { Order } from 'src/entities/order.entity';
 import { OrderItem } from 'src/entities/order-item.entity';
+import { Img } from 'src/entities/img.entity';
 
 const getEnv = environment();
 
@@ -21,27 +22,9 @@ export const databaseProviders = [
         password: 'root',
         database: 'root',
       });
-      sequelize.addModels([Book, Author, User, AuthorsBooks, Order, OrderItem]);
+      sequelize.addModels([Book, Author, User, AuthorsBooks, Order, OrderItem, Img]);
       await sequelize.sync();
       return sequelize;
-        // useFactory: async () => {
-        //     const sequelize = new Sequelize({});
-        //     // tslint:disable-next-line: no-string-literal
-        //     sequelize['dialect'] = getEnv.sqlDialect,
-        //         // tslint:disable-next-line: no-string-literal
-        //         sequelize['host'] = getEnv.host,
-        //         // tslint:disable-next-line: no-string-literal
-        //         sequelize['port'] = getEnv.sqlPort,
-        //         // tslint:disable-next-line: no-string-literal
-        //         sequelize['username'] = getEnv.sqlUsername,
-        //         // tslint:disable-next-line: no-string-literal
-        //         sequelize['password'] = getEnv.sqlPassword,
-        //         // tslint:disable-next-line: no-string-literal
-        //         sequelize['database'] = getEnv.sqlDBname,
-
-        //         sequelize.addModels([Book, Author, User, AuthorsBooks]);
-        //     await sequelize.sync();
-        //     return sequelize;
         },
     },
 ];

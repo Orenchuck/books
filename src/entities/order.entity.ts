@@ -1,6 +1,6 @@
 import { Table, Column, Model, HasMany, ForeignKey } from 'sequelize-typescript';
 import { User } from 'src/entities/user.entity';
-import { OrderItem } from './order-item.entity';
+import { OrderItem } from 'src/entities/order-item.entity';
 
 @Table
 export class Order extends Model<Order> {

@@ -1,9 +1,13 @@
-import { Table, Column, Model, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, HasOne, HasMany, DataType } from 'sequelize-typescript';
 import { AuthorsBooks } from 'src/entities/authors-books.entity';
+import { Img } from 'src/entities/img.entity';
 
 @Table
 export class Book extends Model<Book> {
-  @Column ({primaryKey: true})
+  @Column({
+    primaryKey: true,
+    type: DataType.UUID,
+  })
   id: string;
 
   @Column
@@ -17,4 +21,7 @@ export class Book extends Model<Book> {
 
   @HasMany(() => AuthorsBooks)
   authorBooks: AuthorsBooks[];
+
+  @HasOne(() => Img)
+  img: Img;
 }

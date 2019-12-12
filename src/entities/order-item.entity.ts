@@ -1,10 +1,13 @@
-import { Table, Column, Model, HasMany, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { Order } from 'src/entities/order.entity';
 import { Book } from 'src/entities/book.entity';
 
 @Table
 export class OrderItem extends Model<OrderItem> {
-  @Column ({primaryKey: true})
+  @Column ({
+    primaryKey: true,
+    type: DataType.UUID,
+  })
   id: string;
 
   @ForeignKey(() => Order)

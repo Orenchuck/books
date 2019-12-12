@@ -35,14 +35,15 @@ export class OrdersService {
                 });
                 return charges;
             });
-        return res.status;
+        return res.id;
     }
 
-    async addOrder(order: CreateOrderModel): Promise<OrderModel> {
+    async addOrder(order: CreateOrderModel, payment): Promise<OrderModel> {
+
         const orderToCreate: Order = {
             id: await generateUuid(),
             userId: order.userId,
-            // paymentId: order.paymentId,
+            paymentId: payment,
             currency: order.currency,
             amount: order.amount,
             status: Status.NewOrder,
