@@ -1,5 +1,4 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-const   Sequelize = require('sequelize');
 
 export class ImgModel {
   @ApiModelProperty()

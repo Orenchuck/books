@@ -39,12 +39,18 @@ export class BooksService {
     }
 
     async pagination(limit, offset) {
+        const countAllBooks = await this.bookRepository.countAllBooks();
+
         if (+limit < 0 && +offset < 0) {
             const allBooks = this.bookRepository.getAllBooks();
             return allBooks;
         }
-        const books = this.bookRepository.pagination(+limit, +offset);
-        return books;
+        const books = await this.bookRepository.pagination(+limit, +offset);
+        const res = {
+            books,
+            countAllBooks,
+        };
+        return res;
     }
 
     async addBook(book: CreateBookModel): Promise<BookModel> {

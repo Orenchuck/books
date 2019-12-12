@@ -17,6 +17,11 @@ export class BookRepository {
         return books;
     }
 
+    async countAllBooks(): Promise<number> {
+        const count: number = await this.booksRepository.count();
+        return count;
+    }
+
     async addBook(book) {
         try {
             const newBook = this.booksRepository.create(book);
