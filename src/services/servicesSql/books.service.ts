@@ -16,22 +16,25 @@ export class BooksService {
 
     async getFilteredBooks(filter: FilterModel): Promise<BookModel[]> {
         const Op = Sequelize.Op;
-        const query = {where: {}} as any;
+        const query = { where: {} } as any;
         const price = {};
-        if (filter.priceFrom) {
-           price[Op.gte] = filter.priceFrom;
+        if (filter.priceFrom && !filter.priceTo) {
+            price[Op.gte] = filter.priceFrom;
         }
-        if (filter.priceTo) {
+        if (filter.priceTo && !filter.priceFrom) {
             price[Op.lte] = filter.priceTo;
         }
-        if (Object.keys(price).length !== 0) {
+        if (filter.priceFrom && filter.priceTo) {
+           price[Op.between] = [filter.priceFrom, filter.priceTo];
+        }
+        if (!Object.keys(price).length || Object.keys(price).length !== 0) {
             query.where.price = price;
         }
         if (filter.title) {
-            query.where.title = {[Op.regexp]: filter.title};
+            query.where.title = { [Op.regexp]: filter.title };
         }
         if (filter.author) {
-            query.where.author = {[Op.regexp]: filter.author};
+            query.where.author = { [Op.regexp]: filter.author };
         }
         const filteredBooks = await this.bookRepository.getFilteredBooks(query);
 
@@ -66,7 +69,6 @@ export class BooksService {
         if (resRepo) {
             newBook.id = resRepo.id;
             newBook.title = resRepo.title;
-            // newBook.author = resRepo.author;
             newBook.price = resRepo.price;
             newBook.isDelete = resRepo.isDelete;
         }
@@ -83,7 +85,6 @@ export class BooksService {
             const book: BookModel = {
                 id: oneBook.id,
                 title: oneBook.title,
-                // author: oneBook.author,
                 price: oneBook.price,
                 isDelete: oneBook.isDelete,
             };
@@ -99,7 +100,6 @@ export class BooksService {
         if (resRepo) {
             book.id = resRepo.id;
             book.title = resRepo.title;
-            // book.author = resRepo.author;
             book.price = resRepo.price;
             book.isDelete = resRepo.isDelete;
             return book;
@@ -113,7 +113,6 @@ export class BooksService {
         if (resRepo) {
             book.id = resRepo.id;
             book.title = resRepo.title;
-            // book.author = resRepo.author;
             book.price = resRepo.price;
             book.isDelete = resRepo.isDelete;
             return book;
@@ -127,7 +126,6 @@ export class BooksService {
         if (resRepo) {
             book.id = resRepo.id;
             book.title = resRepo.title;
-            // book.author = resRepo.author;
             book.price = resRepo.price;
             book.isDelete = resRepo.isDelete;
             return book;
@@ -142,7 +140,6 @@ export class BooksService {
         if (bookToUpdate) {
             updateBookDoc.id = bookToUpdate.id;
             updateBookDoc.title = bookToUpdate.title;
-            // updateBookDoc.author = bookToUpdate.author;
             updateBookDoc.price = bookToUpdate.price;
         }
 
